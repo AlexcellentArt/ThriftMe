@@ -45,7 +45,7 @@ datasource db {
 }
 ```
 ### Server Notes
-The following code line is in server.js and should only run on windows. If you are a Mac user and get an error because your system is trying to require dotenv, let me know and I will fix it.
+The following code line is in index.js and should only run on windows. If you are a Mac user and get an error because your system is trying to require dotenv, let me know and I will fix it.
 ```
 if (process.platform() === "win32"){require('dotenv').config()}
 ```
