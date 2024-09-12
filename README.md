@@ -47,6 +47,12 @@ The following code line is in server.js and should only run on windows. If you a
 ```
 if (process.platform() === "win32"){require('dotenv').config()}
 ```
+### CSS Notes
+To call upon one of the colors of the color palette in App.css, use var(--variableName).
+Example
+```
+color: var(--periwinkle);
+```
 ## Rules
 1. Thou Shalt Not Commit to Main
 2. Thou Shalt Make and Work On A Clearly Named Branch
