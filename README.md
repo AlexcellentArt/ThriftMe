@@ -9,6 +9,7 @@ npm install prisma --save-dev
 npx prisma init --datasource-provider postgresql
 npm install pg express morgan
 npm install -D nodemon
+npm install vite
 ```
 ### Setup Steps Mac Exclusive
 ```
