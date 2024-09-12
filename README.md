@@ -5,11 +5,7 @@ Be sure to read all of the following carefully!
 ### Setup General Steps
 ```
 createdb thriftme_db
-npm install prisma --save-dev
-npx prisma init --datasource-provider postgresql
-npm install pg express morgan
-npm install -D nodemon
-npm install vite
+npm install
 ```
 ### Setup Steps Mac Exclusive
 
@@ -18,12 +14,19 @@ Make a .env file and put inside it:
 DATABASE_URL = "postgresql://USER:@localhost:5432/prisma_intro_db"
 ```
 ### Setup Steps Windows Exclusive
-```
-npm install dotenv
-```
 Make a .env file and put inside it:
 ```
 DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/prisma_intro_db"
+```
+## Things npm Install should've installed:
+If you run into issues, try installing these.
+```
+npm install prisma --save-dev
+npx prisma init --datasource-provider postgresql
+npm install pg express morgan
+npm install -D nodemon
+npm install vite
+npm install dotenv
 ```
 ## Notes
 ### Branch Notes

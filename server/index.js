@@ -1,8 +1,7 @@
 // imports
 const pg = require('pg')
 const express = require('express');
-// window exclusive import
-if (process.platform() === "win32"){require('dotenv').config()}
+require('dotenv').config()
 // static routes
 const client = new pg.Client(process.env.DATABASE_URL)
 // app routes
