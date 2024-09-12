@@ -12,14 +12,17 @@ npm install -D nodemon
 npm install vite
 ```
 ### Setup Steps Mac Exclusive
+
+Make a .env file and put inside it:
 ```
-In .env
 DATABASE_URL = "postgresql://USER:@localhost:5432/prisma_intro_db"
 ```
 ### Setup Steps Windows Exclusive
 ```
 npm install dotenv
-In .env
+```
+Make a .env file and put inside it:
+```
 DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/prisma_intro_db"
 ```
 ## Notes
