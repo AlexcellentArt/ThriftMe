@@ -1,4 +1,4 @@
-import thriftmeLogo from '/ThriftMeLogo.svg'
+import thriftmeLogo from '/src/assets/ThriftMeLogo.svg'
 import './App.css'
 
 function App() {
