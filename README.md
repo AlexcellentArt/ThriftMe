@@ -26,6 +26,25 @@ Make a .env file and put inside it:
 DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/prisma_intro_db"
 ```
 ## Notes
+### Branch Notes
+When Making a new branch, run the following code, replacing INSERTBRANCHNAMEHERE with what you want your branch to be called.
+```
+git checkout -b INSERTBRANCHNAMEHERE
+```
+Make a change real fast, something minor like adding in //Working at the top of the file you're working on. This is just to make a first commit, you can undo that change in a second commit real fast after.
+```
+git add .
+git commit -m "First Commit"
+git push --set-upstream git@github.com:AlexcellentArt/ThriftMe.git INSERTBRANCHNAMEHERE
+```
+Setting the upstream is important if you want to push your changes to everyone else! Otherwise your branch will only exist locally and be able to be interacted with only by you!
+Always push your commits when handing off work to someone else or checking out another branch!
+
+To work on another branch and make your local repository 100% match it, enter the following in your command line:
+```
+git checkout INSERTBRANCHNAMEHERE
+```
+Once again, be sure to make your commits and push before you checkout another branch. Otherwise your changes will be stashed locally, but you will need to enter specific command lines to get them back when you switch back.
 ### Schema Notes
 Instead of: npx prisma db push
 Use: npx prisma db push --schema custom/path/to/my/schema
