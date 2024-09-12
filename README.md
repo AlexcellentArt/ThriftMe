@@ -64,18 +64,8 @@ Use: npx prisma db push --schema custom/path/to/my/schema
 This is because we are using a schema folder format!
 Make sure to end your schema with .prisma Ex: item.prisma, user.prisma
 Put your schema in the schema folder!
-START YOUR SCHEMA WITH THIS:
-```
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
+Reference this Official Prisma Example Project of Multiple File Schemas if confused:
+https://github.com/prisma/dub/tree/main/apps/web/prisma/schema
 ### Server Notes
 The following code line is in index.js and should only run on windows. If you are a Mac user and get an error because your system is trying to require dotenv, let me know and I will fix it.
 ```
