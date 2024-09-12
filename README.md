@@ -48,6 +48,16 @@ To work on another branch and make your local repository 100% match it, enter th
 git checkout INSERTBRANCHNAMEHERE
 ```
 Once again, be sure to make your commits and push before you checkout another branch. Otherwise your changes will be stashed locally, but you will need to enter specific command lines to get them back when you switch back.
+### API Setup Notes
+When working on api, run the following, but replacing APINAME_ with the api you are working on.
+```
+git checkout -b APINAME_API
+cd prisma/schema
+touch APINAME_.prisma
+cd ../..
+cd api
+touch APINAME_.js
+```
 ### Schema Notes
 Instead of: npx prisma db push
 Use: npx prisma db push --schema custom/path/to/my/schema
