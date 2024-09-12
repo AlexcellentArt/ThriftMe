@@ -55,6 +55,9 @@ Example
 ```
 color: var(--periwinkle);
 ```
+## Links
+Schema: https://excalidraw.com/#room=e1f286c406e7b47cde60,rx2xjW0JKKU-enfKHmZEvQ
+Wireframe: https://wireframepro.mockflow.com/view/ThriftShopHomePage#/page/a36a40c272df4b29ab72bd1dad7fa2ed/mode/view
 ## Rules
 1. Thou Shalt Not Commit to Main
 2. Thou Shalt Make and Work On A Clearly Named Branch
