@@ -15,13 +15,11 @@ npm install vite
 ```
 In .env
 DATABASE_URL = "postgresql://USER:@localhost:5432/prisma_intro_db"
-DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/prisma_intro_db"
 ```
 ### Setup Steps Windows Exclusive
 ```
 npm install dotenv
 In .env
-DATABASE_URL = "postgresql://USER:@localhost:5432/prisma_intro_db"
 DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/prisma_intro_db"
 ```
 ## Notes
