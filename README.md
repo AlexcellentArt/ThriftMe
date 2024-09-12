@@ -64,6 +64,7 @@ Use: npx prisma db push --schema custom/path/to/my/schema
 This is because we are using a schema folder format!
 Make sure to end your schema with .prisma Ex: item.prisma, user.prisma
 Put your schema in the schema folder!
+Be sure to capitalize your models' first letters; including after a dash. Ex: credit_card should be Credit_Card for example. Do this so that relations with schemas others are working on will instantly snap into place when we merge to main!
 Reference this Official Prisma Example Project of Multiple File Schemas if confused:
 https://github.com/prisma/dub/tree/main/apps/web/prisma/schema
 ### Server Notes
