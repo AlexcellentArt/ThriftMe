@@ -4,15 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 // use npx prisma db push --schema custom/path/to/my/schema since we are using a schema folder format!
-generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
 
 model Address {
   id Int @id @default(autoincrement()) 
