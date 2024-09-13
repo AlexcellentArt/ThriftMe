@@ -1,9 +1,11 @@
 model User {
-id Int @id @default(autoincrement())
-name String
+id Int @id @unique @default(autoincrement())
+name String // ex: Kesha
 email String
 password String
-favorites Int[]
+favorites Item[]
 past_transactions_seller Past_Transactions[] @relation("Seller")
 past_transactions_buyer Past_Transactions[] @relation("Buyer")
+browsing_history Browsing_History? // optional to account for fresh user
+shopping_cart Shopping_Cart? // optional to account for empty cart
 }
