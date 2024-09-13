@@ -48,6 +48,17 @@ To work on another branch and make your local repository 100% match it, enter th
 git checkout INSERTBRANCHNAMEHERE
 ```
 Once again, be sure to make your commits and push before you checkout another branch. Otherwise your changes will be stashed locally, but you will need to enter specific command lines to get them back when you switch back.
+
+## Updating Your Branch Notes
+To update your branch to have all the new updates from main, checkout your branch and run the following in the command line:
+```
+git pull main
+
+```
+git pull will fetch the remote main repository and then merge it with the branch you are currently on.
+
+I am not going to ask for pull requests for the branches you are all in charge of when it comes to simply updating them with stable code from main. If you want to merge your code to main though, be sure to make a pull request and move your kanban task to the review column. Once Alex or another person reviews it, they will approve the pull request.
+
 ### API Setup Notes
 When working on api, run the following, but replacing APINAME_ with the api you are working on.
 ```
@@ -81,6 +92,23 @@ color: var(--periwinkle);
 ## Links
 Schema: https://excalidraw.com/#room=e1f286c406e7b47cde60,rx2xjW0JKKU-enfKHmZEvQ
 Wireframe: https://wireframepro.mockflow.com/view/ThriftShopHomePage#/page/a36a40c272df4b29ab72bd1dad7fa2ed/mode/view
+
+## How To Make A Pull Request
+1. Go To GitHub
+2. Click On Pull Requests tab, which is in the upper left corner directly below the projects' name
+3. Look for the big green New Pull Request button on the middle left side of the screen
+4. Click it
+5. Click on your branch name
+6. Click on Create Pull Request
+7. Set Reviewers to AlexcellentArt at least
+8. Set Projects to Thrift Shop MVP
+9. Set Assignees to yourself
+10. Set a Label
+10. Write a Description of why you're wanting to merge to main and what would be changed by the merge.
+11. Write a Title
+12. Click Create Pull Request
+13. Notify Alex In Slack
+
 ## Rules
 1. Thou Shalt Not Commit to Main
 2. Thou Shalt Make and Work On A Clearly Named Branch
