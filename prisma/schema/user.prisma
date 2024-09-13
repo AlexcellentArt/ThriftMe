@@ -4,5 +4,6 @@ name String
 email String
 password String
 favorites Int[]
-past_transactions Past_Transactions @relation
+past_transactions_seller Past_Transactions[] @relation("Seller")
+past_transactions_buyer Past_Transactions[] @relation("Buyer")
 }
