@@ -16,7 +16,6 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 const init = async () => {
     await client.connect()
     console.log("CLIENT Connected")
-    await client.query(SQL)
     const port = process.env.PORT || 3000
     app.listen(port, () => console.log("listening on "+port));
 }
