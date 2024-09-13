@@ -49,6 +49,7 @@ git checkout INSERTBRANCHNAMEHERE
 ```
 Once again, be sure to make your commits and push before you checkout another branch. Otherwise your changes will be stashed locally, but you will need to enter specific command lines to get them back when you switch back.
 
+## Updating Your Branch Notes
 To update your branch to have all the new updates from main, checkout your branch and run the following in the command line:
 ```
 git pull main
@@ -91,6 +92,23 @@ color: var(--periwinkle);
 ## Links
 Schema: https://excalidraw.com/#room=e1f286c406e7b47cde60,rx2xjW0JKKU-enfKHmZEvQ
 Wireframe: https://wireframepro.mockflow.com/view/ThriftShopHomePage#/page/a36a40c272df4b29ab72bd1dad7fa2ed/mode/view
+
+## How To Make A Pull Request
+1. Go To GitHub
+2. Click On Pull Requests tab, which is in the upper left corner directly below the projects' name
+3. Look for the big green New Pull Request button on the middle left side of the screen
+4. Click it
+5. Click on your branch name
+6. Click on Create Pull Request
+7. Set Reviewers to AlexcellentArt at least
+8. Set Projects to Thrift Shop MVP
+9. Set Assignees to yourself
+10. Set a Label
+10. Write a Description of why you're wanting to merge to main and what would be changed by the merge.
+11. Write a Title
+12. Click Create Pull Request
+13. Notify Alex In Slack
+
 ## Rules
 1. Thou Shalt Not Commit to Main
 2. Thou Shalt Make and Work On A Clearly Named Branch
