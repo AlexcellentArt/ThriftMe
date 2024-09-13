@@ -1,5 +1,5 @@
 model Browsing_History{
-  id  Int @id @default (autoincrement())
+  id  Int @id @default(autoincrement())
   user_id Int
   looked_at_tags String
 }
