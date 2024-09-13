@@ -1,0 +1,20 @@
+// generator client {
+//   provider = "prisma-client-js"
+//   previewFeatures = ["prismaSchemaFolder"]
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+model Item {
+  id              Int       @id @default(autoincrement()) // Primary key with auto-increment
+  seller_id        Int       // Foreign key to the User table (automatically set when the item is posted)
+  name            String    // Name of the item, set in the add item form
+  price           Float     // Price of the item, set in the add item form
+  description     String?   // Optional detailed description of the item
+  default_photo    String    // Automatically set as the first item in the additionalPhotos array
+  additional_photos String[] // Array of additional photo URLs, set in the add item form
+  tags            String[]  // Array of tag names, set in the add item form
+}
