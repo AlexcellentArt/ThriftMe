@@ -34,6 +34,7 @@ const seed = async () => {
         additional_photos: ["https://www.billioncreation.com/wp-content/uploads/2017/10/HUNDREDSXRRSOUVSHIRT-PARENT__2.jpg"],
         tags: ["dressy", "red", "nightout"]
       }]
+      await prisma.item.createMany({ data: item });
     }
     await CreateItem();
 };
