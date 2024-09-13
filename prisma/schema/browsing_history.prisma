@@ -1,4 +1,4 @@
-model Browsing_Cart {
+model Browsing_History{
   id  Int @id @default (autoincrement())
   user_id Int
   looked_at_tags String
