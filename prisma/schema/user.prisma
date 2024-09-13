@@ -1,12 +1,14 @@
-// generator client {
-//   provider = "prisma-client-js"
-//   previewFeatures = ["prismaSchemaFolder"]
-// }
-
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
 model User {
 id Int @id @default(autoincrement())
+name String
+credit_card Credit_Card @relation(fields: [default_credit_card_id], references: [id])
+default_credit_card_id Int
+address Address @relation(fields: [default_address_id], references: [id])
+default_address_id Int
+email String
+password String
+password_hint String
+two_factor_password Boolean @default(false)
+two_factor_hint String
+favorites Int[]
 }
