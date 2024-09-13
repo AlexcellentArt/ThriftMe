@@ -1,6 +1,6 @@
 model Shopping_Cart {
   id  Int @id @default(autoincrement())
   user_id Int
-  looked_at_tags String
+  item_dict Json
   total_cost Int
 }
