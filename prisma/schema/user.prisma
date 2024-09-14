@@ -1,7 +1,7 @@
 model User {
 id Int @id @default(autoincrement())
 name String // ex: Kesha
-email String
+email String @unique
 password String
 // favorites Item[]@relation("Favorited")
 past_transactions_seller Past_Transactions[] @relation(name: "Sold") // user has sold in these transactions
