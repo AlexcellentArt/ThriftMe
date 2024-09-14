@@ -140,31 +140,37 @@ const seed = async () => {
       },
       {
         id: 7,
+        user_id:7,
         item_dict:{3:4,1:2}, // $20 Roger Rabbit Shirt x 4, $10 Hawaii Shirt x 2
         total_cost: 90,
       },
       {
         id: 8,
+        user_id:8,
         item_dict:{2:10}, // $10 Hawaii Shirt x 10
         total_cost: 100,
       },
       {
         id: 9,
+        user_id:9,
         item_dict:{2:30}, // $10 Hawaii Shirt x 30
         total_cost: 300,
       },
       {
         id: 10,
+        user_id:10,
         item_dict:{4:4}, // $100 Cool Suit x 4
         total_cost: 400,
       },
       {
         id: 11,
+        user_id:11,
         item_dict:{4:5}, // $100 Cool Suit x 5
         total_cost: 500,
       },
       {
         id: 12,
+        user_id:12,
         item_dict:{4:2}, // $100 Cool Suit x 2
         total_cost: 200,
       }
