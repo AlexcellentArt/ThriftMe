@@ -22,14 +22,13 @@ const seed = async () => {
         {seller_id:2,buyer_id:3,item_dict:{1:1},total_cost:5,tags:["shirt", "hawaii", "travel","women's activewear","men's activeware"]},
         {seller_id:1,buyer_id:6,item_dict:{4:1},total_cost:100,tags:["men's suits", "women's suits"]},
         {seller_id:3,buyer_id:6,item_dict:{1:1},total_cost:20,tags:["dressy", "red", "nightout","men's fashion"]},
-        {seller_id:1,buyer_id:5,item_dict:{4:1},total_cost:100,tags:["men's suits", "women's suits"]},
+        {seller_id:1,buyer_id:5,item_dict:{4:1},total_cost:100,tags:["men's suits", "women's suits"]}
     ];
     await prisma.user.createMany({ data: transactions });
   };
   const CreateItem = async () => {
     const item = [
       {
-        id: 1,
         seller_id: 1,
         name: "Tulum Dress",
         price: 5,
@@ -39,9 +38,7 @@ const seed = async () => {
         additional_photos: [""],
         tags: ["tulum", "summer", "dress","women's fashion"],
       },
-
       {
-        id: 2,
         seller_id: 2,
         name: "Hawaii Shirt",
         price: 10,
@@ -57,7 +54,6 @@ const seed = async () => {
       },
 
       {
-        id: 3,
         seller_id: 3,
         name: "Roger Rabbit Shirt",
         price: 20,
@@ -70,8 +66,7 @@ const seed = async () => {
         tags: ["dressy", "red", "nightout","men's fashion"],
       },
       {
-        id: 4,
-        seller_id: 1,
+        seller_id: 4,
         name: "Cool Suit",
         price: 100,
         description: "Perfect suit",
@@ -98,42 +93,36 @@ const seed = async () => {
     // ======================
     const shopping_cart = [
       {
-        id: 1,
-        user_id: 1, // User Larry
+        id: 1,// Seeded as being used by Larry
         item_dict:{3:2,1:2}, // $20 Roger Rabbit Shirt x 3 , $5 Tulum Dress x 2
         total_cost: 50,
       },
 
       {
-        id: 2,
-        user_id: 2, // User Susan
+        id: 2,// Seeded as being used by Susan
         item_dict:{1:2,2:2}, // $5 Tulum Dress x 2, $10 Hawaii Shirt x 2
         total_cost: 30,
       },
 
       {
-        id: 3,
-        user_id: 3, // User Julio
+        id: 3,// Seeded as being used by Julio
         item_dict:{1:2,3:4},// $5 Tulum Dress x 2, $20 Roger Rabbit Shirt x 4
         total_cost: 100,
       },
 
       {
-        id: 4,
-        user_id: 4, // User Laura Piglet
+        id: 4,// Seeded as being used by Piglet
         item_dict:{4:3}, // $100 Cool Suit x 3
         total_cost: 300,
       },
 
       {
-        id: 5,
-        user_id: 5, // User Melissa Cat
+        id: 5,// Seeded as being used by Melissa Cat
         item_dict:{2:10}, // $10 Hawaii Shirt x 10
         total_cost: 200,
       },
       {
-        id: 6,
-        user_id: 6, // User Roger Rabbit
+        id: 6, // Seeded as being used by User Roger Rabbit
         item_dict:{3:5,4:3}, // $20 Roger Rabbit Shirt x 5, $100 Cool Suit x 3
         total_cost: 400,
       },
@@ -169,7 +158,7 @@ const seed = async () => {
       }
     ];
 
-    await prisma.shopping_cart.createMany({ data: shopping_cart });
+    await prisma.shopping_Cart.createMany({ data: shopping_cart });
   };
 
 const CreateBrowsingHistory = async () => {
@@ -209,11 +198,11 @@ const CreateBrowsingHistory = async () => {
       looked_at_tags: ["women's suits"],
     },
   ];
-  await prisma.browsing_history.createMany({ data: browsinghistory });
+  await prisma.browsing_History.createMany({ data: browsinghistory });
 };
 await createUsers();
 await CreateItem();
-await createTransactions();
+// await createTransactions();
 await CreateBrowsingHistory();
 await CreateShoppingCart();
 console.log("SEED RAN")
