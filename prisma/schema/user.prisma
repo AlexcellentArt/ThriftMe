@@ -1,9 +1,13 @@
 model User {
 id Int @id @default(autoincrement())
-name String
-email String
+name String // ex: Kesha
+email String @unique
 password String
-favorites Int[]
-past_transactions_seller Past_Transactions[] @relation("Seller")
-past_transactions_buyer Past_Transactions[] @relation("Buyer")
+favorites Item[]@relation("Favorited")
+past_transactions_seller Past_Transactions[] @relation(name: "Sold") // user has sold in these transactions
+past_transactions_buyer Past_Transactions[] @relation(name: "Bought") // user has bought in these transactions
+
+browsing_history Browsing_History? @relation(name: "Browsing") // optional to account for fresh user
+shopping_cart Shopping_Cart? @relation(name: "Shopping") // optional to account for empty cart
+items Item[] @relation(name: "Seller") // user is the seller of these items
 }
