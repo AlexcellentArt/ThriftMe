@@ -218,12 +218,16 @@ const CreateBrowsingHistory = async () => {
   ];
   await prisma.browsing_History.createMany({ data: browsinghistory });
 };
+// all tables are created
 await createUsers();
 await CreateItem();
 await CreateBrowsingHistory();
 await CreateShoppingCart();
 await createTransactions();
-console.log("SEED RAN")
+// final step is adding favorites. For now, the first 5 items in seed are added to Melissa Cat as favorites. She is the only one who starts out with them so testing can be isolated.
+// Might need to make an explicit many to many model for this, but Alex can handle it and it is unlikely to effect operations as of now.
+prisma.user.update({where:{id:5},data:{favorite:[1]}})
+prisma.item.update({where:{id:1},data:{favorite:[1]}})
 };
 seed()
   .then(async () => await prisma.$disconnect)
