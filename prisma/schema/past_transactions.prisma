@@ -1,8 +1,8 @@
 model Past_Transactions {
 id Int @id @default(autoincrement())
-seller User @relation("Seller",fields: [seller_id], references: [id])
+seller User @relation("Sold",fields: [seller_id], references: [id])
 seller_id Int 
-buyer User @relation("Buyer",fields: [buyer_id], references: [id])
+buyer User @relation("Bought",fields: [buyer_id], references: [id])
 buyer_id Int
 item_dict Json // in format of {item_id:item_amount} which are both ints
 total_cost Int // ex: 1
