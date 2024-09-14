@@ -3,15 +3,15 @@ const seed = async () => {
   const createUsers = async () => {
     const users = [
       //Larry, Susan, and Julio simulate users who have sold and bought
-        {name:"Larry",email:"larry@Larrybird.com",password:"wordTheB1rd"},
-        {name:"Susan",email:"susan@gmail.com",password:"suzieQ"},
-        {name:"Julio",email:"jFine@gmail",password:"huD1sGuy"},
+        {name:"Larry",email:"larry@Larrybird.com",password:"wordTheB1rd",cart_id:1},
+        {name:"Susan",email:"susan@gmail.com",password:"suzieQ",cart_id:2},
+        {name:"Julio",email:"jFine@gmail",password:"huD1sGuy",cart_id:3},
         //Laura Piglet simulates someone who's only sold
-        {name:"Laura Piglet",email:"lauP@piggemail",password:"3LilPiggies"},
+        {name:"Laura Piglet",email:"lauP@piggemail",password:"3LilPiggies",cart_id:4},
         //Melissa Cat simulates someone who's only favorite'd
-        {name:"Melissa Cat",email:"mcat@meowmail",password:"lemeow"},
+        {name:"Melissa Cat",email:"mcat@meowmail",password:"lemeow",cart_id:5},
         //Roger Rabbit simulates someone who's only bought
-        {name:"Roger Rabbit",email:"rrabit@toonmail",password:"jessica"}
+        {name:"Roger Rabbit",email:"rrabit@toonmail",password:"jessica",cart_id:6}
     ];
     await prisma.user.createMany({ data: users });
   };
@@ -200,11 +200,12 @@ const CreateBrowsingHistory = async () => {
   ];
   await prisma.browsing_History.createMany({ data: browsinghistory });
 };
+
+await CreateShoppingCart();
 await createUsers();
 await CreateItem();
 // await createTransactions();
 await CreateBrowsingHistory();
-await CreateShoppingCart();
 console.log("SEED RAN")
 };
 seed()
