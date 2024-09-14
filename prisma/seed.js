@@ -3,15 +3,22 @@ const seed = async () => {
   const createUsers = async () => {
     const users = [
       //Larry, Susan, and Julio simulate users who have sold and bought
-        {name:"Larry",email:"larry@Larrybird.com",password:"wordTheB1rd",cart_id:1},
-        {name:"Susan",email:"susan@gmail.com",password:"suzieQ",cart_id:2},
-        {name:"Julio",email:"jFine@gmail",password:"huD1sGuy",cart_id:3},
+        {name:"Larry",email:"larry@Larrybird.com",password:"wordTheB1rd"},
+        {name:"Susan",email:"susan@gmail.com",password:"suzieQ"},
+        {name:"Julio",email:"jFine@gmail",password:"huD1sGuy"},
         //Laura Piglet simulates someone who's only sold
-        {name:"Laura Piglet",email:"lauP@piggemail",password:"3LilPiggies",cart_id:4},
+        {name:"Laura Piglet",email:"lauP@piggemail",password:"3LilPiggies"},
         //Melissa Cat simulates someone who's only favorite'd
-        {name:"Melissa Cat",email:"mcat@meowmail",password:"lemeow",cart_id:5},
-        //Roger Rabbit simulates someone who's only bought
-        {name:"Roger Rabbit",email:"rrabit@toonmail",password:"jessica",cart_id:6}
+        {name:"Melissa Cat",email:"mcat@meowmail",password:"lemeow"},
+        //Roger Rabbit and below simulates someone who's only bought
+        {name:"Roger Rabbit",email:"rrabit@toonmail",password:"jessica"},
+        {name:"Jessica Rabbit",email:"jrabit@toonmail",password:"r0g3r"},
+        {name:"Clara",email:"clara@gmail.com",password:"h1"},
+        {name:"Barry B Benson",email:"bbenson@gmail.com",password:"beemoviescript"},
+        {name:"Doom Guy",email:"dGuy@hellmail.arrgh",password:"RIPdaisy"},
+        {name:"Isabelle",email:"isabelle@nookazon",password:"Helpb3ll"},
+        // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible.
+        {name:"L",email:"l@l",password:"l"}
     ];
     await prisma.user.createMany({ data: users });
   };
@@ -24,7 +31,7 @@ const seed = async () => {
         {seller_id:3,buyer_id:6,item_dict:{1:1},total_cost:20,tags:["dressy", "red", "nightout","men's fashion"]},
         {seller_id:1,buyer_id:5,item_dict:{4:1},total_cost:100,tags:["men's suits", "women's suits"]}
     ];
-    await prisma.user.createMany({ data: transactions });
+    await prisma.past_Transactions.createMany({ data: transactions });
   };
   const CreateItem = async () => {
     const item = [
@@ -82,7 +89,6 @@ const seed = async () => {
   const CreateShoppingCart = async () => {
     //======================
     // shopping_cart id's 1-6 simulate users with accounts.
-    // shopping_cart id's 7-12 simulate users without accounts and thus no user_id.
     // keys in item_dict are the id of an item.
     // In the seed they are limited to:
     // ======================
@@ -93,36 +99,42 @@ const seed = async () => {
     // ======================
     const shopping_cart = [
       {
-        id: 1,// Seeded as being used by Larry
+        id: 1,
+        user_id: 1, // User Larry
         item_dict:{3:2,1:2}, // $20 Roger Rabbit Shirt x 3 , $5 Tulum Dress x 2
         total_cost: 50,
       },
 
       {
-        id: 2,// Seeded as being used by Susan
+        id: 2,
+        user_id: 2, // User Susan
         item_dict:{1:2,2:2}, // $5 Tulum Dress x 2, $10 Hawaii Shirt x 2
         total_cost: 30,
       },
 
       {
-        id: 3,// Seeded as being used by Julio
+        id: 3,
+        user_id: 3, // User Julio
         item_dict:{1:2,3:4},// $5 Tulum Dress x 2, $20 Roger Rabbit Shirt x 4
         total_cost: 100,
       },
 
       {
-        id: 4,// Seeded as being used by Piglet
+        id: 4,
+        user_id: 4, // User Laura Piglet
         item_dict:{4:3}, // $100 Cool Suit x 3
         total_cost: 300,
       },
 
       {
-        id: 5,// Seeded as being used by Melissa Cat
+        id: 5,
+        user_id: 5, // User Melissa Cat
         item_dict:{2:10}, // $10 Hawaii Shirt x 10
         total_cost: 200,
       },
       {
-        id: 6, // Seeded as being used by User Roger Rabbit
+        id: 6,
+        user_id: 6, // User Roger Rabbit
         item_dict:{3:5,4:3}, // $20 Roger Rabbit Shirt x 5, $100 Cool Suit x 3
         total_cost: 400,
       },
@@ -200,12 +212,11 @@ const CreateBrowsingHistory = async () => {
   ];
   await prisma.browsing_History.createMany({ data: browsinghistory });
 };
-
-await CreateShoppingCart();
 await createUsers();
 await CreateItem();
-// await createTransactions();
 await CreateBrowsingHistory();
+await CreateShoppingCart();
+await createTransactions();
 console.log("SEED RAN")
 };
 seed()

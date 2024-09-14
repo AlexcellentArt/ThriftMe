@@ -8,7 +8,6 @@ past_transactions_seller Past_Transactions[] @relation(name: "Sold") // user has
 past_transactions_buyer Past_Transactions[] @relation(name: "Bought") // user has bought in these transactions
 
 browsing_history Browsing_History? @relation(name: "Browsing") // optional to account for fresh user
-shopping_cart Shopping_Cart @relation("Shopping",fields: [cart_id], references: [id])
-cart_id Int @unique// optional to account for empty cart
+shopping_cart Shopping_Cart? @relation(name: "Shopping") // optional to account for empty cart
 items Item[] @relation(name: "Seller") // user is the seller of these items
 }
