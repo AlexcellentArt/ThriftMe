@@ -1,35 +1,41 @@
 const router = require("express").Router();
 module.exports = router;
+const fs = require('fs');
+
+// massive check
 
 // /api
-if ("./user".exists())
+if (fs.existsSync("./user"))
 {
     router.use("/user", require("./user"));
 }
-if ("./item".exists())
+else {
+    console.log("user does not exist")
+}
+if (fs.existsSync("./item"))
 {
     router.use("/item", require("./item"));
 }
 
-if ("./shopping_cart".exists())
+if (fs.existsSync("./shopping_cart"))
 {
     router.use("/shopping_cart", require("./shopping_cart"));
 }
 
-if ("./past_transactions".exists())
+if (fs.existsSync("./past_transactions"))
 {
     router.use("/past_transactions", require("./past_transactions"));
 }
 
-if ("./checkout".exists())
+if (fs.existsSync("./checkout"))
 {
     router.use("/checkout", require("./checkout"));
 }
-if ("./credit_card".exists())
+if (fs.existsSync("./credit_card"))
 {
     router.use("/credit_card", require("./credit_card"));
 }
-if ("./addresses".exists())
+if (fs.existsSync("./addresses"))
 {
     router.use("/addresses", require("./addresses"));
 }
