@@ -4,8 +4,9 @@ const prisma = require("../prisma");
 // ### GET ###
 
 // Gets all user
-router.get("/api/user", async (req, res, next) => {
+router.get("/all", async (req, res, next) => {
   try {
+    console.log("Ssssssss")
     const user = await prisma.user.findMany();
     res.json(user);
   } catch (error) {
@@ -13,7 +14,7 @@ router.get("/api/user", async (req, res, next) => {
   }
 });
 // Returns user matching id
-router.get("/user/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const user = await prisma.user.findUnique({ where: { id } });
@@ -27,9 +28,10 @@ router.get("/user/:id", async (req, res, next) => {
 });
 // ### POST ###
 
-router.post("/user", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const { name, email, password } = await req.body;
+    [name,email,password].forEach((input)=>{})
     // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
     // ex: if {!name} {next(genericMissingDataError("name","user"))}
     const player = await prisma.user.create({ data: { INSERT_DATA_HERE } });
@@ -41,7 +43,7 @@ router.post("/user", async (req, res, next) => {
 // ### PATCH ###
 
 // Updates user
-router.put("/user/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
@@ -73,7 +75,7 @@ router.put("/user/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes user matching id
-router.delete("/user/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
@@ -109,6 +111,13 @@ function genericMissingDataError(missingValues, forWhat = "input") {
   }
   return { status: 400, message: `${forWhat} was missing ${missingValues}.` };
 }
+function hasMissingInputs(object) {
+    const missing = []
+    for(let key in object) {
+        if (!object[key]){missing.push(key)}
+      }
+    return { status: 400, message: `${forWhat} was missing ${missingValues}.` };
+  }
 
 // Returns null if unique, otherwise an error message
 async function isNotUnique(table, key, value) {
