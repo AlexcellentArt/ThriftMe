@@ -14,38 +14,52 @@ router.get("/", async (req, res, next) => {
   }
 });
 // Returns past_transaction matching id
-router.get("/:id", async (req, res, next) => {
+router.get("/:userId/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
+    const userId = +req.params.userId
     const past_transaction = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!past_transaction) {
       return next(genericNotFoundError("past_transaction", "id", id));
     }
-    res.json(past_transaction);
+    if (past_transaction.buyer_id === userId
+        || past_transaction.seller_id === userId){res.json(past_transaction);}
+    else(next({
+        status: 403,
+        message: `You were not involved in that transaction and cannot see it.`,
+      }))
   } catch (error) {
     next(error);
   }
 });
+// Returns transaction user was involved in as seller or buyer
+router.get("/:userId", async (req, res, next) => {
+    try {
+        console.log("aaaaaaaaaa")
+      const id = +req.params.userId;
+      const past_transaction = await prisma.past_Transactions.findMany({ where: {buyer_id:id} });
+      past_transaction.concat(await prisma.past_Transactions.findMany({ where: {buyer_id:id} }))
+      console.log(past_transaction)
+      if (!past_transaction) {
+        return next(genericNotFoundError("past_transaction", "id", id));
+      }
+      res.json(past_transaction);
+    } catch (error) {
+      next(error);
+    }
+  });
 // ### POST ###
 
 router.post("/", async (req, res, next) => {
   try {
-    const inputs = { name, email, password } = await req.body;
-    // [name,email,password].forEach((input)=>{})
-    // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
-    // ex: if {!name} {next(genericMissingDataError("name","past_transaction"))}
-    console.log(inputs)
-    // const obj = {"name":name,"email":email,"password":password}
-    //"password":null
-    const missing = hasMissingInputs(inputs,["name", "email", "password"],"past_transaction")
+    const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
+    console.log(body)
+    const missing = hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","tags"],"transaction")
     if (missing){
+        console.log(missing)
         next(missing)
     }
-    // const lengthViolations = hasLengthViolations()
-    // if (lengthViolations){}
-    const notUnique = await isNotUnique("past_transaction","email",email);
-    if (notUnique) {next(notUnique)}
-    const past_transaction = await prisma.past_Transactions.create({ data: inputs });
+    const past_transaction = await prisma.past_Transactions.create({ data: body });
     res.json(past_transaction);
   } catch (error) {
     next(error);
@@ -61,20 +75,10 @@ router.put("/:id", async (req, res, next) => {
     if (!exists) {
       return next(genericNotFoundError("past_transaction", "id", id));
     }
-    console.log("not unique reached")
-    const body = { name, email, password } = await req.body;
-    // checking if not already set to that.
-    if (past_transaction.name != name) {
-        body["name"] = name;
-    }
-    if (past_transaction.email != email) {
-      const notUnique = await isNotUnique("past_transaction","email",email);
-      if (notUnique) {next(notUnique)}
-    }
-    if (past_transaction.password != password) {
-        body["password"] = password;
-    }
-    console.log("update")
+    const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
+    // // verify existence of participants
+    // const buyer = await prisma.past_Transactions.findUnique({ where: { id } });
+    // const seller = await prisma.past_Transactions.findUnique({ where: { id } });
     const past_transaction = await prisma.past_Transactions.update({
       where: { id },
       data: body,
