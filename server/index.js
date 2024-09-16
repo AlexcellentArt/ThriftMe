@@ -16,7 +16,7 @@ app.use("/api",require("../api"));
 
 // error handling middleware
 app.use((error,req,res,next)=>{
-    res.status(res.status||500).send({error:error})
+    res.status(Math.floor((res.status))||500).send({error:error})
 })
 // distribution path setup
 const path = require('path');
