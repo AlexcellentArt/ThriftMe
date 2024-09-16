@@ -163,7 +163,7 @@ async function isNotUnique(table, key, value) {
   if (alreadyUsed) {
     return {
       status: 422,
-      message: `Another ${lookedFor} is using ${value} as a ${key}.`,
+      message: `Another ${table} is using ${value} as a ${key}.`,
     };
   }
   return null;
