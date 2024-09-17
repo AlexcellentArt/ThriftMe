@@ -35,11 +35,9 @@ router.get("/:userId/:id", async (req, res, next) => {
 // Returns transaction user was involved in as seller or buyer
 router.get("/:userId", async (req, res, next) => {
     try {
-        console.log("aaaaaaaaaa")
       const id = +req.params.userId;
       const past_transaction = await prisma.past_Transactions.findMany({ where: {buyer_id:id} });
-      past_transaction.concat(await prisma.past_Transactions.findMany({ where: {buyer_id:id} }))
-      console.log(past_transaction)
+      past_transaction.concat(await prisma.past_Transactions.findMany({ where: {seller_id:id} }))
       if (!past_transaction) {
         return next(genericNotFoundError("past_transaction", "id", id));
       }
@@ -76,9 +74,6 @@ router.put("/:id", async (req, res, next) => {
       return next(genericNotFoundError("past_transaction", "id", id));
     }
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
-    // // verify existence of participants
-    // const buyer = await prisma.past_Transactions.findUnique({ where: { id } });
-    // const seller = await prisma.past_Transactions.findUnique({ where: { id } });
     const past_transaction = await prisma.past_Transactions.update({
       where: { id },
       data: body,

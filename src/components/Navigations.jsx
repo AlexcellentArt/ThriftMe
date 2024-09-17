@@ -8,14 +8,14 @@ function Navigations({handleLogout }) {
 
   const handleLogoutClick = () => {
     handleLogout();
-    navigate("/products");
+    navigate("/home");
   };
 
   return (
     <nav id="navBar">
       <ul>
         <li className="navLinks">
-          <Link to="/products">Home</Link>
+          <Link to="/home">Home</Link>
         </li>
         {!token ? (
           <>
