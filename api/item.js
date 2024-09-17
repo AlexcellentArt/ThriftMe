@@ -13,7 +13,7 @@ const prisma = require("../prisma");
 // ### GET ###
 
 // Gets all item
-router.get("/all", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
     try {
       const item = await prisma.item.findMany();
       res.json(item);
@@ -38,7 +38,7 @@ router.get("/all", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-      const inputs = { name, price, description } = await req.body;
+      const inputs = { name, price, description, default_photo, additional_photos, tags } = await req.body;
       //>REPLACED_WITH_WHAT_DATA_YOU_WANT inserted {name, price, description}
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
@@ -67,13 +67,18 @@ router.post("/", async (req, res, next) => {
       if (!exists) {
         return next(genericNotFoundError("item","id",id));
       }
-		const { name, price, description } = await req.body;
+		const inputData = { name, price, description, default_photo, additional_photos, tags } = await req.body;
         //>REPLACE_WITH_WHAT_DATA_YOU_WANT inserted inserted {name, price, description}
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
+
+      // const missing = hasMissingInputs(inputs,["name", "price", "description"],"item")
+      // if (missing){
+      //     next(missing)
+      // }
       const item = await prisma.item.update({
         where: { id },
-        data: { INSERT_DATA_HERE },
+        data:  inputData ,
       });
       res.json(item);
     } catch(error) {
