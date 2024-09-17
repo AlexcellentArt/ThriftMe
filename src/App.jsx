@@ -14,6 +14,9 @@ import AdminDashboard from './components/AdminDashboard';
 */
 
 function App() {
+  const [token, setToken] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   return (
     <BrowserRouter>
       <header>
@@ -32,14 +35,21 @@ function App() {
 
           <Route path="/products/:id" element={<SingleProduct />} />
 
-          <Route path="/cart" element={<Navigate to="/products" />} />
+          <Route path="/cart" element={<Cart />} />
 
-          <Route path="/checkout" element={<Navigate to="/products" />} />
+          {/* Only logged-in users can check out */}
+          <Route
+            path="/checkout"
+            element={
+              token ? <Checkout token={token} /> : <Navigate to="/login" />
+            }
+          />
 
           <Route path="/login" element={<Login setToken={setToken} />} />
 
           <Route path="/register" element={<Register setToken={setToken} />} />
 
+          {/* Only logged-in users can view their account */}
           <Route
             path="/account"
             element={
