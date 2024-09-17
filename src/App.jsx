@@ -45,6 +45,17 @@ function App() {
             }
           />
 
+          <Route
+            path="/order/:id"
+            element={
+              token ? (
+                <OrderConfirmation token={token} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
           <Route path="/login" element={<Login setToken={setToken} />} />
 
           <Route path="/register" element={<Register setToken={setToken} />} />
