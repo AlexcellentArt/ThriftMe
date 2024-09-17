@@ -1,9 +1,7 @@
 import thriftmeLogo from "/src/assets/ThriftMeLogo.svg";
 import "./App.css";
 import { Routes, Route, Navigate,BrowserRouter } from "react-router-dom";
-import { TokenContextProvider } from './components/TokenContextProvider'
 import { useContext, useState } from "react";
-import { TokenContext } from "./components/TokenContext";
 import Navigations from "./components/Navigations";
 /*
 import Products from './components/Products';
@@ -18,17 +16,15 @@ import AdminDashboard from './components/AdminDashboard';
 */
 
 function App() {
-  const {token, setToken} = useContext(TokenContext);
   const [isAdmin, setIsAdmin] = useState(false);
 
   return (
-    <TokenContextProvider>
     <BrowserRouter>
       <header>
         <div>
           <img src={thriftmeLogo} className="logo hover" alt="ThriftMe logo" />
         </div>
-        <Navigations token={token} />
+        <Navigations/>
       </header>
 
       <main>
@@ -87,7 +83,6 @@ function App() {
         </Routes>
       </main>
     </BrowserRouter>
-    </TokenContextProvider>
   );
 }
 
