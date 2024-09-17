@@ -1,19 +1,21 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
-function Navigations({ token, handleLogout }) {
+import { TokenContext } from "./TokenContext";
+import { useContext } from "react";
+function Navigations() {
+  const {token, setToken} = useContext(TokenContext);
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
     handleLogout();
-    navigate("/products");
+    navigate("/home");
   };
 
   return (
     <nav id="navBar">
       <ul>
         <li className="navLinks">
-          <Link to="/products">Home</Link>
+          <Link to="/home">Home</Link>
         </li>
         {!token ? (
           <>
