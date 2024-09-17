@@ -42,6 +42,13 @@ router.post("/", async (req, res, next) => {
       //>REPLACED_WITH_WHAT_DATA_YOU_WANT inserted {name, price, description}
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
+      console.log(inputs)
+
+      const missing = hasMissingInputs(inputs,["name", "price", "description"],"item")
+    if (missing){
+        next(missing)
+    }
+  
       const item = await prisma.item.create({ data: inputs });
       //>INSERT_DATA_HERE inserted inputs
       res.json(item);
