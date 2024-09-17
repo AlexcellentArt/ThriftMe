@@ -37,7 +37,8 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-      const { REPLACE_WITH_WHAT_DATA_YOU_WANT } = await req.body;
+      const { name, price, description } = await req.body;
+      //>REPLACED_WITH_WHAT_DATA_YOU_WANT inserted {name, price, description}
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
       const item = await prisma.item.create({ data: {INSERT_DATA_HERE}});
@@ -57,7 +58,8 @@ router.post("/", async (req, res, next) => {
       if (!exists) {
         return next(genericNotFoundError("item","id",id));
       }
-		const { REPLACE_WITH_WHAT_DATA_YOU_WANT } = await req.body;
+		const { name, price, description } = await req.body;
+        //>REPLACE_WITH_WHAT_DATA_YOU_WANT inserted inserted {name, price, description}
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
       const item = await prisma.item.update({
