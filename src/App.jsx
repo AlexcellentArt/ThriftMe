@@ -3,7 +3,7 @@ import "./App.css";
 import { Routes, Route, Navigate,BrowserRouter } from "react-router-dom";
 import { useContext, useState } from "react";
 import Navigations from "./components/Navigations";
-/*
+import Home from './components/Home';
 import Products from './components/Products';
 import SingleProduct from './components/SingleProduct';
 import Cart from './components/Cart';
@@ -13,11 +13,10 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
 import AdminDashboard from './components/AdminDashboard';
-*/
-
+import { TokenContext } from "./TokenContext";
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
-
+  const {token, setToken} = useContext(TokenContext);
   return (
     <BrowserRouter>
       <header>
@@ -30,47 +29,47 @@ function App() {
       <main>
         <p>Site To Be Built</p>
         <Routes>
-          {/* <Route path="/" element={<Navigate to="/products" />} />
+          <Route path="/" element={<Navigate to="/products" />} />
 
           <Route path="/products" element={<Products />} />
 
           <Route path="/products/:id" element={<SingleProduct />} />
 
-          <Route path="/cart" element={<Cart />} /> */}
+          <Route path="/cart" element={<Cart />} />
 
           {/* Only logged-in users can check out */}
-          {/* <Route
+          <Route
             path="/checkout"
             element={
-              token ? <Checkout token={token} /> : <Navigate to="/login" />
+              token ? <Checkout/> : <Navigate to="/login" />
             }
-          /> */}
+          />
 
-          {/* <Route
+          <Route
             path="/order/:id"
             element={
               token ? (
-                <OrderConfirmation token={token} />
+                <OrderConfirmation/>
               ) : (
                 <Navigate to="/login" />
               )
             }
           />
 
-          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/login" element={<Login/>} />
 
-          <Route path="/register" element={<Register setToken={setToken} />} /> */}
+          <Route path="/register" element={<Register/>} />
 
           {/* Only logged-in users can view their account */}
-          {/* <Route
+          <Route
             path="/account"
             element={
               token ? <Account token={token} /> : <Navigate to="/login" />
             }
-          /> */}
+          />
 
           {/* admin route */}
-          {/* <Route
+          <Route
             path="/admin"
             element={
               isAdmin ? (
@@ -79,7 +78,7 @@ function App() {
                 <Navigate to="/login" />
               )
             }
-          /> */}
+          />
         </Routes>
       </main>
     </BrowserRouter>
