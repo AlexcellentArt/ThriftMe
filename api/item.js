@@ -5,14 +5,15 @@ const prisma = require("../prisma");
 
 // THINGS TO REPLACE TO GET FUNCTIONAL:
 
-// item using ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
-// INSERT_DATA_HERE: replace with the data being sent to table in a post or update func.  EXAMPLE: {name:"Kelly","email":"kelly@gmail", "password":"kellyRulez"}
-// REPLACE_WITH_WHAT_DATA_YOU_WANT: replace with the data you want deconstructed out of req.body  EXAMPLE: {name,email,password}
-// THE PATHS: I left them blank so you could structure them as needed.
+//#1 item using ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
+//#2 INSERT_DATA_HERE: replace with the data being sent to table in a post or update func.  EXAMPLE: {name:"Kelly","email":"kelly@gmail", "password":"kellyRulez"}
+//#3 REPLACE_WITH_WHAT_DATA_YOU_WANT: replace with the data you want deconstructed out of req.body  EXAMPLE: {name,email,password}
+//#4 THE PATHS: I left them blank so you could structure them as needed.
+
 // ### GET ###
 
 // Gets all item
-router.get("/", async (req, res, next) => {
+router.get("/all", async (req, res, next) => {
     try {
       const item = await prisma.item.findMany();
       res.json(item);
@@ -37,11 +38,12 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-      const { name, price, description } = await req.body;
+      const inputs = { name, price, description } = await req.body;
       //>REPLACED_WITH_WHAT_DATA_YOU_WANT inserted {name, price, description}
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
-      const item = await prisma.item.create({ data: {INSERT_DATA_HERE}});
+      const item = await prisma.item.create({ data: inputs });
+      //>INSERT_DATA_HERE inserted inputs
       res.json(item);
     } catch (error) {
       next(error)
