@@ -42,8 +42,8 @@ router.post("/", async (req, res, next) => {
     }
     // const lengthViolations = hasLengthViolations()
     // if (lengthViolations){}
-    const notUnique = await isNotUnique("user","email",email);
-    if (notUnique) {next(notUnique)}
+    // const notUnique = await isNotUnique("user","email",email);
+    // if (notUnique) {next(notUnique)}
     const user = await prisma.user.create({ data: inputs });
     res.json(user);
   } catch (error) {

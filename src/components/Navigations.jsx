@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
-function Navigations({ token, handleLogout }) {
+import { TokenContext } from "./TokenContext";
+import { useContext } from "react";
+function Navigations({ handleLogout }) {
+  const {token, setToken} = useContext(TokenContext);
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {

@@ -117,5 +117,6 @@ Wireframe: https://wireframepro.mockflow.com/view/ThriftShopHomePage#/page/a36a4
 5. Thou Shalt Make Frequent Small Commits In Case Of Reversions Being Needed
 6. Thou Shalt Not Install New Modules Without Prior Discussion
 7. Thou Shalt Not Commit Modifications to package.json Without Discussion
+8. Thou Shalt Test Thy API Paths Before Merging To Main
 
 Violations of these sacred commandments will result in a flood of sad cat GIF being sent your way. In the event of such violations, the resultant merge issues will be fixed by the violator and Alex.
