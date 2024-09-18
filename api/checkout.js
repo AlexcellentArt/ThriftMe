@@ -1,6 +1,9 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
+import {hasLengthViolations,isNotUnique,hasMissingInputs,genericNotFoundError,hasMissingInputs} from "./helpers/gen_errors"
+// THIS MIGHT BE ABLE TO BE HANDLED BY STRIPE AND WE CAN DELETE THIS.
+
 // ### GET ###
 
 // Gets all items in shopping cart
