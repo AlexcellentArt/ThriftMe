@@ -1,7 +1,7 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
-import {hasLengthViolations,isNotUnique,hasMissingInputs,genericNotFoundError,hasMissingInputs} from "./helpers/gen_errors"
+const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all user
@@ -19,7 +19,7 @@ router.get("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
-      return next(genericNotFoundError("user", "id", id));
+      return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     res.json(user);
   } catch (error) {
@@ -37,13 +37,13 @@ router.post("/", async (req, res, next) => {
     console.log(inputs)
     // const obj = {"name":name,"email":email,"password":password}
     //"password":null
-    const missing = hasMissingInputs(inputs,["name", "email", "password"],"user")
+    const missing = gen_errors.hasMissingInputs(inputs,["name", "email", "password"],"user")
     if (missing){
         next(missing)
     }
-    // const lengthViolations = hasLengthViolations()
+    // const lengthViolations = gen_errors.hasLengthViolations()
     // if (lengthViolations){}
-    // const notUnique = await isNotUnique("user","email",email);
+    // const notUnique = await gen_errors.isNotUnique("user","email",email);
     // if (notUnique) {next(notUnique)}
     const user = await prisma.user.create({ data: inputs });
     res.json(user);
@@ -51,7 +51,7 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-// ### PATCH ###
+// ### PUT ###
 
 // Updates user
 router.put("/:id", async (req, res, next) => {
@@ -59,7 +59,7 @@ router.put("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("user", "id", id));
+      return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     console.log("not unique reached")
     const body = { name, email, password } = await req.body;
@@ -68,7 +68,7 @@ router.put("/:id", async (req, res, next) => {
         body["name"] = name;
     }
     if (user.email != email) {
-      const notUnique = await isNotUnique("user","email",email);
+      const notUnique = await gen_errors.isNotUnique("user","email",email);
       if (notUnique) {next(notUnique)}
     }
     if (user.password != password) {
@@ -92,7 +92,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("user", "id", id));
+      return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     await prisma.user.delete({ where: { id } });
     res.sendStatus(204);
