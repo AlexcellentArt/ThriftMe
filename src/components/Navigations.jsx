@@ -20,7 +20,7 @@ function Navigations() {
         </li>
         {!token ? (
           <>
-            <li>
+            <li className="navSearch">
               <SearchBar/>
             </li>
             <li className="navLinks">

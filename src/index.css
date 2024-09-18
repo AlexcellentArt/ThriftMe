@@ -91,16 +91,21 @@ header,footer{
 }
 footer{height: 5vh;}
 #navBar{
-  display: inherit;
+  /* display: inherit;
   flex-direction: inherit;
   place-items: inherit;
+  width: 100%; */
   width: 100%;
-  ul{ display: flex;
+  ul{ width: 100%; display: flex;
     flex-direction: inherit;
-    gap: 3vw;
-  place-items: center space-evenly;
-margin: 0;}
+    gap: 0.1vw;
+  place-items: center stretch;
+  text-align: center;
+margin: 0; 
 }
+.navLinks{flex:1}
+.navSearch{flex:2}
+.search-bar{input{width: 70%;}button{width: 10%; background-color: var(--periwinkle); color: var(--yinmn-blue); font-size: larger; align-content: center;} button:nth-of-type(2)::before{content:'\1F50E'; }}
 .merriweather-light {
   font-family: "Merriweather", serif;
   font-weight: 300;
