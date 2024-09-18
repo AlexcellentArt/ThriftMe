@@ -1,7 +1,9 @@
 import thriftmeLogo from "/src/assets/ThriftMeLogo.svg";
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
-/* import Navigations from "./components/Navigations";
+import { Routes, Route, Navigate,BrowserRouter } from "react-router-dom";
+import { useContext, useState } from "react";
+import Navigations from "./components/Navigations";
+import Home from './components/Home';
 import Products from './components/Products';
 import SingleProduct from './components/SingleProduct';
 import Cart from './components/Cart';
@@ -11,25 +13,17 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
 import AdminDashboard from './components/AdminDashboard';
-*/
-
+import PageWrapper from "./components/PageWrapper.jsx";
+import { AuthContextProvider,AuthContext } from "./components/AuthContext.jsx";
 function App() {
-  const [token, setToken] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-
+  const {token,isAdmin} = useContext(AuthContext);
   return (
+    <AuthContextProvider>
     <BrowserRouter>
-      <header>
-        <div>
-          <img src={thriftmeLogo} className="logo hover" alt="ThriftMe logo" />
-        </div>
-        <Navigations token={token} />
-      </header>
-
-      <main>
-        <p>Site To Be Built</p>
+    <PageWrapper>
         <Routes>
-          <Route path="/" element={<Navigate to="/products" />} />
+          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/home" element={<Home />} />
 
           <Route path="/products" element={<Products />} />
 
@@ -41,7 +35,7 @@ function App() {
           <Route
             path="/checkout"
             element={
-              token ? <Checkout token={token} /> : <Navigate to="/login" />
+              token ? <Checkout/> : <Navigate to="/login" />
             }
           />
 
@@ -49,16 +43,16 @@ function App() {
             path="/order/:id"
             element={
               token ? (
-                <OrderConfirmation token={token} />
+                <OrderConfirmation/>
               ) : (
                 <Navigate to="/login" />
               )
             }
           />
 
-          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/login" element={<Login/>} />
 
-          <Route path="/register" element={<Register setToken={setToken} />} />
+          <Route path="/register" element={<Register/>} />
 
           {/* Only logged-in users can view their account */}
           <Route
@@ -80,8 +74,9 @@ function App() {
             }
           />
         </Routes>
-      </main>
+      </PageWrapper>
     </BrowserRouter>
+    </AuthContextProvider>
   );
 }
 

@@ -1,17 +1,9 @@
---root{
-  /* ThriftMe Color Pallette */
-  --delft-blue: #353e68ff;
-  --yinmn-blue: #4e598cff;
-  --periwinkle: #c5cdf2ff;
-  --white: #ffffffff;
-  --black: #000000ff;
-  --fairy-tale: #f2c5e2ff;
-}
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  place-items: center stretch;
+  width: 100%;
+  height: 100%;
 }
 
 .logo {
