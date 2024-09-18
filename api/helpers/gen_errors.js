@@ -9,7 +9,7 @@ module.exports = {
   genericViolationDataError,
   hasMissingInputs,
   hasLengthViolations,
-  isNotUnique,
+  isNotUnique,isNotType
 };
 /**
  * @function ifArrayFormatToString
@@ -81,7 +81,7 @@ function genericViolationDataError(values, violation, forWhat = "input") {
   missingValues = ifArrayFormatToString(values);
   return {
     status: 400,
-    message: `${forWhat}'s ${values} is too ${violation}.`,
+    message: `${forWhat}'s ${values} is ${violation}.`,
   };
 }
 /**
@@ -162,4 +162,9 @@ async function isNotUnique(table, key, value) {
     };
   }
   return null;
+}
+function isNotType(label,value,type="string",whatFor="input"){
+  if(!typeof value === type.toLowerCase()){
+    return genericViolationDataError(label,`not a ${type}`,whatFor)
+  }
 }

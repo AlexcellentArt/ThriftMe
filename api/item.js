@@ -2,7 +2,8 @@ const router = require("express").Router();
 module.exports = router;
 
 const prisma = require("../prisma");
-import {hasMissingInputs,genericNotFoundError,hasMissingInputs} from "./helpers/gen_errors"
+import { text } from "express";
+import {hasMissingInputs,genericNotFoundError,hasMissingInputs, isNotType} from "./helpers/gen_errors"
 // THINGS TO REPLACE TO GET FUNCTIONAL:
 
 //#1 item using ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
@@ -34,6 +35,46 @@ router.get("/", async (req, res, next) => {
         next(error);
         }
   });
+// get search, filtered or otherwise
+router.get("/search", async (req, res, next) => {
+  try {
+    const { search_text, tags } = await req.body;
+    // check if text and tags are a string and string array respectively
+    const isSearchText = isNotType("search_text",search_text,"string","search")
+    if (isSearchText)
+    {
+      return isSearchText
+    }
+    const isTagsStringArray = isNotType("search_text",tags[0],"string","search")
+    if (isTagsStringArray)
+    {
+      return isTagsStringArray
+    }
+    // if no search_text or tags, return all items
+    if (search_text = "" && tags.length === 0){
+      const item = await prisma.item.findMany();
+      res.json(item);
+      //return genericMissingDataError(["text","tags"],"search")
+      }
+      const getFiltered = await prisma.item.findMany({
+        where: {
+          name: {
+            string_contains: search_text
+          },
+          tags:{
+            array_contains: tags,
+          }
+        },
+      })
+    const item = await prisma.item.findUnique({ where: { id } });
+    if (!item) {
+      return next(genericNotFoundError("item","id",id));
+    }
+    res.json(item);
+  } catch(error) {
+      next(error);
+      }
+});
 // ### POST ###
 
 router.post("/", async (req, res, next) => {
