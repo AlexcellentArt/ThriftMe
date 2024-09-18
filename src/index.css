@@ -1,4 +1,3 @@
-
 :root {
   /* ThriftMe Color Pallette */
   --delft-blue: #353e68ff;
@@ -7,6 +6,7 @@
   --white: #ffffffff;
   --black: #000000ff;
   --fairy-tale: #f2c5e2ff;
+  --pill-shape: 5% /50%;
   font-family: Merriweather, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -26,6 +26,7 @@ a {
   color: var(--periwinkle);
   text-decoration: inherit;
 }
+
 a:hover {
   color: var(--white);
   font-weight: bolder;
@@ -47,19 +48,23 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid var(--delft-blue);
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  height: 100%;
+  width: 100%;
+  /* padding: 0.5em; */
+  font-size: 5%;
   font-weight: 500;
   font-family: inherit;
   background-color: var(--yinmn-blue);
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: var(--yinmn-blue);
   background-color: var(--periwinkle);
   color: var(--white);
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -70,17 +75,28 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
     font-weight: bolder;
   }
+
   button {
     background-color: #f9f9f9;
   }
 }
-main { display: flex;   flex-direction: column;
-  place-items: center stretch; background-color: var(--white); height: 85vh; width: 100vw;}
-header,footer{
+
+main {
+  display: flex;
+  flex-direction: column;
+  place-items: center stretch;
+  background-color: var(--white);
+  height: 85vh;
+  width: 100vw;
+}
+
+header,
+footer {
   color: var(--white);
   background-color: var(--yinmn-blue);
   height: 10vh;
@@ -89,23 +105,111 @@ header,footer{
   place-items: center stretch;
   text-align: center;
 }
-footer{height: 5vh;}
-#navBar{
+
+footer {
+  height: 5vh;
+}
+
+#navBar {
   /* display: inherit;
   flex-direction: inherit;
   place-items: inherit;
   width: 100%; */
   width: 100%;
-  ul{ width: 100%; display: flex;
+
+  ul {
+    width: 100%;
+    display: flex;
     flex-direction: inherit;
-    gap: 0.1vw;
-  place-items: center stretch;
-  text-align: center;
-margin: 0; 
+    gap: 1vw;
+    place-items: center stretch;
+    text-align: center;
+    margin: 0;
+  }
 }
-.navLinks{flex:1}
-.navSearch{flex:2}
-.search-bar{input{width: 70%;}button{width: 10%; background-color: var(--periwinkle); color: var(--yinmn-blue); font-size: larger; align-content: center;} button:nth-of-type(2)::before{content:'\1F50E'; }}
+
+.navLinks {
+  flex: 1
+}
+
+.navSearch {
+  flex: 2
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--white);
+  border-radius: var(--pill-shape);
+  input {
+    width: 90%;
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--black);
+  }
+  form{
+    input:nth-of-type(1){
+      background-color: var(--fairy-tale);
+    }
+    input:nth-of-type(2){
+      background-color: var(--yinmn-blue);
+      color: var(--periwinkle);
+    }
+  }
+  
+
+  button {
+    width: 10%;
+    background-color: var(--periwinkle);
+    color: var(--yinmn-blue);
+    font-size: larger;
+    align-content: center;
+  }
+
+  button {
+    height: 3em;
+  }
+
+  button:nth-of-type(1) {
+    border-radius: 50% 100% 100% 50%;
+    padding: 0.2em 0.01em;
+  }
+
+  button:nth-of-type(2)::before {
+    content: '\1F50E';
+  }
+
+  div {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.tag {
+  flex-direction: column;
+  place-items: center;
+  color: var(--delft-blue);
+  background-color: var(--periwinkle);
+  border-radius: 50%/100%;
+
+  button {
+    width: 100%;
+    margin: 0;
+    padding: 0.1;
+    border-color: transparent;
+    background-color: transparent;
+  }
+}
+span:nth-of-type(even){
+  .tag{
+    background-color: var(--fairy-tale);
+  }
+}
+
+.transparent {
+  border: transparent;
+  background-color: transparent;
+}
 .merriweather-light {
   font-family: "Merriweather", serif;
   font-weight: 300;
