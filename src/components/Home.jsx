@@ -1,5 +1,5 @@
 function Home() {
-    return (<div>TBM</div>);
+    return (<div>HOME PAGE</div>);
 }
 
 export default Home;

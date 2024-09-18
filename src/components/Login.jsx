@@ -1,8 +1,8 @@
-import { TokenContext } from "./TokenContext";
+import { AuthContext } from "./AuthContext";
 import { useContext,useState} from "react";
 function Login() {
-    const {token, setToken} = useContext(TokenContext);
-    return (<div>TBM</div>);
+    const {token,login} = useContext(AuthContext);
+    return (<div>LOGIN</div>);
 }
 
 export default Login;

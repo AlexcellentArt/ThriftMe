@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TokenContext } from "./TokenContext";
+import { AuthContext } from "./AuthContext";
 import { useContext } from "react";
+import SearchBar from "./SearchBar";
 
 function Navigations() {
-  const {token, setToken} = useContext(TokenContext);
+  const {token,isAdmin,logout} = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    setToken(null)
+    logout()
     navigate("/home");
   };
 
@@ -19,6 +20,9 @@ function Navigations() {
         </li>
         {!token ? (
           <>
+            <li>
+              <SearchBar/>
+            </li>
             <li className="navLinks">
               <Link to="/login">Login</Link>
             </li>
@@ -36,7 +40,9 @@ function Navigations() {
             <li className="navLinks">
               <Link to="/cart">Cart</Link>
             </li>
-
+            <li>
+              <SearchBar/>
+            </li>
             {/* if user is admin then this will show: */}
             {isAdmin && (
               <li className="navLinks">

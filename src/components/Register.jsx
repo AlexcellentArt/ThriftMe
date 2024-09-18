@@ -1,7 +1,7 @@
-import { TokenContext } from "./TokenContext";
+import { AuthContext } from "./AuthContext";
 import { useContext } from "react";
 function Register() {
-    const {token, setToken} = useContext(TokenContext);
+    const {token} = useContext(AuthContext);
     return (<div>TBM</div>);
 }
 

@@ -1,5 +1,6 @@
+import { useContext,useState} from "react";
 function Cart() {
-    return (<div>TBM</div>);
+    return (<div>CART</div>);
 }
 
 export default Cart;

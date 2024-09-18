@@ -1,5 +1,5 @@
 function Account() {
-    return (<div>TBM</div>);
+    return (<div>ACCOUNT</div>);
 }
 
 export default Account;

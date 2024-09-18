@@ -1,6 +1,6 @@
 import { AuthContext } from "./AuthContext";
 import { useContext } from "react";
-function SingleProduct() {
+function SearchBar() {
     // setState searchTags, should be an array of strings
     const {token} = useContext(AuthContext);
     // You are gonna want an input type search inside the div. Next to it you are gonna want a button with # inside it.
@@ -9,4 +9,4 @@ function SingleProduct() {
     return (<div>TBM</div>);
 }
 
-export default SingleProduct;
+export default SearchBar;

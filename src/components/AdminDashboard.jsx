@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { TokenContext } from "./TokenContext";
-import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
+import { useContext,useState } from "react";
 function AdminDashboard() {
-    const {token, setToken} = useContext(TokenContext);
+    const {token, isAdmin} = useContext(AuthContext);
     const navigate = useNavigate();
-    return (<div>TBM</div>);
+    return (<div>ADMIN DASHBOARD</div>);
 }
 
 export default AdminDashboard;
