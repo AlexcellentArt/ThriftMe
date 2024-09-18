@@ -1,7 +1,8 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
-import {hasMissingInputs,genericNotFoundError,hasMissingInputs} from "./helpers/gen_errors"
+
+const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all past_transactions
@@ -21,7 +22,7 @@ router.get("/:userId/:id", async (req, res, next) => {
     const userId = +req.params.userId
     const past_transaction = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!past_transaction) {
-      return next(genericNotFoundError("past_transaction", "id", id));
+      return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     if (past_transaction.buyer_id === userId
         || past_transaction.seller_id === userId){res.json(past_transaction);}
@@ -40,7 +41,7 @@ router.get("/:userId", async (req, res, next) => {
       const past_transaction = await prisma.past_Transactions.findMany({ where: {buyer_id:id} });
       past_transaction.concat(await prisma.past_Transactions.findMany({ where: {seller_id:id} }))
       if (!past_transaction) {
-        return next(genericNotFoundError("past_transaction", "id", id));
+        return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
       }
       res.json(past_transaction);
     } catch (error) {
@@ -53,7 +54,7 @@ router.post("/", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     console.log(body)
-    const missing = hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","tags"],"transaction")
+    const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","tags"],"transaction")
     if (missing){
         console.log(missing)
         next(missing)
@@ -64,7 +65,7 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-// ### PATCH ###
+// ### PUT ###
 
 // Updates past_transaction
 router.put("/:id", async (req, res, next) => {
@@ -72,7 +73,7 @@ router.put("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("past_transaction", "id", id));
+      return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     const past_transaction = await prisma.past_Transactions.update({
@@ -92,7 +93,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("past_transaction", "id", id));
+      return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     await prisma.past_Transactions.delete({ where: { id } });
     res.sendStatus(204);

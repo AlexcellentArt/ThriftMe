@@ -2,7 +2,7 @@ const router = require("express").Router();
 module.exports = router;
 
 const prisma = require("../prisma");
-import {hasMissingInputs,genericNotFoundError,hasMissingInputs} from "./helpers/gen_errors"
+const gen_errors = require("./helpers/gen_errors.js")
 // THINGS TO REPLACE TO GET FUNCTIONAL:
 
 // REPLACE_THIS_WITH_MODEL_NAME using ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
@@ -26,7 +26,7 @@ router.get("/", async (req, res, next) => {
       const id = +req.params.id;
       const REPLACE_THIS_WITH_MODEL_NAME = await prisma.REPLACE_THIS_WITH_MODEL_NAME.findUnique({ where: { id } });
       if (!REPLACE_THIS_WITH_MODEL_NAME) {
-        return next(genericNotFoundError("REPLACE_THIS_WITH_MODEL_NAME","id",id));
+        return next(gen_errors.genericNotFoundError("REPLACE_THIS_WITH_MODEL_NAME","id",id));
       }
       res.json(REPLACE_THIS_WITH_MODEL_NAME);
     } catch(error) {
@@ -46,7 +46,7 @@ router.post("/", async (req, res, next) => {
       next(error)
     }
   });
-// ### PATCH ###
+// ### PUT ###
 
 
   // Updates REPLACE_THIS_WITH_MODEL_NAME
@@ -55,7 +55,7 @@ router.post("/", async (req, res, next) => {
       const id = +req.params.id;
       const exists = await prisma.REPLACE_THIS_WITH_MODEL_NAME.findUnique({ where: { id } });
       if (!exists) {
-        return next(genericNotFoundError("REPLACE_THIS_WITH_MODEL_NAME","id",id));
+        return next(gen_errors.genericNotFoundError("REPLACE_THIS_WITH_MODEL_NAME","id",id));
       }
 		const { REPLACE_WITH_WHAT_DATA_YOU_WANT } = await req.body;
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
@@ -78,7 +78,7 @@ router.delete("/:id", async (req, res, next) => {
       const id = +req.params.id;
       const exists = await prisma.REPLACE_THIS_WITH_MODEL_NAME.findUnique({ where: { id } });
       if (!exists) {
-        return next(genericNotFoundError("REPLACE_THIS_WITH_MODEL_NAME","id",id));
+        return next(gen_errors.genericNotFoundError("REPLACE_THIS_WITH_MODEL_NAME","id",id));
       }
       await prisma.REPLACE_THIS_WITH_MODEL_NAME.delete({ where: { id } });
       res.sendStatus(204);

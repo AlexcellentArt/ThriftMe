@@ -1,8 +1,8 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
-import {hasLengthViolations,isNotUnique,hasMissingInputs,genericNotFoundError,hasMissingInputs} from "./helpers/gen_errors"
-// THIS MIGHT BE ABLE TO BE HANDLED BY STRIPE AND WE CAN DELETE THIS.
+const gen_errors = require("./helpers/gen_errors.js")
+// THIS MIGHT BE ABLE TO BE HANDLED BY STRIPE AND WE CAN DELETE THIS. c
 
 // ### GET ###
 
@@ -28,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
       where: { id },
     });
     if (!checkout) {
-      return next(genericNotFoundError("checkout", "id", id));
+      return next(gen_errors.genericNotFoundError("checkout", "id", id));
     }
     if (checkout.buyerId === buyerId && checkout.sellerId === sellerId) {
       res.json(checkout);
@@ -57,7 +57,7 @@ router.get(":id", async (req, res, next) => {
     );
     console.log(checkout);
     if (!checkout) {
-      return next(genericNotFoundError("checkout", "id", id));
+      return next(gen_errors.genericNotFoundError("checkout", "id", id));
     }
     res.json(checkout);
   } catch (error) {
@@ -71,7 +71,7 @@ router.post("/", async (req, res, next) => {
     const body = ({ seller_id, buyer_id, item_dict, total_cost, tags } =
       await req.body);
     console.log(body);
-    const missing = hasMissingInputs(
+    const missing = gen_errors.hasMissingInputs(
       body,
       ["seller_id", "buyer_id", "item_dict", "total_cost", "tags", "item_dict"],
       "transaction"
@@ -86,7 +86,7 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-// ### PATCH ###
+// ### PUT ###
 
 // Updates checkout
 router.put("/:id", async (req, res, next) => {
@@ -94,7 +94,7 @@ router.put("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.checkout_Page.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("checkout", "id", id));
+      return next(gen_errors.genericNotFoundError("checkout", "id", id));
     }
     const body = ({ seller_id, buyer_id, item_dict, total_cost, tags } =
       await req.body);
@@ -118,7 +118,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.checkout_Page.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("checkout", "id", id));
+      return next(gen_errors.genericNotFoundError("checkout", "id", id));
     }
     await prisma.checkout_Page.delete({ where: { id } });
     res.sendStatus(204);
