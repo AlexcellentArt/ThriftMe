@@ -1,11 +1,19 @@
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* ThriftMe Color Pallette */
+  --delft-blue: #353e68ff;
+  --yinmn-blue: #4e598cff;
+  --periwinkle: #c5cdf2ff;
+  --white: #ffffffff;
+  --black: #000000ff;
+  --fairy-tale: #f2c5e2ff;
+  font-family: Merriweather, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--black);
+  background-color: var(--white);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,18 +23,19 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--periwinkle);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--white);
+  font-weight: bolder;
 }
 
 body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 100vw;
   min-height: 100vh;
 }
 
@@ -37,17 +46,19 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--delft-blue);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--yinmn-blue);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--yinmn-blue);
+  background-color: var(--periwinkle);
+  color: var(--white);
 }
 button:focus,
 button:focus-visible {
@@ -61,8 +72,79 @@ button:focus-visible {
   }
   a:hover {
     color: #747bff;
+    font-weight: bolder;
   }
   button {
     background-color: #f9f9f9;
   }
+}
+main { display: flex;   flex-direction: column;
+  place-items: center stretch; background-color: var(--white); height: 85vh; width: 100vw;}
+header,footer{
+  color: var(--white);
+  background-color: var(--yinmn-blue);
+  height: 10vh;
+  display: flex;
+  flex-direction: row;
+  place-items: center stretch;
+  text-align: center;
+}
+footer{height: 5vh;}
+#navBar{
+  display: inherit;
+  flex-direction: inherit;
+  place-items: inherit;
+  width: 100%;
+  ul{ display: flex;
+    flex-direction: inherit;
+    gap: 3vw;
+  place-items: center space-evenly;
+margin: 0;}
+}
+.merriweather-light {
+  font-family: "Merriweather", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.merriweather-regular {
+  font-family: "Merriweather", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.merriweather-bold {
+  font-family: "Merriweather", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.merriweather-black {
+  font-family: "Merriweather", serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.merriweather-light-italic {
+  font-family: "Merriweather", serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.merriweather-regular-italic {
+  font-family: "Merriweather", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.merriweather-bold-italic {
+  font-family: "Merriweather", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.merriweather-black-italic {
+  font-family: "Merriweather", serif;
+  font-weight: 900;
+  font-style: italic;
 }

@@ -13,23 +13,17 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
 import AdminDashboard from './components/AdminDashboard';
-import { TokenContext } from "./TokenContext";
+import PageWrapper from "./components/PageWrapper.jsx";
+import { AuthContextProvider,AuthContext } from "./components/AuthContext.jsx";
 function App() {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const {token, setToken} = useContext(TokenContext);
+  const {token,isAdmin} = useContext(AuthContext);
   return (
+    <AuthContextProvider>
     <BrowserRouter>
-      <header>
-        <div>
-          <img src={thriftmeLogo} className="logo hover" alt="ThriftMe logo" />
-        </div>
-        <Navigations/>
-      </header>
-
-      <main>
-        <p>Site To Be Built</p>
+    <PageWrapper>
         <Routes>
-          <Route path="/" element={<Navigate to="/products" />} />
+          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/home" element={<Home />} />
 
           <Route path="/products" element={<Products />} />
 
@@ -80,8 +74,9 @@ function App() {
             }
           />
         </Routes>
-      </main>
+      </PageWrapper>
     </BrowserRouter>
+    </AuthContextProvider>
   );
 }
 
