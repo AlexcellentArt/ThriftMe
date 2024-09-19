@@ -3,16 +3,17 @@ const AuthContext = createContext("AuthContext")
 export function AuthContextProvider({ children }) {
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  function login(params) {
+  function login(obj) {
     // add in verification of user
-    setToken(null)
+    setToken(obj.token)
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
     setIsAdmin(true)
   }
-  function logout(params) {
+  function logout() {
     setToken(null)
     setIsAdmin(false)
   }
+
   return (
     <AuthContext.Provider value={{ token, isAdmin, login, logout }}>
       {children}
