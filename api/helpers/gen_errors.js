@@ -12,8 +12,33 @@ module.exports = {
   isNotUnique,
   isNotType,
   genericAuthorityError,
-  allInArrayAreType
+  allInArrayAreType,wrapConsoleLog
 };
+/**
+ * @function wrapConsoleLog
+ * @description wraps the console log text in a ANSI escape code colored background to prevent easy overrides.
+ * @param {String} bg background wanted, available: black, blue, red, green, magenta
+ * @param {Function} formatter formatter function to run on arr if arr is array and arr.length > 2 @default commaSplitEndWithAnd
+ * @returns {String}
+ */
+function wrapConsoleLog(log,bg="black"){
+  switch (bg) {
+    case "blue":
+      return `\u001B[1m\u001B[36m ${log}[39m\u001B[22m`
+      // break;
+    case "black":
+      return `\u001B[1m\u001B[44m${log}\u001B[49m\u001B[22m`
+      // break;
+    case "green":
+      return `\u001B[1m\u001B[42m${log}\u001B[49m\u001B[22m`
+    case "red":
+      return `\u001B[1m\u001B[41m${log}\u001B[49m\u001B[22m`
+    case "magenta":
+      return `\u001B[1m\u001B[45m${log}\u001B[49m\u001B[22m`
+    default:
+      return `\u001B[1m\u001B[44m${log}\u001B[49m\u001B[22m`
+  }
+}
 /**
  * @function ifArrayFormatToString
  * @description checks if the input arr is an Array and if so and arr.length > 1, runs and returns the result of putting arr through the formatter.
@@ -54,8 +79,9 @@ function commaSplitEndWithAnd(arr) {
  * @param {String} word word being made plural if needed
  * @param {String} override word to return instead if plural.
  * @returns {String}
- * @example pluralize(2,duck) => 'the ducks'
- * @example pluralize(1,duck) => 'a duck'
+ * @example pluralize(2,duck) => 'ducks'
+ * @example pluralize(1,duck) => 'duck'
+ * @example pluralize(2,crow,murder) => 'murder'
  */
 function pluralize(amount,word,override = undefined){
   if (amount>1) {return override ? override:`${word}s`}
@@ -85,7 +111,8 @@ function genericNotFoundError(lookedFor, withKey, value) {
  * @example genericViolationDataError(["name","password"],"user") => "On user password and name are missing."
  */
 function genericMissingDataError(missingValues, forWhat = "input") {
-  return { status: 400, message: `On ${forWhat} ${ifArrayFormatToString(missingValues)} ${!Array.isArray(arr) ? "is":"are"} missing.` };
+  const len = Array.isArray(missingValues) ? missingValues.length:0
+  return { status: 400, message: `On ${forWhat} ${ifArrayFormatToString(missingValues)} ${pluralize(len,"is","are")} missing.` };
 }
 /**
  * @function genericViolationDataError
@@ -135,7 +162,10 @@ function hasMissingInputs(object, mandatoryKeys, forWhat = "input") {
       missing.push(key);
     }
   });
+  console.log("missing")
+  console.log(missing)
   if (missing.length) {
+    console.log("about to return missing")
     return genericMissingDataError(missing, forWhat);
   }
 }
