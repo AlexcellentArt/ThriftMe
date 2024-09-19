@@ -20,6 +20,7 @@ module.exports = {
  * @param {String} bg background wanted, available: black, blue, red, green, magenta
  * @param {Function} formatter formatter function to run on arr if arr is array and arr.length > 2 @default commaSplitEndWithAnd
  * @returns {String}
+ * @example console.log(gen_errors.wrapConsoleLog("very console, much log"))
  */
 function wrapConsoleLog(log,bg="black"){
   switch (bg) {
