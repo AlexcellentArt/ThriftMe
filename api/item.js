@@ -128,20 +128,20 @@ router.post("/", async (req, res, next) => {
         return next(gen_errors.genericNotFoundError("item","id",id));
       }
       const inputs = { name, price, description, default_photo, additional_photos, tags } = await req.body;
+      inputs["seller_id"] = exists.seller_id
       console.log(inputs)
       const missing = gen_errors.hasMissingInputs(inputs,["name", "price", "description","default_photo", "additional_photos", "tags"],"item")
-      if (missing){
-        console.log(missing)
-          next(missing)
-      }
-      const isPriceNumber = gen_errors.isNotType("price",inputs.price,"number","item")
-      if (isPriceNumber)
-      {
-        return next(isPriceNumber)
-      }
+    if (missing){
+      return next(missing)
+    }
+    const isPriceNumber = gen_errors.isNotType("price",inputs.price,"number","item")
+    if (isPriceNumber)
+    {
+      return next(isPriceNumber)
+    }
       const item = await prisma.item.update({
         where: { id },
-        data:  inputData ,
+        data:  inputs ,
       });
       res.json(item);
     } catch(error) {
