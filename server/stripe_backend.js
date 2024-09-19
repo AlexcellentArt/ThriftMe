@@ -119,8 +119,6 @@ app.post("/webhook", async (req, res) => {
   res.sendStatus(200);
 });
 
-// webhook for listening to stripe events
-
 app.listen(3000, () =>
   console.log(`Node server listening at http://localhost:3000`)
 );
