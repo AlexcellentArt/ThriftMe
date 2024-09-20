@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "nodemon server/stripe_backend.js",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
+    "@stripe/react-stripe-js": "^2.8.0",
+    "@stripe/stripe-js": "^4.5.0",
     "@stripe/stripe-react-native": "^0.38.6",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
