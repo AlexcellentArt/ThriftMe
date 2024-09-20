@@ -8,11 +8,28 @@ function FormGenerator({
   fetch_method = "POST",
 }) {
     // Authorization: `Bearer ${token}`
-const API_URL = "http://localhost:3000/api/"
+    function commaSplitEndWithAnd(arr) {
+      if (arr.length === 2) {
+        return `${arr[0]} and ${arr[1]}`;
+      }
+      const last = arr.pop();
+      let newStr = arr.join(", ");
+      return newStr + ", and " + last;
+    }
   async function defaultFetch(url, obj, setError = null) {
+    const API_URL = `http://localhost:3000/api/${url}`
     try {
-      const response = await fetch(API_URL + `${url}`, {
-        method: fetch_method.toUpperCase(),
+      console.log(API_URL)
+      console.log(obj)
+      //verify path exists 
+      console.log("AAAAAAAAAA")
+      // const exists = await fetch(API_URL,
+      //   { method: "HEAD",        headers: {
+      //     "Content-Type": "application/json",
+      //   }, })
+      //   if (!exists.ok){const mes = await exists.json(); throw new Error(mes)}
+      const response = await fetch(API_URL, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -27,6 +44,7 @@ const API_URL = "http://localhost:3000/api/"
       }
       return res;
     } catch (err) {
+      console.error(err)
       return null;
     }
   }
@@ -44,6 +62,7 @@ const API_URL = "http://localhost:3000/api/"
           type: field.type,
           value: initialValue,
           isValid: false,
+          name:field.key
         };
         if ("label" in field) {
           obj["label"] = field.label;
@@ -130,15 +149,14 @@ const API_URL = "http://localhost:3000/api/"
       Object.values(formData).forEach((obj) => {
         if (obj.isValid === false) {
           allDataValid = false;
-          invalidFields.push(obj.key);
+          console.log(obj)
+          invalidFields.push(obj.name);
         }
       });
       try {
         if (!allDataValid) {
           throw Error(
-            `${invalidFields.reduce(
-              (acc, cur) => `${acc},${cur}`
-            )} are invalid.`
+            allDataValid.length > 1 ?` ${commaSplitEndWithAnd(invalidFields)} are invalid` :`${invalidFields[0]} is invalid.`
           );
         }
         return true;

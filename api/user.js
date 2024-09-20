@@ -1,11 +1,18 @@
 const router = require("express").Router();
 module.exports = router;
+const { compareSync } = require("bcrypt");
 const prisma = require("../prisma");
+const { isLoggedIn,authenticate } = require("./helpers/auth.js");
 const gen_errors = require("./helpers/gen_errors.js")
+require("dotenv").config().env;
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT = process.env.JWT || 'shhh'
+
 // ### GET ###
 
 // Gets all user
-router.get("/all", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const user = await prisma.user.findMany();
     res.json(user);
@@ -13,6 +20,56 @@ router.get("/all", async (req, res, next) => {
     next(error);
   }
 });
+const validateInputs = async (inputs) => {
+  const inputs = { name, email, password } = await req.body;
+  console.log(inputs)
+  const missing = gen_errors.hasMissingInputs(inputs,["name", "email", "password"],"user")
+  if (missing){
+      return next(missing)
+  }
+  // const lengthViolations = gen_errors.hasLengthViolations()
+  // if (lengthViolations){}
+  // const notUnique = await gen_errors.isNotUnique("user","email",email);
+  // if (notUnique) {next(notUnique)}
+  return null
+}
+router.post("/login",async (req, res, next) => {
+  console.log("LOPGGING IN")
+  try {
+    const {email,password} = await req.body;
+    const user = await prisma.user.findUnique({ where: {email} });
+    if (!user){
+      return next(gen_errors.genericNotFoundError("user","email",email))
+    }
+    // !compareSync(password,user.password)
+    if(user.password != password)
+    {
+      return next(gen_errors.genericViolationDataError("input","password","wrong"))
+    }
+    const token = jwt.sign({userId: user.id},JWT)
+    console.log(token)
+    res.json({user,token})
+  } catch (error) {
+    next(error);
+  }
+})
+router.post("/register",async (req, res, next) => {
+  try {
+    const inputs = await req.body
+    console.log("trying to register...")
+    const exists = await prisma.user.findUnique({ where: { email } });
+    if (exists) {
+      console.log("EXISTS")
+      return next(gen_errors.genericViolationDataError("user", "email", "already in usage"));
+    }
+    const user = await prisma.user.create({ data: inputs });
+    const token = jwt.sign({userId: user.id},JWT)
+    console.log(token)
+    res.json({user: user,token})
+  } catch (error) {
+    next(error);
+  }
+})
 // Returns user matching id
 router.get("/:id", async (req, res, next) => {
   try {
@@ -27,16 +84,10 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 // ### POST ###
-
 router.post("/", async (req, res, next) => {
   try {
     const inputs = { name, email, password } = await req.body;
-    // [name,email,password].forEach((input)=>{})
-    // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
-    // ex: if {!name} {next(genericMissingDataError("name","user"))}
     console.log(inputs)
-    // const obj = {"name":name,"email":email,"password":password}
-    //"password":null
     const missing = gen_errors.hasMissingInputs(inputs,["name", "email", "password"],"user")
     if (missing){
         next(missing)
@@ -54,7 +105,7 @@ router.post("/", async (req, res, next) => {
 // ### PUT ###
 
 // Updates user
-router.put("/:id", async (req, res, next) => {
+router.put("/:id",isLoggedIn, async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
@@ -87,7 +138,7 @@ router.put("/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes user matching id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id",isLoggedIn, async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
