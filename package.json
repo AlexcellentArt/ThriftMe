@@ -7,8 +7,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:dev": "nodemon server",
-    "start": "node server/stripe_backend.js"
+    "start:dev": "nodemon server"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
@@ -24,7 +23,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
-    "stripe": "^16.11.0"
+    "stripe": "^16.12.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

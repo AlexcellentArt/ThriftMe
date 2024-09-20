@@ -3,7 +3,7 @@ module.exports = router;
 const fs = require('fs');
 const auth = require("./helpers/auth");
 // massive check
-const api_list = ["user","item","checkout","shopping_cart","past_transactions","browsing_history"]
+const api_list = ["user","item","checkout","shopping_cart","past_transactions","browsing_history","stripe"]
 
 function doFilesExist(fileList) {
     const table = {"yes":[],"no":[]}

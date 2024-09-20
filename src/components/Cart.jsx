@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 require("dotenv").config();
