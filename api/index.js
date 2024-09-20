@@ -1,8 +1,10 @@
 const router = require("express").Router();
 module.exports = router;
 const fs = require('fs');
+const auth = require("./helpers/auth");
 // massive check
 const api_list = ["user","item","checkout","shopping_cart","past_transactions","browsing_history"]
+
 function doFilesExist(fileList) {
     const table = {"yes":[],"no":[]}
     for (let index = 0; index < fileList.length; index++) {
@@ -20,6 +22,7 @@ async function requireExistingAPI(arr) {
     const doExist = doFilesExist(mapToPath(api_list))
     table.missing = doExist.no.map(mapToBaseNames)
     doExist.yes.map(mapToBaseNames).forEach((found)=>{try {
+        
         router.use(`/${found}`, require(`./${found}`))
         table.found.push(found)
     } catch (error)

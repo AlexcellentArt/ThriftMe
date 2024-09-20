@@ -1,0 +1,82 @@
+require("dotenv").config().env;
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const prisma = require("../../prisma");
+const JWT = process.env.JWT || 'shhh'
+const isLoggedIn = async(req, res, next)=>{
+  try {
+    console.log(req.headers)
+    req.user = await findUserWithToken(req.headers.authorization)
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+const isAdmin = async(req, res, next)=>{
+  try {
+    console.log(req.headers)
+    req.user = await findUserWithToken(req.headers.authorization)
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+// const findUserWithToken = ({})
+const authenticate = async(req,res)=> {
+
+  const {email,password} = await req.body
+  const user = await prisma.user.findUnique({ where: {email} });
+  if (!user){
+    return next(gen_errors.genericNotFoundError("user","email",email))
+  }
+  // !compareSync(password,user.password)
+  if(user.password != password)
+  {
+    // !compareSync(password,user.password)
+    return next(gen_errors.genericViolationDataError("input","password","wrong"))
+  }
+  // res.json(authenticate(payload));
+  const token = jwt.sign({userId: user.id},JWT)
+  console.log(token)
+  res.json({user,token})
+};
+
+const findUserWithToken = async (token) => {
+  let id;
+  console.log(`made it to finding user with ${JWT}`)
+  console.log("What token findUserWithToken got "+token)
+  try {
+    try {
+      if (token === undefined)
+      {
+        throw Error("No Token Sent");
+      }
+      const payload = await jwt.verify(token, JWT);
+      id = payload.id;
+    } catch (error) {
+      throw new Error("payload not received")
+    }
+    console.log("payload got")
+    if (id === undefined||null)
+    {
+      throw new Error("user id not authorized")
+    }
+    console.log("AAAAAAAAAAAAA")
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) {
+    throw Error("user not authorized");
+  }
+  return user;
+  }
+  catch (error) {
+    // both possible errors are 401, so setting it here before throwing upward
+    console.log("SETTING ERROR")
+    error.status = 401
+    throw error
+  }
+};
+module.exports = {
+  authenticate,
+  findUserWithToken,
+  isLoggedIn
+};
