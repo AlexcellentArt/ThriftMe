@@ -66,8 +66,8 @@ function App() {
           {/* Only logged-in users can view their account */}
           <Route
             path="/account"
-            element={
-              token ? <Account token={token} /> : <Navigate to="/login" />
+            element={<Account/>
+              // token ? <Account/> : <Navigate to="/login" />
             }
           />
 
@@ -75,11 +75,12 @@ function App() {
           <Route
             path="/admin"
             element={
-              isAdmin ? (
-                <AdminDashboard token={token} />
-              ) : (
-                <Navigate to="/login" />
-              )
+              <AdminDashboard />
+              // isAdmin ? (
+              //   <AdminDashboard/>
+              // ) : (
+              //   <Navigate to="/login" />
+              // )
             }
           />
         </Routes>
