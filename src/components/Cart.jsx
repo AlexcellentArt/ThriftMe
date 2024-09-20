@@ -1,4 +1,5 @@
 import React, { useContext, useState,useReducer,useEffect } from "react";
+import { AuthContext } from "./AuthContext";
 // import { useSelector, useDispatch } from "react-redux";
 import { CardElement, useStripe, useElements} from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,8 @@ import { loadStripe } from "@stripe/stripe-js";
 // const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 // require("dotenv").config();
 function Cart() {
+  const {token,addToCart,removeFromCart,getUser} = useContext(AuthContext);
+
   // const cart = useSelector((state) => state.AddToCart);
   //to clear or update cart
   // const dispatch = useDispatch();
@@ -112,6 +115,9 @@ function Cart() {
   return (
 <div>
       <h1>YOUR CART</h1>
+      <button onClick={()=>{addToCart(1)}}>ADD TO CART</button>
+      <button onClick={()=>{removeFromCart(1)}}>REMOVE FROM CART</button>
+
       {/* {cart.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (

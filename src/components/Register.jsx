@@ -13,7 +13,7 @@ function Register() {
         login(obj.token)
         navigate("/account")
     }
-    return (<FormGenerator labelAdditionalClasses="formLabel" fields ={fields} apiPath="user/register" method="GET" postSuccessFunction={(obj)=>{goToAccount(obj)}}/>);
+    return (<FormGenerator labelAdditionalClasses="formLabel" fields ={fields} apiPath="user/register" method="POST" postSuccessFunction={(obj)=>{goToAccount(obj)}}/>);
 }
 
 export default Register;

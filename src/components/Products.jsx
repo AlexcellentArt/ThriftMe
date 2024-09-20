@@ -1,35 +1,35 @@
 import DisplayMany from "./DisplayMany";
-import { useState} from "react";
+import { useState,useContext} from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import React from "react";
+import { AuthContext } from "./AuthContext";
 import { useEffect } from "react";
 
 function Products() {
+  const nav = useNavigate()
     const [tags, setTags]= useState([{}]);
 
     const [products, setProduct]= useState([{}]);
 
+    const {toggleFavorite, addToCart} = useContext(AuthContext)
+
     useEffect (()=>{
 
       async function getProduct(){
-        try{ 
-          const response= await fetch 
-          ("http://localhost:3000/api/item",
-            // {mode: 'no-cors',}
-          );
+        try{
+          const response= await fetch
+          ("http://localhost:3000/api/item",);
           const data= await response.json();
           console.log(data);
           setProduct(data);
           console.log(products);
   
-        }    
+        }
        catch (error) {
         console.log(
         "Looks like I can't display your page,when I fetched from API it did not work");
-        console.error(error);
-      
+        // console.error(error);
         }
-      
       }
       getProduct(); },
        [] );
@@ -41,23 +41,19 @@ function Products() {
       >
         <div>
           <button
-          className="Favorites"
-          onClick={()=> {addFavorites();}}
+          className="Favorites" onClick={()=> {toggleFavorite(obj.id);}}
           >Add To Favorites
-
           </button>
           <img src={obj.default_photo} alt="Default Item Card Photo" />
         <p>{obj.price}</p>
-
+        <a href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
         </div>
-        
-
 
         <div>
         <p>{obj.name}</p>
         <button
         className="Adding_Button"
-        onClick={() => {addItem();}}>Add To Cart 
+        onClick={() => {addToCart(obj.id);}}>Add To Cart 
         </button>
         </div>
       
