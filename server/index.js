@@ -3,6 +3,8 @@
 const pg = require('pg')
 const express = require('express');
 require('dotenv').config()
+// const auth = require("../api/helpers/auth")
+// import { authenticate,findUserWithToken } from './auth';
 // static routes
 const client = new pg.Client(process.env.DATABASE_URL)
 // app routes
@@ -10,10 +12,8 @@ const app = express();
 // body parsing middleware
 app.use(express.json());
 app.use(require("morgan")("dev"))
-
 //api routes
 app.use("/api",require("../api"));
-
 // error handling middleware
 app.use((error,req,res,next)=>{
     res.status(Math.floor((res.status))||500).send({error:error})
