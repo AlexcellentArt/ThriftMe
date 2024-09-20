@@ -62,6 +62,7 @@ router.post("/register",async (req, res, next) => {
       console.log("EXISTS")
       return next(gen_errors.genericViolationDataError("user", "email", "already in usage"));
     }
+    // validateInputs
     const user = await prisma.user.create({ data: inputs });
     const token = jwt.sign({userId: user.id},JWT)
     console.log(token)
