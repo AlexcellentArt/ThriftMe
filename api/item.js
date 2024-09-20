@@ -2,13 +2,7 @@ const router = require("express").Router();
 module.exports = router;
 
 const prisma = require("../prisma");
-
-// THINGS TO REPLACE TO GET FUNCTIONAL:
-
-//#1 item using ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
-//#2 INSERT_DATA_HERE: replace with the data being sent to table in a post or update func.  EXAMPLE: {name:"Kelly","email":"kelly@gmail", "password":"kellyRulez"}
-//#3 REPLACE_WITH_WHAT_DATA_YOU_WANT: replace with the data you want deconstructed out of req.body  EXAMPLE: {name,email,password}
-//#4 THE PATHS: I left them blank so you could structure them as needed.
+const gen_errors = require("./helpers/gen_errors.js")
 
 // ### GET ###
 
@@ -21,43 +15,109 @@ router.get("/", async (req, res, next) => {
         next(error);
         }
   });
+  // get search, filtered or otherwise
+router.get("/search", async (req, res, next) => {
+  try {
+    console.log("search request got")
+    let tags = undefined;
+    let search_text = undefined;
+    // try to get keys off query if they exist
+    if (Object.keys(req.query).length !== 0)
+    {console.log("has query content")
+      try {
+        if (req.query.search_text){search_text = JSON.parse(req.query.search_text);}
+        if (req.query.tags){tags = JSON.parse(req.query.tags);}
+      } catch (error) {
+        next(error)
+      }
+    }
+    // try to get keys off body if they exist && search_text and tags are not already filled
+    if (Object.keys(req.body).length !== 0)
+    {
+      console.log("has body content")
+        if (search_text === undefined || ''){search_text = await req.body.search_text;}
+        if (tags === undefined){tags = await req.body.tags;}
+    }
+    console.log(tags,search_text)
+    console.log("query got")
+    // console.log("p "+params)
+    // const { search_text, tags } = await req.body;
+    console.log(search_text,tags)
+    // if no search_text and tags, return all items
+    if (search_text === undefined && tags === undefined){
+      console.log("returning all")
+      const item = await prisma.item.findMany();
+      return res.json(item);
+      }
+    console.log("Building Search settings....")
+    const search = {}
+    if(tags !== undefined){
+      search["tags"]={
+          hasSome: tags,
+        }}
+    if (search_text !== undefined){
+      search["name"]={
+      contains: search_text,
+      mode: 'insensitive'
+    }}
+    // log search settings in very visible black bg in terminal for later checking
+    console.log(gen_errors.wrapConsoleLog("=====VVV SEARCH SETTINGS VVV====="))
+    console.table(search)
+    console.log(gen_errors.wrapConsoleLog("=====^^^ SEARCH SETTINGS ^^^====="))
+      const getFiltered = await prisma.item.findMany({
+        where: search
+      })
+    // if get filtered is nothing, return empty array
+    if (!getFiltered) {
+      console.log("No Matches found for filter of ")
+      console.log(`No Matches found for filter of name: ${search_text} tags:${tags}`)
+      return res.json([])
+    }
+    return res.json(getFiltered);
+  } catch(error) {
+      next(error);
+      }
+});
   // Returns item matching id
   router.get("/:id", async (req, res, next) => {
     try {
       const id = +req.params.id;
       const item = await prisma.item.findUnique({ where: { id } });
       if (!item) {
-        return next(genericNotFoundError("item","id",id));
+        return next(gen_errors.genericNotFoundError("item","id",id));
       }
       res.json(item);
     } catch(error) {
         next(error);
         }
   });
+
 // ### POST ###
 
 router.post("/", async (req, res, next) => {
     try {
-      const inputs = { name, price, description, default_photo, additional_photos, tags } = await req.body;
-      //>REPLACED_WITH_WHAT_DATA_YOU_WANT inserted {name, price, description}
-      // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
-      // ex: if {!name} {next(genericMissingDataError("name","user"))}
+      const inputs = {seller_id, name, price, description, default_photo, additional_photos, tags } = await req.body;
       console.log(inputs)
-
-      const missing = hasMissingInputs(inputs,["name", "price", "description"],"item")
+      const missing = gen_errors.hasMissingInputs(inputs,["name", "price", "description","default_photo", "additional_photos", "tags"],"item")
     if (missing){
-        next(missing)
+      console.log("is missing")
+      console.log(missing)
+        return next(missing)
     }
-  
+    const isPriceNumber = gen_errors.isNotType("price",inputs.price,"number","item")
+    if (isPriceNumber)
+    {
+      return next(isPriceNumber)
+    }
+    console.log(inputs)
       const item = await prisma.item.create({ data: inputs });
-      //>INSERT_DATA_HERE inserted inputs
       res.json(item);
     } catch (error) {
       next(error)
     }
   });
-// ### PATCH ###
 
+// ### PUT ###
 
   // Updates item
   router.put("/:id", async (req, res, next) => {
@@ -65,20 +125,23 @@ router.post("/", async (req, res, next) => {
       const id = +req.params.id;
       const exists = await prisma.item.findUnique({ where: { id } });
       if (!exists) {
-        return next(genericNotFoundError("item","id",id));
+        return next(gen_errors.genericNotFoundError("item","id",id));
       }
-		const inputData = { name, price, description, default_photo, additional_photos, tags } = await req.body;
-        //>REPLACE_WITH_WHAT_DATA_YOU_WANT inserted inserted {name, price, description}
-      // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
-      // ex: if {!name} {next(genericMissingDataError("name","user"))}
-
-      // const missing = hasMissingInputs(inputs,["name", "price", "description"],"item")
-      // if (missing){
-      //     next(missing)
-      // }
+      const inputs = { name, price, description, default_photo, additional_photos, tags } = await req.body;
+      inputs["seller_id"] = exists.seller_id
+      console.log(inputs)
+      const missing = gen_errors.hasMissingInputs(inputs,["name", "price", "description","default_photo", "additional_photos", "tags"],"item")
+    if (missing){
+      return next(missing)
+    }
+    const isPriceNumber = gen_errors.isNotType("price",inputs.price,"number","item")
+    if (isPriceNumber)
+    {
+      return next(isPriceNumber)
+    }
       const item = await prisma.item.update({
         where: { id },
-        data:  inputData ,
+        data:  inputs ,
       });
       res.json(item);
     } catch(error) {
@@ -94,7 +157,7 @@ router.delete("/:id", async (req, res, next) => {
       const id = +req.params.id;
       const exists = await prisma.item.findUnique({ where: { id } });
       if (!exists) {
-        return next(genericNotFoundError("item","id",id));
+        return next(gen_errors.genericNotFoundError("item","id",id));
       }
       await prisma.item.delete({ where: { id } });
       res.sendStatus(204);
@@ -102,66 +165,3 @@ router.delete("/:id", async (req, res, next) => {
     next(error);
     }
   });
-
-// ### GENERIC ERROR ASSEMBLY FUNCTIONS
-
-// These will likely be moved to their own file and exported later back here in refactor. 
-// I advise using them to avoid writing next({status:,message:}) over and over again for the same thing being checked and resulting in the same message.
-
-// If you don't want to use them, then just replace them with an obj in the format of {status:,message:}
-
-function ifArrayFormatToString(arr,formatter=commaSplitEndWithAnd){
-    if (!Array.isArray(arr)){return `${arr}`}
-    if (arr.length === 1){return `${arr[0]}`}
-    return formatter(arr)
-}
-
-function commaSplitEndWithAnd(arr){
-    const last = arr.pop()
-    let newStr = arr.join(", ")
-    return newStr+", and "+last
-}
-
-// Generic not found error
-function genericNotFoundError(lookedFor, withKey, value) {
-  return {
-    status: 404,
-    message: `Could not find ${lookedFor} with ${withKey} ${value}.`,
-  };
-}
-
-// generic missing data Error
-function genericMissingDataError(missingValues, forWhat = "input") {
-    missingValues = ifArrayFormatToString(missingValues);
-  return { status: 400, message: `${forWhat} is missing ${missingValues}.` };
-}
-function genericViolationDataError(values, violation, forWhat = "input") {
-    missingValues = ifArrayFormatToString(values);
-    return { status: 400, message: `${forWhat}'s ${values} is too ${violation}.` };
-  }
-function hasMissingInputs(object,mandatoryKeys, forWhat = "input") {
-    const missing = []
-    mandatoryKeys.forEach((key)=>{if (!object[key]){missing.push(key)}})
-    if (missing.length){return genericMissingDataError(missing,forWhat);}
-  }
-
-function hasLengthViolations(object,settings={min:1,max:undefined}, forWhat = "input") {
-    const violation = []
-    // min
-    if (settings.min){checkKeys.forEach((key)=>{if (object[key] < settings.min){violation.push(key)}})}
-    if (violation.length){return genericViolationDataError(forWhat,violation,input)}
-    // max
-    if (settings.max){checkKeys.forEach((key)=>{if (object[key] > settings.max){violation.push(key)}})}
-    if (violation.length){return genericViolationDataError(forWhat,violation,input)}
-  }
-// Returns null if unique, otherwise an error message
-async function isNotUnique(table, key, value) {
-  const alreadyUsed = await prisma[table].findUnique({ where: { key } });
-  if (alreadyUsed) {
-    return {
-      status: 422,
-      message: `Another ${table} is using ${value} as a ${key}.`,
-    };
-  }
-  return null;
-}

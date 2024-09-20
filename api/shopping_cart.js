@@ -1,6 +1,8 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
+
+const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all items in shopping cart
@@ -20,7 +22,7 @@ router.get("/:userId/:id", async (req, res, next) => {
     const userId = +req.params.userId;
     const shopping_cart = await prisma.shopping_Cart.findUnique({where: { id } });
     if (!shopping_cart) {
-      return next(genericNotFoundError("shopping_cart", "id", id));
+      return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
     }
     if (shopping_cart.user_id === userId) {
       res.json(shopping_cart);
@@ -42,7 +44,7 @@ router.post("/", async (req, res, next) => {
     console.log("Made it to post");
     const body = { user_id, item_dict, total_cost } = await req.body;
     console.log(body);
-    // const missing = hasMissingInputs(body, ["item_dict", "total_cost"]);
+    // const missing = gen_errors.hasMissingInputs(body, ["item_dict", "total_cost"]);
     // if (missing) {
     //   console.log(missing);
     //   next(missing);
@@ -53,7 +55,7 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-// ### PATCH ###
+// ### PUT ###
 
 // Updates shopping_cart
 router.put("/:id", async (req, res, next) => {
@@ -61,7 +63,7 @@ router.put("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.shopping_Cart.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("shopping_cart", "id", id));
+      return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
     }
     const body = { user_id, item_dict, total_cost } = await req.body;
     // // verify existence of participants
@@ -83,7 +85,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.shopping_Cart.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("shopping_cart", "id", id));
+      return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
     }
     await prisma.shopping_Cart.delete({ where: { id } });
     res.sendStatus(204);

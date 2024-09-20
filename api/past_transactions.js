@@ -1,6 +1,8 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
+
+const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all past_transactions
@@ -20,7 +22,7 @@ router.get("/:userId/:id", async (req, res, next) => {
     const userId = +req.params.userId
     const past_transaction = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!past_transaction) {
-      return next(genericNotFoundError("past_transaction", "id", id));
+      return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     if (past_transaction.buyer_id === userId
         || past_transaction.seller_id === userId){res.json(past_transaction);}
@@ -39,7 +41,7 @@ router.get("/:userId", async (req, res, next) => {
       const past_transaction = await prisma.past_Transactions.findMany({ where: {buyer_id:id} });
       past_transaction.concat(await prisma.past_Transactions.findMany({ where: {seller_id:id} }))
       if (!past_transaction) {
-        return next(genericNotFoundError("past_transaction", "id", id));
+        return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
       }
       res.json(past_transaction);
     } catch (error) {
@@ -52,7 +54,7 @@ router.post("/", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     console.log(body)
-    const missing = hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","tags"],"transaction")
+    const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","tags"],"transaction")
     if (missing){
         console.log(missing)
         next(missing)
@@ -63,7 +65,7 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-// ### PATCH ###
+// ### PUT ###
 
 // Updates past_transaction
 router.put("/:id", async (req, res, next) => {
@@ -71,7 +73,7 @@ router.put("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("past_transaction", "id", id));
+      return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     const past_transaction = await prisma.past_Transactions.update({
@@ -91,7 +93,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const exists = await prisma.past_Transactions.findUnique({ where: { id } });
     if (!exists) {
-      return next(genericNotFoundError("past_transaction", "id", id));
+      return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     await prisma.past_Transactions.delete({ where: { id } });
     res.sendStatus(204);
@@ -99,67 +101,3 @@ router.delete("/:id", async (req, res, next) => {
     next(error);
   }
 });
-
-// ### GENERIC ERROR ASSEMBLY FUNCTIONS
-
-// These will likely be moved to their own file and exported later back here in refactor.
-// I advise using them to avoid writing next({status:,message:}) over and over again for the same thing being checked and resulting in the same message.
-
-// If you don't want to use them, then just replace them with an obj in the format of {status:,message:}
-
-// Array => String formatters
-function ifArrayFormatToString(arr,formatter=commaSplitEndWithAnd){
-    if (!Array.isArray(arr)){return `${arr}`}
-    if (arr.length === 1){return `${arr[0]}`}
-    return formatter(arr)
-}
-
-function commaSplitEndWithAnd(arr){
-    const last = arr.pop()
-    let newStr = arr.join(", ")
-    return newStr+", and "+last
-}
-
-// Generic not found error
-function genericNotFoundError(lookedFor, withKey, value) {
-  return {
-    status: 404,
-    message: `Could not find ${lookedFor} with ${withKey} ${value}.`,
-  };
-}
-
-// generic missing data Error
-function genericMissingDataError(missingValues, forWhat = "input") {
-    missingValues = ifArrayFormatToString(missingValues);
-  return { status: 400, message: `${forWhat} is missing ${missingValues}.` };
-}
-function genericViolationDataError(values, violation, forWhat = "input") {
-    missingValues = ifArrayFormatToString(values);
-    return { status: 400, message: `${forWhat}'s ${values} is too ${violation}.` };
-  }
-function hasMissingInputs(object,mandatoryKeys, forWhat = "input") {
-    const missing = []
-    mandatoryKeys.forEach((key)=>{if (!object[key]){missing.push(key)}})
-    if (missing.length){return genericMissingDataError(missing,forWhat);}
-  }
-
-function hasLengthViolations(object,settings={min:1,max:undefined}, forWhat = "input") {
-    const violation = []
-    // min
-    if (settings.min){checkKeys.forEach((key)=>{if (object[key] < settings.min){violation.push(key)}})}
-    if (violation.length){return genericViolationDataError(forWhat,violation,input)}
-    // max
-    if (settings.max){checkKeys.forEach((key)=>{if (object[key] > settings.max){violation.push(key)}})}
-    if (violation.length){return genericViolationDataError(forWhat,violation,input)}
-  }
-// Returns null if unique, otherwise an error message
-async function isNotUnique(table, key, value) {
-  const alreadyUsed = await prisma[table].findUnique({ where: { key } });
-  if (alreadyUsed) {
-    return {
-      status: 422,
-      message: `Another ${table} is using ${value} as a ${key}.`,
-    };
-  }
-  return null;
-}

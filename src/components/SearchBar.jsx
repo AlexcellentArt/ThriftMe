@@ -40,15 +40,10 @@ function SearchBar() {
     }
     return (
       <div className="tag">
-        <p>{obj.text}</p>
+        <p>#{obj.text}</p>
         <button
           className="transparent"
-          onClick={() => {
-            removeSelf();
-          }}
-        >
-          X
-        </button>
+          onClick={() => {removeSelf();}}>X</button>
       </div>
     );
   }
@@ -69,7 +64,7 @@ function SearchBar() {
       )}
       <button
         onClick={() => {
-          setAddingTag(true);
+          setAddingTag(!addingTag);
         }}
       >
         #
