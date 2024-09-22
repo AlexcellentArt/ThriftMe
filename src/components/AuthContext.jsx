@@ -118,7 +118,26 @@ export function AuthContextProvider({ children }) {
     setToken(null);
     setIsAdmin(false);
   }
-
+  async function mapItemDictToObjArray(item_dict) {
+    const arr = []
+    try {
+      for (const id in item_dict) {
+        //get item by id
+        console.log(id)
+        const res = await fetch(`http://localhost:3000/api/item/${id}`);
+        // throw if missing
+        if (!res.ok){throw Error("ITEM MISSING")}
+        const item = await res.json();
+        // add quantity of item in cart to obj
+        item["quantity"] = item_dict[id]
+        arr.push(item)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+    console.log(arr)
+    return arr
+  }
   return (
     <AuthContext.Provider
       value={{
@@ -133,6 +152,7 @@ export function AuthContextProvider({ children }) {
         modifyCart,
         calculatePrice,
         getUser,
+        mapItemDictToObjArray,
       }}
     >
       {children}
