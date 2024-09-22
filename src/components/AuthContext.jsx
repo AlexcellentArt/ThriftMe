@@ -130,6 +130,7 @@ export function AuthContextProvider({ children }) {
         toggleFavorite,
         addToCart,
         removeFromCart,
+        modifyCart,
         calculatePrice,
         getUser,
       }}

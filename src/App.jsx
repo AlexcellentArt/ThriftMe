@@ -44,18 +44,20 @@ function App() {
           <Route
             path="/checkout"
             element={
-              token ? <Checkout/> : <Navigate to="/login" />
+              <Checkout/>
+             // token ? <Checkout/> : <Navigate to="/login" />
             }
           />
 
           <Route
             path="/order/:id"
             element={
-              token ? (
-                <OrderConfirmation/>
-              ) : (
-                <Navigate to="/login" />
-              )
+              <OrderConfirmation/>
+              // token ? (
+              //   <OrderConfirmation/>
+              // ) : (
+              //   <Navigate to="/login" />
+              // )
             }
           />
 
