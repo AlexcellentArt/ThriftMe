@@ -81,6 +81,16 @@ const seed = async () => {
           "https://i5.walmartimages.com/seo/Wehilion-Mens-Suits-Set-Slim-Fit-Men-3-Piece-Dress-Suit-Prom-Blazer-Wedding-Formal-Jacket-Vest-Pants-Navy-Blue-XL_ce590b9b-405f-4948-af6a-a817cd66f9cd.4e404934c089dc5fabeb4616f32245e6.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF",
         additional_photos: [""],
         tags: ["men's suits", "women's suits"]
+      },
+      {
+        seller_id: 4,
+        name: "Cooler Suit",
+        price: 200,
+        description: "Sequin suit",
+        default_photo:
+          "https://i.ebayimg.com/images/g/neAAAOSwRq9dXg6w/s-l1000.jpg",
+        additional_photos: [""],
+        tags: ["men's suits", "women's suits","sequins"]
       }
     ];
     await prisma.item.createMany({ data: item });
@@ -218,16 +228,57 @@ const CreateBrowsingHistory = async () => {
   ];
   await prisma.browsing_History.createMany({ data: browsinghistory });
 };
+const CreateCreditCards = async () => {
+  const cards = [
+    {
+      id:1,
+      user_id: 12,
+      pin:1111111111111111,
+      cvc:111,
+      exp_date: 2024-11
+    },
+    {
+      id:2,
+      user_id: 12,
+      pin:1121112111111111,
+      cvc:212,
+      exp_date: 2029-8
+    }]
+    await prisma.credit_Card.createMany({data:cards})
+  }
+  const CreateAddresses = async () => {
+    const addresses = [
+      {
+        id:1,
+        user_id: 12,
+        pin:1111111111111111,
+        cvc:111,
+        exp_date: 2024-11
+      },
+      {
+        id:2,
+        user_id: 12,
+        pin:1121112111111111,
+        cvc:212,
+        exp_date: 2029-8
+      }]
+      await prisma.address.createMany({data:addresses})
+  }
 // all tables are created
 await createUsers();
 await CreateItem();
 await CreateBrowsingHistory();
 await CreateShoppingCart();
 await createTransactions();
+await CreateCreditCards();
+await CreateAddresses();
 // final step is adding favorites. For now, the first 5 items in seed are added to Melissa Cat as favorites. She is the only one who starts out with them so testing can be isolated.
 // Might need to make an explicit many to many model for this, but Alex can handle it and it is unlikely to effect operations as of now.
 prisma.user.update({where:{id:5},data:{favorite:[1]}})
-prisma.item.update({where:{id:1},data:{favorite:[1]}})
+prisma.item.update({where:{id:1},data:{favorite:[5]}})
+prisma.user.update({where:{id:12},data:{favorite:[2,3]}})
+prisma.item.update({where:{id:2},data:{favorite:[12]}})
+prisma.item.update({where:{id:3},data:{favorite:[12]}})
 };
 seed()
   .then(async () => await prisma.$disconnect)
