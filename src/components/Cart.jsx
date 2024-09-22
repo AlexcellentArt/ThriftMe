@@ -1,20 +1,41 @@
 import React, { useContext, useState,useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-// import { useSelector, useDispatch } from "react-redux";
-// const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
-// require("dotenv").config();
 import DisplayMany from "./DisplayMany";
 function Cart(user_id=12,cart_id=12) {
-  const {addToCart,removeFromCart,modifyCart} = useContext(AuthContext);
+  const {addToCart,removeFromCart,modifyCart,mapItemDictToObjArray} = useContext(AuthContext);
   // const [data, setData] = useState([{}]);
-  const [cart, setCart] = useState(     {
-    id: 12,
-    user_id: 12, // User l
-    item_dict:{3:2,1:2}, // $20 Roger Rabbit Shirt x 3 , $5 Tulum Dress x 2
-    total_cost: 50,
-  });
+  const [cart, setCart] = useState([      {
+    seller_id: 1,
+    name: "Tulum Dress",
+    price: 5,
+    description: "Perfect 2 piece dress for Tulum",
+    default_photo:
+      "https://shopannalaura.com/cdn/shop/products/paradisemaxidress2.jpg?v=1628458759&width=1445",
+    additional_photos: [""],
+    tags: ["tulum", "summer", "dress","women's fashion"],
+    quantity:6
+  }]);
 
+  // useEffect (()=>{
 
+  //   async function getProduct(){
+  //     try{
+  //       const response= await fetch
+  //       ("http://localhost:3000/api/item",);
+  //       const data= await response.json();
+  //       console.log(data);
+  //       setProduct(data);
+  //       console.log(products);
+
+  //     }
+  //    catch (error) {
+  //     console.log(
+  //     "Looks like I can't display your page,when I fetched from API it did not work");
+  //     // console.error(error);
+  //     }
+  //   }
+  //   getProduct(); },
+  //    [] );
   //INCOMPLETE CODE SOMETHING IS NOT COMPLETE IN THE TRY SECTION OF THE CODE
   useEffect(() => {
     async function mapCartToDisplay(item_dict) {
@@ -22,6 +43,7 @@ function Cart(user_id=12,cart_id=12) {
       try {
         for (const id in item_dict) {
           //get item by id
+          console.log(id)
           const res = await fetch(`http://localhost:3000/api/item/${id}`);
           // throw if missing
           if (!res.ok){throw Error("ITEM MISSING")}
@@ -33,20 +55,23 @@ function Cart(user_id=12,cart_id=12) {
       } catch (error) {
         console.error(error)
       }
+      console.log(cartArr)
       setCart(cartArr)
     }
     async function fetchCart() {
       // get cart
       try {
         // will need to add check to see if admin and if so let get happen regardless
-        const res = await fetch(`http://localhost:3000/api/shopping_cart/${user_id}/${cart_id}`);
+        const res = await fetch(`http://localhost:3000/api/shopping_cart/${12}/${12}`);
         const fetched_cart = await res.json();
         // modify gotten cart
         if (res.ok) {
           console.log(fetched_cart);
           // put cart into function to convert it to readable by the factory function for DisplayMany
-          mapCartToDisplay(fetched_cart)
+          const mappped = await mapItemDictToObjArray(fetched_cart.item_dict)
+          setCart(mappped)
         }
+        return fetched_cart
       } catch (error) {
         console.error(error);
       }
@@ -63,27 +88,28 @@ function Cart(user_id=12,cart_id=12) {
     //   }
     // };
     fetchCart()
-  },[cart]);
+  },
+  [] );
 function generateCard(obj){
-  // const [cart, setCart] = useState([{}]);
   return(
-    <div className="cart-card">
-      <img src={obj.default_photo}></img>
-      <div className="info"><p>${obj.price}</p><p>{obj.name}</p>
-      <div>
+    <div className="cart-card flex-h">
+      <img src={obj.default_photo} className="cover"></img>
+      <div className="info flex-v"><p>${obj.price}</p><p>{obj.name}</p>
+      <div className="flex-h button-box">
       <button onClick={()=>{removeFromCart(1)}}>-</button>
-        {/* <input type="number" onInput={(e)=>{modifyCart(e.target[0].value)}}></input> */}
-        <p>{obj.quantity}</p>
+        <input type="number" value={obj.quantity} onInput={(e)=>{modifyCart(e.target[0].value)}}></input>
+        {/* <div><p>{obj.quantity}</p></div> */}
         <button onClick={()=>{addToCart(1)}}>+</button>
-        </div>
       </div>
     </div>
+    </div>
+
   )
 }
   return (
-<div>
+<div className="flex-v fill-screen cart">
       <h1>YOUR CART</h1>
-      <DisplayMany data={cart} factory={generateCard} emptyDataText="Your cart is empty."/>
+      <DisplayMany data={cart} factory={generateCard} emptyDataText="Your cart is empty." additionalClasses={"scroll-y"}/>
     </div>
   );
 }
