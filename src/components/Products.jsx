@@ -37,22 +37,23 @@ function Products() {
      function generateCard(obj){
 
       return(<div
-      className="Item_Card"
+      className="item-card"
       >
         <div>
           <button
           className="Favorites" onClick={()=> {toggleFavorite(obj.id);}}
           >Add To Favorites
           </button>
-          <img src={obj.default_photo} alt="Default Item Card Photo" />
-        <p>{obj.price}</p>
-        <a href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
+          <img src={obj.default_photo} alt="Default Item Card Photo" className="square"/>
+        <p>${obj.price}</p>
         </div>
 
         <div>
-        <p>{obj.name}</p>
+          
+        <a href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
+        {/* <p>{obj.name}</p> */}
         <button
-        className="Adding_Button"
+        className="adding-button"
         onClick={() => {addToCart(obj.id);}}>Add To Cart 
         </button>
         </div>

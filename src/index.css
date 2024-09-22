@@ -184,7 +184,60 @@ footer {
     flex-direction: row;
   }
 }
-
+.square{
+  object-fit: cover;
+  object-position: 50% 50%;
+  aspect-ratio: 1/1;
+}
+.flex-h{
+  display: flex;
+  flex-direction: row;
+}
+.flex-v{
+  display: flex;
+  flex-direction: column;
+}
+.unexpanded{
+  height: 0vh;
+  visibility: hidden;
+}
+.checkout{
+  
+  .dropdown{
+    margin-bottom: -0.5%;
+  }
+}
+.dropdown{
+  z-index: auto;
+  /* transform: translateY(-4px); */
+  
+  
+  position:relative;
+  offset-position: 1%;
+  button{background-color: var(--periwinkle);color: var(--delft-blue); font-size: larger; border-radius: 5% 5% 0% 0%/100% ;   border: 2px solid var(--delft-blue);  z-index: auto; 
+    border-width: 1.25px 3px 1.75px;}
+  span{background-color: var(--white);}
+}
+.button-box{
+  place-content: stretch space-evenly;
+  button {
+  width: 100%;
+  margin: 0;
+  flex:1;
+  border-radius: 0%;
+}
+p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black);}
+}
+.info{
+  width: inherit;
+  height: inherit;
+}
+.cart-card{
+  width: 30vw;
+  height: 15vh;
+  background-color: var(--fairy-tale);
+  border-radius: 5%;
+}
 .tag {
   flex-direction: column;
   place-items: center;
@@ -199,6 +252,45 @@ footer {
     border-color: transparent;
     background-color: transparent;
   }
+}
+/* .display-many{flex-wrap: wrap; place-content: end center;} */
+.item-card {
+  /* width: 15%;
+  height: 15%; */
+  margin: 1%;
+  /* padding: 0% 3%; */
+  clip-path: fill-box;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--delft-blue);
+  border-radius: 2.5%;
+  img{
+    min-height: 25vh;
+    max-height: 25vh;
+    border-radius: 2.5%;
+    flex:2
+  }
+  a{color:var(--delft-blue); font-size: x-large;}
+  >div:nth-of-type(1){
+    background-color: var(--delft-blue);
+    
+    flex:1;
+    p{color:var(--white);text-align: start; text-indent: 10%; font-size: larger; margin: 0;}
+    /* :last-child {
+      align-self: center;
+    } */
+  }
+  >div:nth-of-type(2){
+    background-color: var(--periwinkle);
+    flex:3;
+    padding: 5% 3%;
+    /* padding-inline: 3%; */
+  }
+  button{font-size:medium;}
+}
+.display-many{
+  display: flex;
+  place-content: end space-between;
 }
 span:nth-of-type(even){
   .tag{
