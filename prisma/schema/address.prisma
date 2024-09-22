@@ -1,6 +1,7 @@
 model Address {
   id Int @id @default(autoincrement()) 
-  user_id Int     
+  user User @relation("Address",fields: [user_id], references: [id])
+  user_id Int 
   zip String  
   street String  
   apartment String? // Optional apartment number, may not apply to all addresses

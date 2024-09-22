@@ -10,5 +10,8 @@ past_transactions_buyer Past_Transactions[] @relation(name: "Bought") // user ha
 browsing_history Browsing_History? @relation(name: "Browsing") // optional to account for fresh user
 shopping_cart Shopping_Cart? @relation(name: "Shopping") // optional to account for empty cart
 items Item[] @relation(name: "Seller") // user is the seller of these items
+credit_cards Credit_Card[] @relation(name: "Credit Card") // user's credit cards
+addresses Address[] @relation(name: "Address") // user's credit cards
+
 is_admin Boolean ? @default(false) // if user is admin or not
 }
