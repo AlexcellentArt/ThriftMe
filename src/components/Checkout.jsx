@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 // const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 import Dropdown from "./Dropdown";
 
+import DisplayMany from "./DisplayMany";
+
 function Checkout({props}){
   const { token } = useContext(AuthContext);
   // see if I can't fix this to use form generator
@@ -22,7 +24,7 @@ function Checkout({props}){
   // Related To Summary
   const [total, setTotal] = useState(0);
   const [amount, setAmount] = useState(0);
-
+  const [cart, setCart] = useState({mapped:{}});
   const makePayment = async () => {
     // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
     const body = {
@@ -49,6 +51,10 @@ function Checkout({props}){
     0)
     setAmount(quantity)
     setTotal(cart.total_cost);
+    setCart(cart)
+  }
+  function summarizeItem(obj) {
+    return (<p>{obj.name}({obj.quantity}) - ${obj.quantity*obj.price}</p>)
   }
   return (
     // <Elements stripe={stripePromise} options={options}>
@@ -57,8 +63,11 @@ function Checkout({props}){
         <Dropdown label="Credit Card">TBM</Dropdown>
         <Dropdown label="Address">TBM</Dropdown>
         <Dropdown label="Summary">
-          <p></p>
-          <p>Item Total({amount}): ${total}</p>
+          <DisplayMany data={cart.mapped} factory={summarizeItem} additionalClasses="flex-v"/>
+          <hr />
+          <p className="merriweather-bold">Total: ${total}</p>
+          <hr />
+        <button className="three-d-button">Checkout</button>
         </Dropdown>
       </div>
       <Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />

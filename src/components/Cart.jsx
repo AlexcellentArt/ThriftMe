@@ -41,6 +41,8 @@ async function processCartUpdate(cart) {
   setCart(mappped)
   // if cart data needs to be passed back up, it will be done so here
   if (passUpCart){
+    // mapped is added onto this data just in case
+    cart["mapped"] = mappped
     passUpCart(cart)
   }
 }
