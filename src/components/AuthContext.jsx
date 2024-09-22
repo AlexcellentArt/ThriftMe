@@ -23,14 +23,16 @@ export function AuthContextProvider({ children }) {
       // if (NotLoggedIn()) {
       //   return;
       // }
-      modifyCart(item_id, 1);
+      const modified = modifyCart(item_id, 1);
+      return modified
     }
   }
   async function removeFromCart(item_id) {
-    if (NotLoggedIn()) {
-      return;
-    }
-    modifyCart(item_id, -1);
+    // if (NotLoggedIn()) {
+    //   return;
+    // }
+    const modified = modifyCart(item_id, -1);
+    return modified
   }
 
   async function calculatePrice(item_dict) {
@@ -84,6 +86,7 @@ export function AuthContextProvider({ children }) {
             body: JSON.stringify(cart),
           });
           const res = await response.json();
+          return res
         } catch (error) {
           console.error(error);
         }

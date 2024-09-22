@@ -38,26 +38,6 @@ function Cart(user_id=12,cart_id=12) {
   //    [] );
   //INCOMPLETE CODE SOMETHING IS NOT COMPLETE IN THE TRY SECTION OF THE CODE
   useEffect(() => {
-    async function mapCartToDisplay(item_dict) {
-      const cartArr = []
-      try {
-        for (const id in item_dict) {
-          //get item by id
-          console.log(id)
-          const res = await fetch(`http://localhost:3000/api/item/${id}`);
-          // throw if missing
-          if (!res.ok){throw Error("ITEM MISSING")}
-          const item = await res.json();
-          // add quantity of item in cart to obj
-          item["quantity"] = item_dict[id]
-          cartArr.push(item)
-        }
-      } catch (error) {
-        console.error(error)
-      }
-      console.log(cartArr)
-      setCart(cartArr)
-    }
     async function fetchCart() {
       // get cart
       try {
@@ -90,16 +70,20 @@ function Cart(user_id=12,cart_id=12) {
     fetchCart()
   },
   [] );
+async function processCartUpdate(item_dict) {
+  const mappped = await mapItemDictToObjArray(item_dict)
+  setCart(mappped)
+}
 function generateCard(obj){
   return(
     <div className="cart-card flex-h">
       <img src={obj.default_photo} className="cover"></img>
       <div className="info flex-v"><p>${obj.price}</p><p>{obj.name}</p>
       <div className="flex-h button-box">
-      <button onClick={()=>{removeFromCart(1)}}>-</button>
+      <button onClick={async()=>{const modded = await removeFromCart(obj.id);processCartUpdate(modded.item_dict)}}>-</button>
         <input type="number" value={obj.quantity} onInput={(e)=>{modifyCart(e.target[0].value)}}></input>
         {/* <div><p>{obj.quantity}</p></div> */}
-        <button onClick={()=>{addToCart(1)}}>+</button>
+        <button onClick={async()=>{const modded = await addToCart(obj.id); processCartUpdate(modded.item_dict)}}>+</button>
       </div>
     </div>
     </div>
