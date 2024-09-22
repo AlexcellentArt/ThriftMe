@@ -44,7 +44,7 @@ function DisplayMany({ data = [], factory = undefined, emptyDataText = "" }) {
     );
   }
   return (
-    <div>
+    <div className="display-many">
       {
         //DOCUMENTATION: If length is 0, return no matches and display the emptyDataText
         !data.length ? (

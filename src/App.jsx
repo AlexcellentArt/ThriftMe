@@ -44,18 +44,20 @@ function App() {
           <Route
             path="/checkout"
             element={
-              token ? <Checkout/> : <Navigate to="/login" />
+              <Checkout/>
+             // token ? <Checkout/> : <Navigate to="/login" />
             }
           />
 
           <Route
             path="/order/:id"
             element={
-              token ? (
-                <OrderConfirmation/>
-              ) : (
-                <Navigate to="/login" />
-              )
+              <OrderConfirmation/>
+              // token ? (
+              //   <OrderConfirmation/>
+              // ) : (
+              //   <Navigate to="/login" />
+              // )
             }
           />
 
@@ -66,8 +68,8 @@ function App() {
           {/* Only logged-in users can view their account */}
           <Route
             path="/account"
-            element={
-              token ? <Account token={token} /> : <Navigate to="/login" />
+            element={<Account/>
+              // token ? <Account/> : <Navigate to="/login" />
             }
           />
 
@@ -75,11 +77,12 @@ function App() {
           <Route
             path="/admin"
             element={
-              isAdmin ? (
-                <AdminDashboard token={token} />
-              ) : (
-                <Navigate to="/login" />
-              )
+              <AdminDashboard />
+              // isAdmin ? (
+              //   <AdminDashboard/>
+              // ) : (
+              //   <Navigate to="/login" />
+              // )
             }
           />
         </Routes>
