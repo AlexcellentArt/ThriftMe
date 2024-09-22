@@ -1,9 +1,8 @@
 import React, { useContext, useState,useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import DisplayMany from "./DisplayMany";
-function Cart(user_id=12,cart_id=12) {
+function Cart({user_id=12,cart_id=12}) {
   const {addToCart,removeFromCart,modifyCart,mapItemDictToObjArray} = useContext(AuthContext);
-  // const [data, setData] = useState([{}]);
   const [cart, setCart] = useState([      {
     seller_id: 1,
     name: "Tulum Dress",
@@ -16,33 +15,12 @@ function Cart(user_id=12,cart_id=12) {
     quantity:6
   }]);
 
-  // useEffect (()=>{
-
-  //   async function getProduct(){
-  //     try{
-  //       const response= await fetch
-  //       ("http://localhost:3000/api/item",);
-  //       const data= await response.json();
-  //       console.log(data);
-  //       setProduct(data);
-  //       console.log(products);
-
-  //     }
-  //    catch (error) {
-  //     console.log(
-  //     "Looks like I can't display your page,when I fetched from API it did not work");
-  //     // console.error(error);
-  //     }
-  //   }
-  //   getProduct(); },
-  //    [] );
-  //INCOMPLETE CODE SOMETHING IS NOT COMPLETE IN THE TRY SECTION OF THE CODE
   useEffect(() => {
     async function fetchCart() {
       // get cart
       try {
         // will need to add check to see if admin and if so let get happen regardless
-        const res = await fetch(`http://localhost:3000/api/shopping_cart/${12}/${12}`);
+        const res = await fetch(`http://localhost:3000/api/shopping_cart/${user_id}/${cart_id}`);
         const fetched_cart = await res.json();
         // modify gotten cart
         if (res.ok) {
@@ -53,20 +31,9 @@ function Cart(user_id=12,cart_id=12) {
         }
         return fetched_cart
       } catch (error) {
-        console.error(error);
+        console.error("Failed to load cart:", error);
       }
     }
-    // const LoadPage = async () => {
-    //   try {
-    //     const res = await fetch(`${apiURL}/cart`, {
-    //       method: "GET",
-    //       headers: { "Content-Type": "application/json" },
-    //     });
-    //     //INCOMPLETE SECTION HERE!!!!!!!!
-    //   } catch (error) {
-    //     console.error("Failed to load cart:", error);
-    //   }
-    // };
     fetchCart()
   },
   [] );
@@ -85,7 +52,6 @@ function generateCard(obj){
         const modBy = obj.quantity > e.target.value ? -1:1;
         const modded = await modifyCart(obj.id,modBy);
         processCartUpdate(modded.item_dict)}}></input>
-        {/* <div><p>{obj.quantity}</p></div> */}
         <button onClick={async()=>{const modded = await addToCart(obj.id); processCartUpdate(modded.item_dict)}}>+</button>
       </div>
     </div>
