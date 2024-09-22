@@ -81,7 +81,10 @@ function generateCard(obj){
       <div className="info flex-v"><p>${obj.price}</p><p>{obj.name}</p>
       <div className="flex-h button-box">
       <button onClick={async()=>{const modded = await removeFromCart(obj.id);processCartUpdate(modded.item_dict)}}>-</button>
-        <input type="number" value={obj.quantity} onInput={(e)=>{modifyCart(e.target[0].value)}}></input>
+        <input type="number" value={obj.quantity} onInput={async(e)=>{console.log(e.target);
+        const modBy = obj.quantity > e.target.value ? -1:1;
+        const modded = await modifyCart(obj.id,modBy);
+        processCartUpdate(modded.item_dict)}}></input>
         {/* <div><p>{obj.quantity}</p></div> */}
         <button onClick={async()=>{const modded = await addToCart(obj.id); processCartUpdate(modded.item_dict)}}>+</button>
       </div>
