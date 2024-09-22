@@ -1,5 +1,5 @@
 import { AuthContext } from "./AuthContext";
-import { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Cart from "./Cart";
 import OrderConfirmation from "./OrderConfirmation";
 // import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -8,16 +8,21 @@ import { useNavigate } from "react-router-dom";
 // import {loadStripe} from '@stripe/stripe-js';
 // const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 import Dropdown from "./Dropdown";
-function Checkout() {
+
+function Checkout({props}){
   const { token } = useContext(AuthContext);
   // see if I can't fix this to use form generator
-//   const stripe = useStripe();
-//   const elements = useElements();
+  //   const stripe = useStripe();
+  //   const elements = useElements();
   const [city, setCity] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [error, setError] = useState(null);
+  // Related To Summary
+  const [total, setTotal] = useState(0);
+  const [amount, setAmount] = useState(0);
+
   const makePayment = async () => {
     // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
     const body = {
@@ -37,18 +42,28 @@ function Checkout() {
     //   console.log(result.error);
     // }
   };
+  function updateCheckout(cart) {
+    console.log("update checkout:");
+    console.log(cart)
+    const quantity = Object.values(cart.item_dict).reduce((acc, currentQty) => acc + currentQty,
+    0)
+    setAmount(quantity)
+    setTotal(cart.total_cost);
+  }
   return (
     // <Elements stripe={stripePromise} options={options}>
     <div className="split-screen fill-screen flex-h">
       <div className="checkout">
         <Dropdown label="Credit Card">TBM</Dropdown>
         <Dropdown label="Address">TBM</Dropdown>
-        <Dropdown label="Summary"><p>Blah</p><p>Blah</p></Dropdown>
+        <Dropdown label="Summary">
+          <p></p>
+          <p>Item Total({amount}): ${total}</p>
+        </Dropdown>
       </div>
-      <Cart user_id={12} cart_id={12} />
+      <Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />
     </div>
     // </Elements>
   );
 }
-
 export default Checkout;

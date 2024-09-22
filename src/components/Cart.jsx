@@ -1,7 +1,7 @@
 import React, { useContext, useState,useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import DisplayMany from "./DisplayMany";
-function Cart({user_id=12,cart_id=12}) {
+function Cart({user_id=12,cart_id=12, passUpCart}) {
   const {addToCart,removeFromCart,modifyCart,mapItemDictToObjArray} = useContext(AuthContext);
   const [cart, setCart] = useState([{
     seller_id: 1,
@@ -26,8 +26,7 @@ function Cart({user_id=12,cart_id=12}) {
         if (res.ok) {
           console.log(fetched_cart);
           // put cart into function to convert it to readable by the factory function for DisplayMany
-          const mappped = await mapItemDictToObjArray(fetched_cart.item_dict)
-          setCart(mappped)
+          processCartUpdate(fetched_cart)
         }
         return fetched_cart
       } catch (error) {
@@ -37,9 +36,13 @@ function Cart({user_id=12,cart_id=12}) {
     fetchCart()
   },
   [] );
-async function processCartUpdate(item_dict) {
-  const mappped = await mapItemDictToObjArray(item_dict)
+async function processCartUpdate(cart) {
+  const mappped = await mapItemDictToObjArray(cart.item_dict)
   setCart(mappped)
+  // if cart data needs to be passed back up, it will be done so here
+  if (passUpCart){
+    passUpCart(cart)
+  }
 }
 function generateCard(obj){
   return(
@@ -47,12 +50,12 @@ function generateCard(obj){
       <img src={obj.default_photo} className="cover"></img>
       <div className="info flex-v"><p>${obj.price}</p><p>{obj.name}</p>
       <div className="flex-h button-box">
-      <button onClick={async()=>{const modded = await removeFromCart(obj.id);processCartUpdate(modded.item_dict)}}>-</button>
+      <button onClick={async()=>{const newCart = await removeFromCart(obj.id);processCartUpdate(newCart)}}>-</button>
         <input type="number" value={obj.quantity} onInput={async(e)=>{console.log(e.target);
         const modBy = obj.quantity > e.target.value ? -1:1;
-        const modded = await modifyCart(obj.id,modBy);
-        processCartUpdate(modded.item_dict)}}></input>
-        <button onClick={async()=>{const modded = await addToCart(obj.id); processCartUpdate(modded.item_dict)}}>+</button>
+        const newCart = await modifyCart(obj.id,modBy);
+        processCartUpdate(newCart)}}></input>
+        <button onClick={async()=>{const newCart = await addToCart(obj.id); processCartUpdate(newCart)}}>+</button>
       </div>
     </div>
     </div>
