@@ -3,7 +3,7 @@ import { AuthContext } from "./AuthContext";
 import DisplayMany from "./DisplayMany";
 function Cart({user_id=12,cart_id=12}) {
   const {addToCart,removeFromCart,modifyCart,mapItemDictToObjArray} = useContext(AuthContext);
-  const [cart, setCart] = useState([      {
+  const [cart, setCart] = useState([{
     seller_id: 1,
     name: "Tulum Dress",
     price: 5,
