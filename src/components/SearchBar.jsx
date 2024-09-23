@@ -1,15 +1,25 @@
-import { AuthContext } from "./AuthContext";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import DisplayMany from "./DisplayMany";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 function SearchBar() {
-  // setState searchTags, should be an array of strings
-  const { token } = useContext(AuthContext);
+  const nav = useNavigate();
   const [tags, setTags] = useState([{ text: "Test" }, { text: "Test2" }]);
   const [addingTag, setAddingTag] = useState(false);
-  // You are gonna want an input type search inside the div. Next to it you are gonna want a button with # inside it.
-  // setState stringArray
-  // relevant docs: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/search
+  const [search, setSearch] = useState("");
+  async function handleSearch() {
+    console.log(search, tags);
+    if (search || tags.length) {
+      nav({
+        pathname: "/products/",
+        search: createSearchParams({
+          text_search: search,
+          tags: tags.map((obj) => {
+            return obj.text;
+          }),
+        }).toString(),
+      });
+    }
+  }
   async function addTag(text) {
     // trims whitespace
     text = text.trim();
@@ -43,13 +53,23 @@ function SearchBar() {
         <p>#{obj.text}</p>
         <button
           className="transparent"
-          onClick={() => {removeSelf();}}>X</button>
+          onClick={() => {
+            removeSelf();
+          }}
+        >
+          X
+        </button>
       </div>
     );
   }
   return (
     <div className="search-bar">
-      <input type="search" />
+      <input
+        type="search"
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
       <DisplayMany data={tags} factory={createTag} />
       {addingTag && (
         <form
@@ -69,7 +89,12 @@ function SearchBar() {
       >
         #
       </button>
-      {/* <button></button> */}
+      <button
+        type="submit"
+        onClick={() => {
+          handleSearch();
+        }}
+      ></button>
     </div>
   );
 }
