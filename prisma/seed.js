@@ -1,4 +1,5 @@
 const prisma = require("../prisma");
+const bcrypt = require('bcrypt');
 const seed = async () => {
   const createUsers = async () => {
     const users = [
@@ -20,6 +21,10 @@ const seed = async () => {
         // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible. Making an admin for ease of testing those as well.
         {name:"L",email:"l@l",password:"l",is_admin:true},
     ];
+    // encrypt passwords
+    const salt = await bcrypt.genSalt(13);
+    for (let index = 0; index < users.length; index++)
+    {users[index].password = await bcrypt.hash(users[index].password, salt);}
     await prisma.user.createMany({ data: users });
   };
   const createTransactions = async () => {
