@@ -2,7 +2,7 @@ const router = require("express").Router();
 module.exports = router;
 const { compareSync } = require("bcrypt");
 const prisma = require("../prisma");
-const { isLoggedIn,authenticate } = require("./helpers/auth.js");
+const { isLoggedIn,authenticate,findUserWithToken } = require("./helpers/auth.js");
 const gen_errors = require("./helpers/gen_errors.js")
 require("dotenv").config().env;
 const bcrypt = require('bcrypt');
@@ -37,12 +37,12 @@ router.post("/login",async (req, res, next) => {
   console.log("LOPGGING IN")
   try {
     const {email,password} = await req.body;
+    const salt = await bcrypt.genSalt(13);
     const user = await prisma.user.findUnique({ where: {email} });
     if (!user){
       return next(gen_errors.genericNotFoundError("user","email",email))
     }
-    // !compareSync(password,user.password)
-    if(user.password != password)
+    if(!compareSync(password,user.password))
     {
       return next(gen_errors.genericViolationDataError("input","password","wrong"))
     }
@@ -62,6 +62,10 @@ router.post("/register",async (req, res, next) => {
       console.log("EXISTS")
       return next(gen_errors.genericViolationDataError("user", "email", "already in usage"));
     }
+    // encrypt password
+    const salt = await bcrypt.genSalt(13);
+    inputs["password"] = await bcrypt.hash(inputs["password"], salt);
+    // validateInputs
     const user = await prisma.user.create({ data: inputs });
     const token = jwt.sign({userId: user.id},JWT)
     console.log(token)

@@ -1,4 +1,5 @@
 const prisma = require("../prisma");
+const bcrypt = require('bcrypt');
 const seed = async () => {
   const createUsers = async () => {
     const users = [
@@ -17,9 +18,13 @@ const seed = async () => {
         {name:"Barry B Benson",email:"bbenson@gmail.com",password:"beemoviescript"},
         {name:"Doom Guy",email:"dGuy@hellmail.arrgh",password:"RIPdaisy"},
         {name:"Isabelle",email:"isabelle@nookazon",password:"Helpb3ll"},
-        // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible.
-        {name:"L",email:"l@l",password:"l"}
+        // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible. Making an admin for ease of testing those as well.
+        {name:"L",email:"l@l",password:"l",is_admin:true},
     ];
+    // encrypt passwords
+    const salt = await bcrypt.genSalt(13);
+    for (let index = 0; index < users.length; index++)
+    {users[index].password = await bcrypt.hash(users[index].password, salt);}
     await prisma.user.createMany({ data: users });
   };
   const createTransactions = async () => {
@@ -81,6 +86,16 @@ const seed = async () => {
           "https://i5.walmartimages.com/seo/Wehilion-Mens-Suits-Set-Slim-Fit-Men-3-Piece-Dress-Suit-Prom-Blazer-Wedding-Formal-Jacket-Vest-Pants-Navy-Blue-XL_ce590b9b-405f-4948-af6a-a817cd66f9cd.4e404934c089dc5fabeb4616f32245e6.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF",
         additional_photos: [""],
         tags: ["men's suits", "women's suits"]
+      },
+      {
+        seller_id: 4,
+        name: "Cooler Suit",
+        price: 200,
+        description: "Sequin suit",
+        default_photo:
+          "https://i.ebayimg.com/images/g/neAAAOSwRq9dXg6w/s-l1000.jpg",
+        additional_photos: [""],
+        tags: ["men's suits", "women's suits","sequins"]
       }
     ];
     await prisma.item.createMany({ data: item });
@@ -173,6 +188,11 @@ const seed = async () => {
         user_id:12,
         item_dict:{4:2}, // $100 Cool Suit x 2
         total_cost: 200,
+      },
+      {
+        id: 13,
+        item_dict:{4:2}, // $100 Cool Suit x 2
+        total_cost: 200,
       }
     ];
 
@@ -180,7 +200,7 @@ const seed = async () => {
   };
 
 const CreateBrowsingHistory = async () => {
-  const browsinghistory = [
+  const browsing_history = [
     {
       id: 1,
       user_id: 1, // Larry
@@ -216,18 +236,56 @@ const CreateBrowsingHistory = async () => {
       looked_at_tags: ["women's suits"],
     },
   ];
-  await prisma.browsing_History.createMany({ data: browsinghistory });
+  await prisma.browsing_History.createMany({ data: browsing_history });
 };
+const CreateCreditCards = async () => {
+  const cards = [
+    {
+      // id:1,
+      user_id: 12,
+      pin:4000000000000002,
+      cvc:111,
+      exp_date: new Date("2019-01-16")
+    },
+    {
+      // id:2,
+      user_id: 12,
+      pin:4000100100000001,
+      cvc:212,
+      exp_date: new Date("2029-02-12")
+    }]
+    await prisma.credit_Card.createMany({data:cards})
+  }
+  const CreateAddresses = async () => {
+    const addresses = [
+      {
+        user_id:12,
+        zip : 41867,
+        street:"Domino Drive",
+        apartment:"Turtle 204"
+      },
+      {
+        user_id:12,
+        zip : 73041,
+        street:"Hurricane Lane"
+      }]
+      await prisma.address.createMany({data:addresses})
+  }
 // all tables are created
 await createUsers();
 await CreateItem();
 await CreateBrowsingHistory();
 await CreateShoppingCart();
 await createTransactions();
+await CreateCreditCards();
+await CreateAddresses();
 // final step is adding favorites. For now, the first 5 items in seed are added to Melissa Cat as favorites. She is the only one who starts out with them so testing can be isolated.
 // Might need to make an explicit many to many model for this, but Alex can handle it and it is unlikely to effect operations as of now.
 prisma.user.update({where:{id:5},data:{favorite:[1]}})
-prisma.item.update({where:{id:1},data:{favorite:[1]}})
+prisma.item.update({where:{id:1},data:{favorite:[5]}})
+prisma.user.update({where:{id:12},data:{favorite:[2,3]}})
+prisma.item.update({where:{id:2},data:{favorite:[12]}})
+prisma.item.update({where:{id:3},data:{favorite:[12]}})
 };
 seed()
   .then(async () => await prisma.$disconnect)
