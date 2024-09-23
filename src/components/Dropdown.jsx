@@ -3,7 +3,7 @@ function Dropdown({label, children}) {
     const [expanded, setExpanded] = useState(false);
     return (<span className="dropdown flex-v">
         <button className='transparent' onClick={()=>{setExpanded(!expanded)}}>{label}</button>
-        {expanded && <div>{children}</div>}
+        {expanded && <span>{children}</span>}
     </span>);
 }
 export default Dropdown;

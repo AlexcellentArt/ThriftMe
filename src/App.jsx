@@ -15,9 +15,9 @@ import Account from './components/Account';
 import AdminDashboard from './components/AdminDashboard';
 import PageWrapper from "./components/PageWrapper.jsx";
 import { AuthContextProvider,AuthContext } from "./components/AuthContext.jsx";
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
-const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+// import {Elements} from '@stripe/react-stripe-js';
+// import {loadStripe} from '@stripe/stripe-js';
+// const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 function App() {
   const {token,isAdmin} = useContext(AuthContext);
   // const options = {
