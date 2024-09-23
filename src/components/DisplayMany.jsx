@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-function DisplayMany({ data = [], factory = undefined, emptyDataText = "" }) {
+function DisplayMany({ data = [], factory = undefined, emptyDataText = "" , additionalClasses}) {
   useEffect(() => {
     console.log("Display Many Reload Triggered");
   }, [data]);
@@ -44,7 +44,7 @@ function DisplayMany({ data = [], factory = undefined, emptyDataText = "" }) {
     );
   }
   return (
-    <div>
+    <div className={`display-many ${additionalClasses}`}>
       {
         //DOCUMENTATION: If length is 0, return no matches and display the emptyDataText
         !data.length ? (

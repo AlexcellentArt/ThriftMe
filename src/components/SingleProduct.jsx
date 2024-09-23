@@ -4,6 +4,20 @@ import { useParams } from "react-router-dom";
 function SingleProduct() {
     const {token} = useContext(AuthContext);
     // in useEffect, make a fetch get call to items/:id
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch("/items/:id");
+                //              is the fetch call above correct?
+                const result = await response.json();
+                console.log(result.message);
+
+            } catch (error) {
+                setError(error);
+            }
+        }
+        fetchData();
+    }, []);
     // Could probably get away with using a DisplayMany for the tags and another one for the additional photos
     // to see an example of how to use DisplayMany, look at SearchBar, where it is used to handle tags
     /// consult the Search Views / Products Page on our mockframe for how it should look

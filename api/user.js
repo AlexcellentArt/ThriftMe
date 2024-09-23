@@ -20,19 +20,19 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
-const validateInputs = async (inputs) => {
-  const inputs = { name, email, password } = await req.body;
-  console.log(inputs)
-  const missing = gen_errors.hasMissingInputs(inputs,["name", "email", "password"],"user")
-  if (missing){
-      return next(missing)
-  }
-  // const lengthViolations = gen_errors.hasLengthViolations()
-  // if (lengthViolations){}
-  // const notUnique = await gen_errors.isNotUnique("user","email",email);
-  // if (notUnique) {next(notUnique)}
-  return null
-}
+// const validateInputs = async (inputs) => {
+//   const inputs = { name, email, password } = await req.body;
+//   console.log(inputs)
+//   const missing = gen_errors.hasMissingInputs(inputs,["name", "email", "password"],"user")
+//   if (missing){
+//       return next(missing)
+//   }
+//   // const lengthViolations = gen_errors.hasLengthViolations()
+//   // if (lengthViolations){}
+//   // const notUnique = await gen_errors.isNotUnique("user","email",email);
+//   // if (notUnique) {next(notUnique)}
+//   return null
+// }
 router.post("/login",async (req, res, next) => {
   console.log("LOPGGING IN")
   try {

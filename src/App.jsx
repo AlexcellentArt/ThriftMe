@@ -15,10 +15,19 @@ import Account from './components/Account';
 import AdminDashboard from './components/AdminDashboard';
 import PageWrapper from "./components/PageWrapper.jsx";
 import { AuthContextProvider,AuthContext } from "./components/AuthContext.jsx";
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 function App() {
   const {token,isAdmin} = useContext(AuthContext);
+  // const options = {
+  //   // passing the client secret obtained from the server
+  //   clientSecret: '{{CLIENT_SECRET}}',
+  // };
   return (
     <AuthContextProvider>
+      
+    {/* <Elements stripe={stripePromise} options={options}> */}
     <BrowserRouter>
     <PageWrapper>
         <Routes>
@@ -35,18 +44,20 @@ function App() {
           <Route
             path="/checkout"
             element={
-              token ? <Checkout/> : <Navigate to="/login" />
+              <Checkout/>
+             // token ? <Checkout/> : <Navigate to="/login" />
             }
           />
 
           <Route
             path="/order/:id"
             element={
-              token ? (
-                <OrderConfirmation/>
-              ) : (
-                <Navigate to="/login" />
-              )
+              <OrderConfirmation/>
+              // token ? (
+              //   <OrderConfirmation/>
+              // ) : (
+              //   <Navigate to="/login" />
+              // )
             }
           />
 
@@ -57,8 +68,8 @@ function App() {
           {/* Only logged-in users can view their account */}
           <Route
             path="/account"
-            element={
-              token ? <Account token={token} /> : <Navigate to="/login" />
+            element={<Account/>
+              // token ? <Account/> : <Navigate to="/login" />
             }
           />
 
@@ -66,16 +77,19 @@ function App() {
           <Route
             path="/admin"
             element={
-              isAdmin ? (
-                <AdminDashboard token={token} />
-              ) : (
-                <Navigate to="/login" />
-              )
+              <AdminDashboard />
+              // isAdmin ? (
+              //   <AdminDashboard/>
+              // ) : (
+              //   <Navigate to="/login" />
+              // )
             }
           />
         </Routes>
       </PageWrapper>
     </BrowserRouter>
+    
+    {/* </Elements> */}
     </AuthContextProvider>
   );
 }
