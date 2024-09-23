@@ -5,9 +5,9 @@ const prisma = require("../prisma");
 const gen_errors = require("./helpers/gen_errors.js")
 // THINGS TO REPLACE TO GET FUNCTIONAL:
 
-//#1 REPLACE_THIS_WITH_MODEL_NAME ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
-//#2 INSERT_DATA_HERE: replace with the data being sent to table in a post or update func.  EXAMPLE: {name:"Kelly","email":"kelly@gmail", "password":"kellyRulez"}
-//#3 REPLACE_WITH_WHAT_DATA_YOU_WANT: replace with the data you want deconstructed out of req.body  EXAMPLE: {name,email,password}
+//#1(Completed) REPLACE_THIS_WITH_MODEL_NAME ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
+//#2(Completed) INSERT_DATA_HERE: replace with the data being sent to table in a post or update func.  EXAMPLE: {name:"Kelly","email":"kelly@gmail", "password":"kellyRulez"}
+//#3(Completed) REPLACE_WITH_WHAT_DATA_YOU_WANT: replace with the data you want deconstructed out of req.body  EXAMPLE: {name,email,password}
 //#4 THE PATHS: I left them blank so you could structure them as needed.
 
 // ### GET ###
@@ -38,10 +38,10 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-      const { REPLACE_WITH_WHAT_DATA_YOU_WANT } = await req.body;
+      const inputs = { user_id, zip, street, apartment } = await req.body;
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
-      const addresses = await prisma.addresses.create({ data: {INSERT_DATA_HERE}});
+      const addresses = await prisma.addresses.create({ data: inputs});
       res.json(addresses);
     } catch (error) {
       next(error)
@@ -58,12 +58,12 @@ router.post("/", async (req, res, next) => {
       if (!exists) {
         return next(gen_errors.genericNotFoundError("addresses","id",id));
       }
-		const { REPLACE_WITH_WHAT_DATA_YOU_WANT } = await req.body;
+		const inputs = { user_id, zip, street, apartment } = await req.body;
       // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
       // ex: if {!name} {next(genericMissingDataError("name","user"))}
       const addresses = await prisma.addresses.update({
         where: { id },
-        data: { INSERT_DATA_HERE },
+        data:  inputs ,
       });
       res.json(addresses);
     } catch(error) {
