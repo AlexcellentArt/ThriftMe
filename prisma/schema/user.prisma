@@ -1,14 +1,15 @@
 model User {
-id Int @id @default(autoincrement())
-name String // ex: Kesha
-email String @unique
-password String
-favorites Item[]@relation("Favorited")
-past_transactions_seller Past_Transactions[] @relation(name: "Sold") // user has sold in these transactions
-past_transactions_buyer Past_Transactions[] @relation(name: "Bought") // user has bought in these transactions
-
-browsing_history Browsing_History? @relation(name: "Browsing") // optional to account for fresh user
-shopping_cart Shopping_Cart? @relation(name: "Shopping") // optional to account for empty cart
-items Item[] @relation(name: "Seller") // user is the seller of these items
-is_admin Boolean ? @default(false) // if user is admin or not
+    id                       Int                 @id @default(autoincrement())
+    name                     String // ex: Kesha
+    email                    String              @unique
+    password                 String
+    is_admin                 Boolean?            @default(false) // if user is admin or not
+    favorites                Item[]              @relation("Favorited")
+    items                    Item[]              @relation(name: "Seller") // user is the seller of these items
+    past_transactions_seller Past_Transactions[] @relation(name: "Sold") // user has sold in these transactions
+    past_transactions_buyer  Past_Transactions[] @relation(name: "Bought") // user has bought in these transactions
+    credit_cards             Credit_Card[]       @relation(name: "Credit Card") // user's credit cards
+    addresses                Address[]           @relation(name: "Address") // user's credit cards
+    browsing_history         Browsing_History?   @relation(name: "Browsing") // optional to account for fresh user
+    shopping_cart            Shopping_Cart?      @relation(name: "Shopping") // optional to account for empty cart
 }
