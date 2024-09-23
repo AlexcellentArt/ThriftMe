@@ -17,8 +17,8 @@ const seed = async () => {
         {name:"Barry B Benson",email:"bbenson@gmail.com",password:"beemoviescript"},
         {name:"Doom Guy",email:"dGuy@hellmail.arrgh",password:"RIPdaisy"},
         {name:"Isabelle",email:"isabelle@nookazon",password:"Helpb3ll"},
-        // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible.
-        {name:"L",email:"l@l",password:"l"}
+        // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible. Making an admin for ease of testing those as well.
+        {name:"L",email:"l@l",password:"l",is_admin:true},
     ];
     await prisma.user.createMany({ data: users });
   };
@@ -183,6 +183,11 @@ const seed = async () => {
         user_id:12,
         item_dict:{4:2}, // $100 Cool Suit x 2
         total_cost: 200,
+      },
+      {
+        id: 13,
+        item_dict:{4:2}, // $100 Cool Suit x 2
+        total_cost: 200,
       }
     ];
 
@@ -190,7 +195,7 @@ const seed = async () => {
   };
 
 const CreateBrowsingHistory = async () => {
-  const browsinghistory = [
+  const browsing_history = [
     {
       id: 1,
       user_id: 1, // Larry
@@ -226,41 +231,38 @@ const CreateBrowsingHistory = async () => {
       looked_at_tags: ["women's suits"],
     },
   ];
-  await prisma.browsing_History.createMany({ data: browsinghistory });
+  await prisma.browsing_History.createMany({ data: browsing_history });
 };
 const CreateCreditCards = async () => {
   const cards = [
     {
-      id:1,
+      // id:1,
       user_id: 12,
-      pin:1111111111111111,
+      pin:4000000000000002,
       cvc:111,
-      exp_date: 2024-11
+      exp_date: new Date("2019-01-16")
     },
     {
-      id:2,
+      // id:2,
       user_id: 12,
-      pin:1121112111111111,
+      pin:4000100100000001,
       cvc:212,
-      exp_date: 2029-8
+      exp_date: new Date("2029-02-12")
     }]
     await prisma.credit_Card.createMany({data:cards})
   }
   const CreateAddresses = async () => {
     const addresses = [
       {
-        id:1,
-        user_id: 12,
-        pin:1111111111111111,
-        cvc:111,
-        exp_date: 2024-11
+        user_id:12,
+        zip : 41867,
+        street:"Domino Drive",
+        apartment:"Turtle 204"
       },
       {
-        id:2,
-        user_id: 12,
-        pin:1121112111111111,
-        cvc:212,
-        exp_date: 2029-8
+        user_id:12,
+        zip : 73041,
+        street:"Hurricane Lane"
       }]
       await prisma.address.createMany({data:addresses})
   }

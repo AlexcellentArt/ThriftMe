@@ -1,7 +1,7 @@
 model Shopping_Cart {
-  id  Int @id @default(autoincrement())
-  user User? @relation("Shopping",fields: [user_id], references: [id])
-  user_id Int? @unique
-  item_dict Json // in format of {item_id:item_amount} which are both ints, ex: {1:3,2:4,4:1}
+  id         Int   @id @default(autoincrement())
+  user       User? @relation("Shopping", fields: [user_id], references: [id])
+  user_id    Int?  @unique
+  item_dict  Json // in format of {item_id:item_amount} which are both ints, ex: {1:3,2:4,4:1}
   total_cost Int // should be int, ex: 1, not $1
 }

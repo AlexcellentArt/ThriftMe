@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Credit_Card" ALTER COLUMN "pin" SET DATA TYPE BIGINT;
