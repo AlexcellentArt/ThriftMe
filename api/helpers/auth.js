@@ -6,7 +6,7 @@ const JWT = process.env.JWT || 'shhh'
 const isLoggedIn = async(req, res, next)=>{
   try {
     console.log(req.headers)
-    req.user = await findUserWithToken(req.headers.authorization)
+    req.user = await findUserWithToken(req.headers.token)
     next()
   } catch (error) {
     next(error)
@@ -15,7 +15,7 @@ const isLoggedIn = async(req, res, next)=>{
 const isAdmin = async(req, res, next)=>{
   try {
     console.log(req.headers)
-    req.user = await findUserWithToken(req.headers.authorization)
+    req.user = await findUserWithToken(req.headers.isAdmin)
     next()
   } catch (error) {
     next(error)
@@ -29,8 +29,8 @@ const authenticate = async(req,res)=> {
   if (!user){
     return next(gen_errors.genericNotFoundError("user","email",email))
   }
-  // !compareSync(password,user.password)
-  if(user.password != password)
+  // bcrypt.!compareSync(password,user.password)
+  if(!bcrypt.compareSync(password,user.password))
   {
     // !compareSync(password,user.password)
     return next(gen_errors.genericViolationDataError("input","password","wrong"))
@@ -72,7 +72,7 @@ const findUserWithToken = async (token) => {
     // both possible errors are 401, so setting it here before throwing upward
     console.log("SETTING ERROR")
     error.status = 401
-    throw error
+    next(error)
   }
 };
 module.exports = {
