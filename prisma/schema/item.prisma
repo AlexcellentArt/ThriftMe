@@ -9,14 +9,14 @@
 // }
 
 model Item {
-  id              Int       @id @default(autoincrement()) // Primary key with auto-increment
-  seller User @relation("Seller",fields: [seller_id], references: [id]) // user selling this item
-  seller_id        Int       // Foreign key to the User table (automatically set when the item is posted)
-  name            String    // Name of the item, set in the add item form
-  price           Float     // Price of the item, set in the add item form
-  description     String?   // Optional detailed description of the item
-  default_photo    String    // Automatically set as the first item in the additionalPhotos array
+  id                Int      @id @default(autoincrement()) // Primary key with auto-increment
+  seller            User     @relation("Seller", fields: [seller_id], references: [id]) // user selling this item
+  seller_id         Int // Foreign key to the User table (automatically set when the item is posted)
+  name              String // Name of the item, set in the add item form
+  price             Float // Price of the item, set in the add item form
+  description       String // Optional detailed description of the item
+  default_photo     String // Automatically set as the first item in the additionalPhotos array
   additional_photos String[] @default([]) // Array of additional photo URLs, set in the add item form
-  tags            String[]  // Array of tag names, set in the add item form
-  favorites User[]@relation("Favorited") // users who've favorited this item
+  tags              String[] // Array of tag names, set in the add item form
+  favorites         User[]   @relation("Favorited") // users who've favorited this item
 }

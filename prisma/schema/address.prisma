@@ -1,0 +1,8 @@
+model Address {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation("Address", fields: [user_id], references: [id])
+  user_id   Int
+  zip       Int
+  street    String
+  apartment String? // Optional apartment number, may not apply to all addresses
+}
