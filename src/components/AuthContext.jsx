@@ -7,17 +7,13 @@ export function AuthContextProvider({ children }) {
   const userId = 12
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
+  const AutoHeader = () => {return {token:token,is_admin:isAdmin}}
   const NotLoggedIn = () => {
     if (!token) {
       console.error("Not logged in");
       return true;
     }
   };
-  async function toggleFavorite(item_id) {
-    if (NotLoggedIn()) {
-      return;
-    }
-  }
   async function addToCart(item_id) {
     {
       // if (NotLoggedIn()) {
@@ -150,7 +146,7 @@ export function AuthContextProvider({ children }) {
         isAdmin,
         login,
         logout,
-        toggleFavorite,
+        NotLoggedIn,
         addToCart,
         removeFromCart,
         modifyCart,

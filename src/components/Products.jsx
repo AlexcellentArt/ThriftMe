@@ -4,14 +4,14 @@ import { useParams,useNavigate } from "react-router-dom";
 import React from "react";
 import { AuthContext } from "./AuthContext";
 import { useEffect } from "react";
-
+import Favorite from "./Favorite";
 function Products() {
   const nav = useNavigate()
     const [tags, setTags]= useState([{}]);
 
     const [products, setProduct]= useState([{}]);
 
-    const {toggleFavorite, addToCart} = useContext(AuthContext)
+    const {addToCart} = useContext(AuthContext)
 
     useEffect (()=>{
 
@@ -40,10 +40,11 @@ function Products() {
       className="item-card"
       >
         <div>
-          <button
+          <Favorite id={obj.id}/>
+          {/* <button
           className="Favorites" onClick={()=> {toggleFavorite(obj.id);}}
           >Add To Favorites
-          </button>
+          </button> */}
           <img src={obj.default_photo} alt="Default Item Card Photo" className="square"/>
         <p>${obj.price}</p>
         </div>

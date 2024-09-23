@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import DisplayMany from "./DisplayMany";
 
 function SingleProduct() {
-   const {token,addToCart,toggleFavorite} = useContext(AuthContext);
+   const {token,addToCart} = useContext(AuthContext);
    const {id} = useParams();
 
    const [product, setProduct] = useState(null);
@@ -61,9 +61,8 @@ function createPhoto(obj) {
         </div>
       )}
       <div>
+        <div><p>${product.price}</p> </div>
       <h1>{product.name}</h1>
-    <p>{product.description}</p>
-    <p>Price: ${product.price}</p>
     <button className="three-d-button" onClick={()=>{addToCart(product.id)}}>Add To Cart</button>
       {/* muliple tags are now displayed */}
       <DisplayMany data={product.tags.map((text)=>{return {"text":text}})} factory={createTag}additionalClasses={"flex-h"} />
