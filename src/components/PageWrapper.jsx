@@ -9,7 +9,7 @@ function PageWrapper({children}) {
         </div>
         <Navigations/>
       </header>
-      <main>{children}</main>
+      <body>{children}</body>
       <footer>This is A Footer in PageWrapper. If you see this</footer>
     </>
   );
