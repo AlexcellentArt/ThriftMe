@@ -4,6 +4,7 @@ const { resolve } = require("path");
 require("dotenv").config();
 // const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const secret = "pleaseWorkIWillSacrificeAGoat"
 // app.use(express.json());
 // router to handle API route
 const router = require("express").Router();
@@ -18,6 +19,7 @@ router.post("/create-setup-intent", async (req, res) => {
     const setupIntent = await stripe.setupIntent.create({
       customer: customerId,
       payment_method_type: ["card"],
+      client_secret:`${userId}_secret_${secret}`
     });
     res.send(setupIntent);
   } catch (error) {
@@ -27,13 +29,13 @@ router.post("/create-setup-intent", async (req, res) => {
 });
 //checkout stripe payment api
 router.post("/create-checkout-session", async (req, res) => {
-  const { products } = req.body;
-  const lineItems = products.map((product) => ({
+  const { items } = req.body;
+  const lineItems = items.map((product) => ({
     price_data: {
       currency: "usd",
       product_data: {
         name: product.name,
-        images: [product.image],
+        images: [product.default_photo],
       },
       unit_amount: Math.round(product.price * 100),
     },
@@ -44,8 +46,8 @@ router.post("/create-checkout-session", async (req, res) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
+      success_url: "http://localhost:3000/api/stripe/success",
+      cancel_url: "http://localhost:3000/api/stripe/cancel",
     });
     res.json({ id: session.id });
   } catch (error) {
@@ -91,6 +93,15 @@ router.post("/webhook", async (req, res) => {
 router.get("/success", async (req, res) => {
   const path = resolve(process.env.STATIC_DIR + "/success.html");
   res.sendFile(path);
+});
+router.get("/cancel", async (req, res) => {
+  const path = resolve(process.env.STATIC_DIR + "/success.html");
+  res.sendFile(path);
+});
+router.get('/secret', async (req, res) => {
+  // const intent = await fetch("http://localhost:3000/api/stripe/create-setup-intent")
+  const { userId } = req.body;
+  res.json({client_secret:`${userId}_secret_${secret}`});
 });
 // app.listen(3000, () =>
 //   console.log(`Node server listening at http://localhost:3000`)

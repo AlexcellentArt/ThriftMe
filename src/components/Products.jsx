@@ -53,7 +53,7 @@ function Products() {
         <a href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
         {/* <p>{obj.name}</p> */}
         <button
-        className="adding-button"
+        className="three-d-button"
         onClick={() => {addToCart(obj.id);}}>Add To Cart 
         </button>
         </div>

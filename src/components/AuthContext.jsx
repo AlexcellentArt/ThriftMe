@@ -23,14 +23,16 @@ export function AuthContextProvider({ children }) {
       // if (NotLoggedIn()) {
       //   return;
       // }
-      modifyCart(item_id, 1);
+      const modified = modifyCart(item_id, 1);
+      return modified
     }
   }
   async function removeFromCart(item_id) {
-    if (NotLoggedIn()) {
-      return;
-    }
-    modifyCart(item_id, -1);
+    // if (NotLoggedIn()) {
+    //   return;
+    // }
+    const modified = modifyCart(item_id, -1);
+    return modified
   }
 
   async function calculatePrice(item_dict) {
@@ -62,10 +64,11 @@ export function AuthContextProvider({ children }) {
       if (res.ok) {
         console.log(cart);
         // if not in dict,
+        if (item_id < 1){throw new Error("Id cannot be less than 1")}
         if (!cart.item_dict[item_id]){cart.item_dict[item_id] = 0}
         const newAmount = cart.item_dict[item_id] + by;
         // check to see is 0 or negative, and if so, remove key
-        if (newAmount <= 0) {
+        if (newAmount <= 0 || cart.item_dict[item_id] == null) {
           delete cart.item_dict[item_id];
         }
         // else set it
@@ -84,6 +87,7 @@ export function AuthContextProvider({ children }) {
             body: JSON.stringify(cart),
           });
           const res = await response.json();
+          return res
         } catch (error) {
           console.error(error);
         }
