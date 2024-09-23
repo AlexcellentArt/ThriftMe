@@ -272,6 +272,10 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
     background-color: transparent;
   }
 }
+.fit-to-parent{
+  width: 100%;
+  height: 100%;
+}
 /* .display-many{flex-wrap: wrap; place-content: end center;} */
 .item-card {
   /* width: 15%;
@@ -307,9 +311,22 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
   }
   button{font-size:medium;}
 }
+.desc-box{
+  background-color: var(--periwinkle);
+  font-size: larger; 
+  border-radius: 2%/25%;
+  border: 2px solid var(--delft-blue);
+  border-width: 1.75px 2.5px 3px;
+  padding: 2%;
+  margin: 1% 1%;
+  flex:2;
+}
 .display-many{
   display: flex;
   place-content: end space-between;
+}
+.flex-start{
+  justify-content: flex-start;
 }
 span:nth-of-type(even){
   .tag{
