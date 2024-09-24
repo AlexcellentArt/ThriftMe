@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import HeartMask from "/src/assets/heart_mask.svg";
 
 import { AuthContext } from "./AuthContext";
 function Favorite(id) {
