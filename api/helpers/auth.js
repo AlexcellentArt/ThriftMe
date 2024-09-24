@@ -2,14 +2,17 @@ require("dotenv").config().env;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require("../../prisma");
+const { token } = require("morgan");
+const {genericMissingDataError} = require('./gen_errors')
 const JWT = process.env.JWT || 'shhh'
 const isLoggedIn = async(req, res, next)=>{
   try {
-    console.log(req.headers)
+    console.log(req.headers.token)
     req.user = await findUserWithToken(req.headers.token)
+    if (!req.user){throw new Error("NOT LOGGED IN")}
     next()
   } catch (error) {
-    next(error)
+    next()
   }
 }
 const isAdmin = async(req, res, next)=>{
@@ -21,6 +24,7 @@ const isAdmin = async(req, res, next)=>{
     next(error)
   }
 }
+// const convertTokenToUserID
 // const findUserWithToken = ({})
 const authenticate = async(req,res)=> {
 
@@ -42,41 +46,55 @@ const authenticate = async(req,res)=> {
 };
 
 const findUserWithToken = async (token) => {
-  let id;
+  let userId;
   console.log(`made it to finding user with ${JWT}`)
   console.log("What token findUserWithToken got "+token)
+
   try {
-    try {
-      if (token === undefined)
-      {
-        throw Error("No Token Sent");
-      }
       const payload = await jwt.verify(token, JWT);
-      id = payload.id;
-    } catch (error) {
-      throw new Error("payload not received")
+      userId = payload.userId;
+      console.log(payload)
+    const user = await prisma.user.findUnique({ where: { id:userId } });
+    if (!user) {
+      return next(gen_errors.genericNotFoundError("user", "email", email));
     }
-    console.log("payload got")
-    if (id === undefined||null)
-    {
-      throw new Error("user id not authorized")
-    }
-    console.log("AAAAAAAAAAAAA")
-  const user = await prisma.user.findUnique({ where: { id } });
-  if (!user) {
-    throw Error("user not authorized");
-  }
+    // try {
+  //     if (token === undefined)
+  //     {
+  //       throw Error("No Token Sent");
+  //     }
+  //     const payload = await jwt.verify(token, JWT);
+  //     id = payload.id;
+  //   } catch (error) {
+  //     throw new Error("payload not received")
+  //   }
+  //   console.log("payload got")
+  //   if (id === undefined||null)
+  //   {
+  //     throw new Error("user id not authorized")
+  //   }
+  //   console.log("AAAAAAAAAAAAA")
+  // const user = await prisma.user.findUnique({ where: { id } });
+  // if (!user) {
+  //   throw Error("user not authorized");
+  // }
   return user;
   }
   catch (error) {
     // both possible errors are 401, so setting it here before throwing upward
     console.log("SETTING ERROR")
     error.status = 401
-    next(error)
+    throw error
   }
 };
+const decodeToken = async(token)=>{
+  if (!token){return next(genericMissingDataError("token"),"header")}
+  const payload = await jwt.verify(token, JWT);
+  return payload;
+}
 module.exports = {
   authenticate,
   findUserWithToken,
-  isLoggedIn
+  isLoggedIn,
+  decodeToken
 };
