@@ -2,6 +2,8 @@ require("dotenv").config().env;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require("../../prisma");
+const { token } = require("morgan");
+const {genericMissingDataError} = require('./gen_errors')
 const JWT = process.env.JWT || 'shhh'
 const isLoggedIn = async(req, res, next)=>{
   try {
@@ -22,6 +24,7 @@ const isAdmin = async(req, res, next)=>{
     next(error)
   }
 }
+// const convertTokenToUserID
 // const findUserWithToken = ({})
 const authenticate = async(req,res)=> {
 
@@ -84,8 +87,14 @@ const findUserWithToken = async (token) => {
     throw error
   }
 };
+const decodeToken = async(token)=>{
+  if (!token){return next(genericMissingDataError("token"),"header")}
+  const payload = await jwt.verify(token, JWT);
+  return payload;
+}
 module.exports = {
   authenticate,
   findUserWithToken,
-  isLoggedIn
+  isLoggedIn,
+  decodeToken
 };

@@ -16,7 +16,9 @@ app.use(require("morgan")("dev"))
 app.use("/api",require("../api"));
 // error handling middleware
 app.use((error,req,res,next)=>{
-    res.status(Math.floor((res.status))||500).send({error:error})
+    console.error(error.message)
+    if (!error.status){error.status = 500}
+    res.status(Math.floor((res.status))||error.status).send({error:error})
 })
 // distribution path setup
 const path = require('path');
