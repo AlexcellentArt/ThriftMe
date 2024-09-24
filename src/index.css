@@ -480,7 +480,9 @@ hr {
 }
 hr:nth-of-type(even){border-top: 1.5px solid var(--delft-blue);}
 hr:nth-of-type(odd){border-bottom: 1.5px solid var(--delft-blue);}
-
+.big-text{
+  font-size: x-large;
+}
 
 .merriweather-light {
   font-family: "Merriweather", serif;
