@@ -139,22 +139,22 @@ function AdminDashboard() {
 
       {showContextMenu && (
         <div className="context-menu">
-          <button onClick={() => handleEditMenuAction("view")}>
+          <button className="big-text" onClick={() => handleEditMenuAction("view")}>
             View Product
           </button>
-          <button onClick={() => handleEditMenuAction("delete")}>
+          <button className="big-text" onClick={() => handleEditMenuAction("delete")}>
             Delete Listing
           </button>
-          <button onClick={() => handleEditMenuAction("changePhoto")}>
+          <button className="big-text" onClick={() => handleEditMenuAction("changePhoto")}>
             Change Photo
           </button>
-          <button onClick={() => handleEditMenuAction("editDescription")}>
+          <button className="big-text" onClick={() => handleEditMenuAction("editDescription")}>
             Edit Description
           </button>
-          <button onClick={() => handleEditMenuAction("editTags")}>
+          <button className="big-text" onClick={() => handleEditMenuAction("editTags")}>
             Edit Tags
           </button>
-          <button onClick={() => handleEditMenuAction("cancel")}>
+          <button className="big-text" onClick={() => handleEditMenuAction("cancel")}>
             Cancel Edit
           </button>
         </div>

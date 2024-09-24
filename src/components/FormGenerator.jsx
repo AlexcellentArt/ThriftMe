@@ -255,7 +255,7 @@ function FormGenerator({
         <div className={`formInputs`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
         </div>
-        <button type="submit">Submit</button>
+        <button className="big-text" type="submit">Submit</button>
       </form>
     );
   }
