@@ -3,6 +3,23 @@ import { useContext,useEffect,useState } from "react";
 import { useParams } from "react-router-dom";
 import DisplayMany from "./DisplayMany";
 
+// Alexis suggested function code 1:
+function createTag(obj) {
+    return (
+      <div className="tag">
+        <p>#{obj.text}</p>
+      </div>
+    );
+  }
+// Alexis suggested function code 2:
+  function createPhoto(obj) {
+    return (
+      <div className="photo">
+        <img src={obj.photo}/>
+      </div>
+    );
+  }  
+
 function SingleProduct() {
    const {token} = useContext(AuthContext);
    const {id} = useParams();
@@ -39,9 +56,10 @@ function SingleProduct() {
 
 {/* muliple photos are not displayed */}
     <h3>Photos:</h3>
-      <DisplayMany items={product.additional_photos} />
+      {/* <DisplayMany items={product.additional_photos} /> */}
+      {/* Alexis suggested code snipper below */}
+      {/* <DisplayMany items={product.additional_photos.map((url)=>{return {"photo":url})} factory={createPhoto} /> */}
 
-      {/* Display tags * tags are now displaying/}
       <h3>Tags:</h3>
       <DisplayMany items={product.tags} />
 
