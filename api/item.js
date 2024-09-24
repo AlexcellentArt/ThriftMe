@@ -120,6 +120,31 @@ router.post("/", async (req, res, next) => {
         next(error);
         }
   });
+// ### PATCH ###
+// router.patch("/"), async (req, res, next) => {
+//   try {console.log("patch base reached")} catch(error){console.error(error)}}
+router.patch("/:id"), async (req, res, next) => {
+  console.log("reached patch")
+  try {
+    const id = +req.params.id;
+    const body = await req.body
+    // const {field} = await req.body
+    /* */
+    console.log("Patch Body", body)
+    const item = await prisma.item.findUnique({ where: { id } });
+    console.log("BEFORE PATCH:", item)
+    Object.keys(body).forEach((key)=>{if (!body[key] === undefined||null){item[key] = body[key]}})
+    const edited = await prisma.item.update({
+      where: { id },
+      data:  item ,
+    });
+    console.log("AFTER PATCH:",edited)
+    res.json(edited);
+  }
+  catch(err){
+    next(err)
+  }
+}
 // ### PUT ###
 
   // Updates item

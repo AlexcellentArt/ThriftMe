@@ -7,8 +7,8 @@ const {genericMissingDataError} = require('./gen_errors')
 const JWT = process.env.JWT || 'shhh'
 const isLoggedIn = async(req, res, next)=>{
   try {
-    console.log(req.headers.token)
-    req.user = await findUserWithToken(req.headers.token)
+    console.log(req.headers.authorization)
+    req.user = await findUserWithToken(req.headers.authorization)
     if (!req.user){throw new Error("NOT LOGGED IN")}
     next()
   } catch (error) {
@@ -88,7 +88,7 @@ const findUserWithToken = async (token) => {
   }
 };
 const decodeToken = async(token)=>{
-  if (!token){return next(genericMissingDataError("token"),"header")}
+  if (!token){return next(genericMissingDataError("authorization"),"header")}
   const payload = await jwt.verify(token, JWT);
   return payload;
 }
