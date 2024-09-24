@@ -13,6 +13,7 @@ function AdminDashboard() {
     x: 0,
     y: 0,
   }); //control context meny position once clicked
+  const [selectedItem, setSelectedItem] = useState(null);
 
   // redirect to homepage if not an admin
   useEffect(() => {
@@ -38,6 +39,7 @@ function AdminDashboard() {
     event.stopPropagation();
     setContextMenuPosition({ x: event.pageX, y: event.pageY });
     setShowContextMenu(true);
+    setSelectedItem(item);
   };
 
   // closes context menu on click outside menu area
@@ -51,10 +53,10 @@ function AdminDashboard() {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
       case "view":
-        navigate(`http://localhost:3000/api/item/${id}`); // redirect to the single product page
+        navigate(`http://localhost:3000/item/${selectedItem.id}`); // redirect to the single product page
         break;
       case "delete":
-        await deleteItem(item.id);
+        await deleteItem(selectedItem.id);
         break;
       case "changePhoto":
         // add functionality for changing the photo (can be a separate component/modal)
