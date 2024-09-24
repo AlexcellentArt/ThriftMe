@@ -53,7 +53,7 @@ function AdminDashboard() {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
       case "view":
-        navigate(`http://localhost:3000/item/${selectedItem.id}`); // redirect to the single product page
+        navigate(`/item/${selectedItem.id}`); // redirect to the single product page
         break;
       case "delete":
         await deleteItem(selectedItem.id);
