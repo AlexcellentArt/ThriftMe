@@ -101,10 +101,14 @@ router.post("/register", async (req, res, next) => {
 
 router.get("/me", async (req, res, next) => {
   try {
-    // const payload = await jwt.verify(req.headers.token, JWT);
-    const user = await findUserWithToken(req.headers.token)
-    // const id = payload.id //+req.params.id;
-    // const user = await prisma.user.findUnique({ where: { id } });
+      const decode = await decodeToken(req.headers.token)
+      if(decode.message){return next(decode)}
+      if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
+    const id = decode.userId
+    const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,browsing_history:true,shopping_cart:true} });
+    //redit_cards:true --- need to replace BigInt with something else
+    console.log("user:",user)
+    // const user = await prisma.user.findUnique({ where: { id: id } });
     if (!user) {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
@@ -181,7 +185,7 @@ router.put("/favorite", async (req, res, next) => {
     if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
   const id = decode.userId
 
-  const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true} });
+  const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,browsing_history:true,} });
   console.log("user:",user)
   const { item_id } = await req.body;
   // const user = await prisma.user.findUnique({ where: { id: id } });
