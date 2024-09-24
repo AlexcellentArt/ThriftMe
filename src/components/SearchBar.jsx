@@ -1,23 +1,33 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import DisplayMany from "./DisplayMany";
 import { useNavigate, createSearchParams } from "react-router-dom";
+import {SearchContext} from "./SearchContext";
 function SearchBar() {
   const nav = useNavigate();
-  const [tags, setTags] = useState([{ text: "Test" }, { text: "Test2" }]);
+  const {setSearchParams} = useContext(SearchContext)
+  const [tags, setTags] = useState([]);
   const [addingTag, setAddingTag] = useState(false);
-  const [search, setSearch] = useState("");
+  const [searchText, setSearchText] = useState("shirt");
   async function handleSearch() {
-    console.log(search, tags);
-    if (search || tags.length) {
-      nav({
-        pathname: "/products/",
-        search: createSearchParams({
-          text_search: search,
-          tags: tags.map((obj) => {
-            return obj.text;
-          }),
-        }).toString(),
-      });
+    console.log(searchText, tags);
+    if (searchText || tags.length) {
+      
+      
+      const params = {
+        text_search: searchText,
+        tags: tags.map((obj) => {
+          return obj.text;
+        })}
+        setSearchParams(params)
+        nav({
+          pathname: "/products/",
+          search: createSearchParams({
+            text_search: searchText,
+            tags: tags.map((obj) => {
+              return obj.text;
+            }),
+          }).toString(),
+        });
     }
   }
   async function addTag(text) {
@@ -67,7 +77,7 @@ function SearchBar() {
       <input
         type="search"
         onChange={(e) => {
-          setSearch(e.target.value);
+          setSearchText(e.target.value);
         }}
       />
       <DisplayMany data={tags} factory={createTag} />
