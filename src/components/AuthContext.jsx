@@ -7,8 +7,8 @@ export function AuthContextProvider({ children }) {
   const userId = 12
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
-  const AutoHeader = () => {return {token:token,is_admin:isAdmin}}
-  const NotLoggedIn = () => {
+  function AutoHeader(){return {'Content-Type':'application/json','token':token}}
+  async function NotLoggedIn(){
     if (!token) {
       console.error("Not logged in");
       return true;
@@ -92,10 +92,11 @@ export function AuthContextProvider({ children }) {
       console.error(error);
     }
   }
-  async function getUser(id) {
+  async function getUser() {
     try {
+      console.log("getting user with token "+token)
       // only returning l for now, assuming everyone is using it to test login
-      const res = await fetch(API_URL + "user/"+id);
+      const res = await fetch(API_URL + "user/me",{headers:{"token":token}});
       if (res.ok) {
         const json = await res.json();
         console.log(json);
@@ -153,6 +154,7 @@ export function AuthContextProvider({ children }) {
         calculatePrice,
         getUser,
         mapItemDictToObjArray,
+        AutoHeader,
       }}
     >
       {children}
