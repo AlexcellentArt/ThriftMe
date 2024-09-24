@@ -9,6 +9,7 @@ function AdminDashboard() {
   const [displayType, setDisplayType] = useState("users"); // default to users
   const [items, setItems] = useState([]); // state to store items or users
   const [showContextMenu, setShowContextMenu] = useState(false); // control context menu visibility
+  // const [currentItem, setCurrentItem ] = useState(0);
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
     y: 0,
@@ -37,9 +38,9 @@ function AdminDashboard() {
   // conext menu appears upon click
   const handleEditClick = (event, item) => {
     event.stopPropagation();
+    setSelectedItem(item);
     setContextMenuPosition({ x: event.pageX, y: event.pageY });
     setShowContextMenu(true);
-    setSelectedItem(item);
   };
 
   // closes context menu on click outside menu area
@@ -53,24 +54,24 @@ function AdminDashboard() {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
       case "view":
-        navigate(`http://localhost:3000/item/${selectedItem.id}`); // redirect to the single product page
+        navigate(`/products/${selectedItem.id}`); // redirect to the single product page
         break;
       case "delete":
         await deleteItem(selectedItem.id);
         break;
       case "changePhoto":
         // add functionality for changing the photo (can be a separate component/modal)
-        await updateItemField("default_photo", prompt("Enter new photo URL:"));
+        await updateItemField("default_photo", prompt("Enter new photo URL:"),selectedItem.id);
         break;
       case "editDescription":
         // add functionality for editing the description
-        await updateItemField("description", prompt("Enter new description:"));
+        await updateItemField("description", prompt("Enter new description:"),selectedItem.id);
         break;
       case "editTags":
         // add functionality for editing tags
         await updateItemField(
           "tags",
-          prompt("Enter new tags (comma separated):")
+          prompt("Enter new tags (comma separated):"),selectedItem.id
         );
         break;
       case "cancel":
@@ -91,7 +92,7 @@ function AdminDashboard() {
     fetchItems(displayType);
   };
 
-  const updateItemField = async (field, value) => {
+  const updateItemField = async (field, value,id) => {
     if (!value) return; // if no values are provided, exit the menu
 
     const updatedData = { [field]: value };
@@ -134,29 +135,54 @@ function AdminDashboard() {
   return (
     <div>
       <h1>ADMIN DASHBOARD</h1>
-      <button onClick={() => handleDisplayToggle("users")}>Users</button>
-      <button onClick={() => handleDisplayToggle("products")}>Products</button>
+      <button className="big-text" onClick={() => handleDisplayToggle("users")}>
+        Users
+      </button>
+      <button
+        className="big-text"
+        onClick={() => handleDisplayToggle("products")}
+      >
+        Products
+      </button>
 
       <DisplayMany data={items} factory={generateCard} />
 
       {showContextMenu && (
         <div className="context-menu">
-          <button className="big-text" onClick={() => handleEditMenuAction("view")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("view")}
+          >
             View Product
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("delete")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("delete")}
+          >
             Delete Listing
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("changePhoto")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("changePhoto")}
+          >
             Change Photo
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("editDescription")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editDescription")}
+          >
             Edit Description
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("editTags")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editTags")}
+          >
             Edit Tags
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("cancel")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("cancel")}
+          >
             Cancel Edit
           </button>
         </div>
