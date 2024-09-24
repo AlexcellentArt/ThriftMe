@@ -53,7 +53,7 @@ function AdminDashboard() {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
       case "view":
-        navigate(`/item/${selectedItem.id}`); // redirect to the single product page
+        navigate(`/products/${selectedItem.id}`); // redirect to the single product page
         break;
       case "delete":
         await deleteItem(selectedItem.id);
@@ -134,29 +134,54 @@ function AdminDashboard() {
   return (
     <div>
       <h1>ADMIN DASHBOARD</h1>
-      <button onClick={() => handleDisplayToggle("users")}>Users</button>
-      <button onClick={() => handleDisplayToggle("products")}>Products</button>
+      <button className="big-text" onClick={() => handleDisplayToggle("users")}>
+        Users
+      </button>
+      <button
+        className="big-text"
+        onClick={() => handleDisplayToggle("products")}
+      >
+        Products
+      </button>
 
       <DisplayMany data={items} factory={generateCard} />
 
       {showContextMenu && (
         <div className="context-menu">
-          <button className="big-text" onClick={() => handleEditMenuAction("view")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("view")}
+          >
             View Product
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("delete")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("delete")}
+          >
             Delete Listing
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("changePhoto")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("changePhoto")}
+          >
             Change Photo
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("editDescription")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editDescription")}
+          >
             Edit Description
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("editTags")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editTags")}
+          >
             Edit Tags
           </button>
-          <button className="big-text" onClick={() => handleEditMenuAction("cancel")}>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("cancel")}
+          >
             Cancel Edit
           </button>
         </div>
