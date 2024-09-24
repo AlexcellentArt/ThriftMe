@@ -14,6 +14,7 @@ function Home() {
       try {
         const user = await getUser()
         console.log(user)
+        if (!user){console.error("Not Logged In")}
         const browsing_history = user.browsing_history
         // await fetch(
         //   `http://localhost:3000/api/browsing_history/${user_id}`
