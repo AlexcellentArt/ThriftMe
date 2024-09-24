@@ -9,6 +9,7 @@ function AdminDashboard() {
   const [displayType, setDisplayType] = useState("users"); // default to users
   const [items, setItems] = useState([]); // state to store items or users
   const [showContextMenu, setShowContextMenu] = useState(false); // control context menu visibility
+  // const [currentItem, setCurrentItem ] = useState(0);
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
     y: 0,
@@ -37,9 +38,9 @@ function AdminDashboard() {
   // conext menu appears upon click
   const handleEditClick = (event, item) => {
     event.stopPropagation();
+    setSelectedItem(item);
     setContextMenuPosition({ x: event.pageX, y: event.pageY });
     setShowContextMenu(true);
-    setSelectedItem(item);
   };
 
   // closes context menu on click outside menu area
@@ -60,17 +61,17 @@ function AdminDashboard() {
         break;
       case "changePhoto":
         // add functionality for changing the photo (can be a separate component/modal)
-        await updateItemField("default_photo", prompt("Enter new photo URL:"));
+        await updateItemField("default_photo", prompt("Enter new photo URL:"),selectedItem.id);
         break;
       case "editDescription":
         // add functionality for editing the description
-        await updateItemField("description", prompt("Enter new description:"));
+        await updateItemField("description", prompt("Enter new description:"),selectedItem.id);
         break;
       case "editTags":
         // add functionality for editing tags
         await updateItemField(
           "tags",
-          prompt("Enter new tags (comma separated):")
+          prompt("Enter new tags (comma separated):"),selectedItem.id
         );
         break;
       case "cancel":
@@ -91,7 +92,7 @@ function AdminDashboard() {
     fetchItems(displayType);
   };
 
-  const updateItemField = async (field, value) => {
+  const updateItemField = async (field, value,id) => {
     if (!value) return; // if no values are provided, exit the menu
 
     const updatedData = { [field]: value };
