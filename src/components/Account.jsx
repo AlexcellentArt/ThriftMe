@@ -19,6 +19,9 @@ import React from "react";
  * 
  * Use effect can be used to pull for these.
  * If the user is able to see their account they would have been able to only their own information on the page 
+ * 
+ * 
+ * I want to click a button and have the information for that page show up. 
  */
 
 
