@@ -7,13 +7,12 @@ function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
   const [displayType, setDisplayType] = useState("users"); // default to users
-  const [selectedItem, setSelectedItem] = useState(null); // select item to be edited
+  const [items, setItems] = useState([]); // state to store items or users
   const [showContextMenu, setShowContextMenu] = useState(false); // control context menu visibility
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
     y: 0,
   }); //control context meny position once clicked
-  const [items, setItems] = useState([]); // state to store products or users
 
   // redirect to homepage if not an admin
   useEffect(() => {
@@ -25,10 +24,10 @@ function AdminDashboard() {
   const handleDisplayToggle = (type) => {
     setDisplayType(type);
     // Fetch users or items based on the display type
-    fetchItemsOrUsers(type);
+    fetchItems(type);
   };
 
-  const fetchItemsOrUsers = async (type) => {
+  const fetchItems = async () => {
     const response = await fetch(`http://localhost:3000/api/item`);
     const data = await response.json();
     setItems(data);
@@ -37,7 +36,6 @@ function AdminDashboard() {
   // conext menu appears upon click
   const handleEditClick = (event, item) => {
     event.stopPropagation();
-    setSelectedItem(item);
     setContextMenuPosition({ x: event.pageX, y: event.pageY });
     setShowContextMenu(true);
   };
@@ -49,18 +47,18 @@ function AdminDashboard() {
     return () => window.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const handleEditMenuAction = async (action) => {
+  const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
       case "view":
-        navigate(`/item/${selectedItem.id}`); // redirect to the single product page
+        navigate(`http://localhost:3000/api/item/${id}`); // redirect to the single product page
         break;
       case "delete":
-        await deleteItem(selectedItem.id);
+        await deleteItem(item.id);
         break;
       case "changePhoto":
         // add functionality for changing the photo (can be a separate component/modal)
-        await updateItemField("photo", prompt("Enter new photo URL:"));
+        await updateItemField("default_photo", prompt("Enter new photo URL:"));
         break;
       case "editDescription":
         // add functionality for editing the description
@@ -74,7 +72,7 @@ function AdminDashboard() {
         );
         break;
       case "cancel":
-        setShowEditMenu(false);
+        setShowContextMenu(false);
         break;
       default:
         break;
@@ -88,14 +86,14 @@ function AdminDashboard() {
         Authorization: `Bearer ${token}`,
       },
     });
-    fetchItemsOrUsers(displayType);
+    fetchItems(displayType);
   };
 
   const updateItemField = async (field, value) => {
     if (!value) return; // if no values are provided, exit the menu
 
     const updatedData = { [field]: value };
-    await fetch(`http://localhost:3000/api/item/${selectedItem.id}`, {
+    await fetch(`http://localhost:3000/api/item/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +101,7 @@ function AdminDashboard() {
       },
       body: JSON.stringify(updatedData),
     });
-    fetchItemsOrUsers(displayType);
+    fetchItems(displayType);
   };
 
   function generateCard(item) {
@@ -122,7 +120,7 @@ function AdminDashboard() {
         <div>
           <button
             className="three-d-button"
-            onClick={(e) => handleEditClick(e, item)}
+            onClick={(event) => handleEditClick(event, item)}
           >
             Edit Item
           </button>
