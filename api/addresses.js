@@ -15,21 +15,21 @@ const gen_errors = require("./helpers/gen_errors.js")
 // Gets all addresses
 router.get("/", async (req, res, next) => {
     try {
-      const addresses = await prisma.addresses.findMany();
+      const addresses = await prisma.address.findMany();
       res.json(addresses);
     } catch(error) {
         next(error);
         }
   });
-  // Returns addresses matching id
+  // Returns address matching id
   router.get("/:id", async (req, res, next) => {
     try {
       const id = +req.params.id;
-      const addresses = await prisma.addresses.findUnique({ where: { id } });
-      if (!addresses) {
-        return next(gen_errors.genericNotFoundError("addresses","id",id));
+      const address = await prisma.address.findUnique({ where: { id } });
+      if (!address) {
+        return next(gen_errors.genericNotFoundError("address","id",id));
       }
-      res.json(addresses);
+      res.json(address);
     } catch(error) {
         next(error);
         }
@@ -39,10 +39,12 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
     try {
       const inputs = { user_id, zip, street, apartment } = await req.body;
-      // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
-      // ex: if {!name} {next(genericMissingDataError("name","user"))}
-      const addresses = await prisma.addresses.create({ data: inputs});
-      res.json(addresses);
+      const isMissingInputs = gen_errors.hasMissingInputs(inputs,["zip","street"])
+      if(isMissingInputs){return next(isMissingInputs)}
+      const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
+      if (isZip5){return next(isZip5)}
+      const address = await prisma.address.create({ data: inputs});
+      res.json(address);
     } catch (error) {
       next(error)
     }
@@ -50,38 +52,42 @@ router.post("/", async (req, res, next) => {
 // ### PUT ###
 
 
-  // Updates addresses
+  // Updates address
   router.put("/:id", async (req, res, next) => {
     try {
       const id = +req.params.id;
-      const exists = await prisma.addresses.findUnique({ where: { id } });
+      const exists = await prisma.address.findUnique({ where: { id } });
       if (!exists) {
-        return next(gen_errors.genericNotFoundError("addresses","id",id));
+        return next(gen_errors.genericNotFoundError("address","id",id));
       }
 		const inputs = { user_id, zip, street, apartment } = await req.body;
-      // write your own checks to validate obj here and if it fails, run next(genericMissingDataError(missingValues,forWhat))
-      // ex: if {!name} {next(genericMissingDataError("name","user"))}
-      const addresses = await prisma.addresses.update({
+    // check inputs
+    const isMissingInputs = gen_errors.hasMissingInputs(inputs,["zip","street"])
+    if(isMissingInputs){return next(isMissingInputs)}
+    const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
+    if (isZip5){return next(isZip5)}
+    // safe to put
+      const address = await prisma.address.update({
         where: { id },
         data:  inputs ,
       });
-      res.json(addresses);
+      res.json(address);
     } catch(error) {
     next(error);
     }
   });
 
 // ### DELETE ###
-  // deletes addresses matching id
+  // deletes address matching id
 router.delete("/:id", async (req, res, next) => {
 
     try {
       const id = +req.params.id;
-      const exists = await prisma.addresses.findUnique({ where: { id } });
+      const exists = await prisma.address.findUnique({ where: { id } });
       if (!exists) {
-        return next(gen_errors.genericNotFoundError("addresses","id",id));
+        return next(gen_errors.genericNotFoundError("address","id",id));
       }
-      await prisma.addresses.delete({ where: { id } });
+      await prisma.address.delete({ where: { id } });
       res.sendStatus(204);
     } catch(error) {
     next(error);
