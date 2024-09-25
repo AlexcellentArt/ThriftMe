@@ -11,7 +11,7 @@ function DisplayMany({ data = [], factory = undefined, emptyDataText = "" , addi
         {keys.map((key) => {
           return (
             <div key={`${key}_holder`} id={`${key}_holder`}>
-              <p>{`${key} : ${obj[key]}`}</p>
+              <p>{`${key} : ${typeof obj[key] === "object" ? JSON.stringify(obj[key]):obj[key]}`}</p>
             </div>
           );
         })}
@@ -26,7 +26,7 @@ function DisplayMany({ data = [], factory = undefined, emptyDataText = "" , addi
           `Factory was given a null or undefined object at index ${idx} and it was skipped.`
         );
       }
-      const out = factory(obj);
+      const out = factory? factory(obj):defaultFactory(obj)
       if (obj === null) {
         throw new Error("Factory returned null");
       }
