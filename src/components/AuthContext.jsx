@@ -62,12 +62,12 @@ export function AuthContextProvider({ children }) {
         if (!cartToken){
           const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`);
           setCartToken(res.id)
+          window.localStorage.setItem("cart_id",res.id);
+
         }
       }
-      else {
-        const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`,{headers:{authorization:token}});
-        cart= await res.json();
-      }
+      const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`,{headers:{authorization:token}});
+      cart= await res.json();
       // modify gotten cart
       if (res.ok) {
         // if not in dict,
