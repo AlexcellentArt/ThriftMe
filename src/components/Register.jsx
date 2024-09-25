@@ -10,7 +10,9 @@ function Register() {
     const {login} = useContext(AuthContext);
     const navigate = useNavigate()
     function goToAccount(obj){
-        login(obj.token)
+        console.log("TOKEN:"+obj.token)
+        if(!obj.token){console.error("NO TOKEN");return}
+        login(obj)
         navigate("/account")
     }
     return (<FormGenerator labelAdditionalClasses="formLabel" fields ={fields} apiPath="user/register" method="POST" postSuccessFunction={(obj)=>{goToAccount(obj)}}/>);
