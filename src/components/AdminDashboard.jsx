@@ -61,18 +61,27 @@ function AdminDashboard() {
         break;
       case "changePhoto":
         // add functionality for changing the photo (can be a separate component/modal)
-        await updateItemField("default_photo", prompt("Enter new photo URL:"),selectedItem.id);
+        await updateItemField(
+          "default_photo",
+          prompt("Enter new photo URL:"),
+          selectedItem
+        );
         break;
       case "editDescription":
         // add functionality for editing the description
-        await updateItemField("description", prompt("Enter new description:"),selectedItem.id);
+        await updateItemField(
+          "description",
+          prompt("Enter new description:"),
+          selectedItem
+        );
         break;
       case "editTags":
         // add functionality for editing tags
-        await updateItemField(
-          "tags",
-          prompt("Enter new tags (comma separated):"),selectedItem.id
-        );
+        const parsed = prompt(
+          "Edit in new tags (comma separated):",
+          selectedItem.tags
+        ).split(",");
+        await updateItemField("tags", parsed, selectedItem);
         break;
       case "cancel":
         setShowContextMenu(false);
@@ -92,18 +101,22 @@ function AdminDashboard() {
     fetchItems(displayType);
   };
 
-  const updateItemField = async (field, value,id) => {
+  const updateItemField = async (field, value, obj) => {
+    console.log("UPATEING ATEMEP");
+    console.log(value);
     if (!value) return; // if no values are provided, exit the menu
-
-    const updatedData = { [field]: value };
-    await fetch(`http://localhost:3000/api/item/${id}`, {
-      method: "PATCH",
+    // const updatedData = { [field]: value };
+    obj[field] = value;
+    const res = await fetch(`http://localhost:3000/api/item/${obj.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(updatedData),
+      body: JSON.stringify(obj),
     });
+    const json = await res.json();
+    console.log(json);
     fetchItems(displayType);
   };
 
