@@ -117,7 +117,7 @@ export function AuthContextProvider({ children }) {
       console.error(res);
     }
   }
-  function login(obj) {
+ async function login(obj) {
     console.log("setting token:" + obj.token);
     // add in verification of user
     setToken(obj.token);
@@ -125,7 +125,9 @@ export function AuthContextProvider({ children }) {
     window.localStorage.setItem("token", obj.token);
     setCartToken(obj.shopping_cart.id)
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
-    setIsAdmin(true);
+    const user = await getUser()
+    console.log(user)
+    setIsAdmin(user.is_admin);
   }
   function logout() {
     setToken(null);

@@ -10,6 +10,15 @@ function Login() {
     { key: "email", type: "email" },
     { key: "password", type: "text" },
   ];
+  function goToProducts(obj) {
+    console.log("TOKEN:" + obj.token);
+    if (!obj.token) {
+      console.error("NO TOKEN");
+      return;
+    }
+    login(obj);
+    navigate("/products");
+  }
   const { login } = useContext(AuthContext);
   return (
     <div className="light-bg flex-v force-fill-main">
@@ -32,6 +41,7 @@ function Login() {
           console.log("token " + obj.token);
           console.log(obj);
           login(obj);
+          goToProducts(obj)
         }}
       />
     </div>
