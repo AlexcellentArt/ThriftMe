@@ -8,6 +8,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [displayType, setDisplayType] = useState("users"); // default to users
   const [items, setItems] = useState([]); // state to store items or users
+  const [users, setUsers] = useState([]);
   const [showContextMenu, setShowContextMenu] = useState(false); // control context menu visibility
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
@@ -35,9 +36,10 @@ function AdminDashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
       console.log(data);
-      setItems(data); // Set fetched users to the items state
+      setUsers(data); // Set fetched users to the items state
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -218,7 +220,10 @@ function AdminDashboard() {
         Products
       </button>
 
-      <DisplayMany data={items} factory={generateCard} />
+      <DisplayMany
+        data={displayType === "users" ? users : items}
+        factory={generateCard}
+      />
 
       {showContextMenu && (
         <div className="context-menu">
