@@ -189,7 +189,7 @@ function hasLengthViolations(
   // min
   if (settings.min) {
     checkKeys.forEach((key) => {
-      if (object[key] < settings.min) {
+      if (`${object[key]}`.length < settings.min) {
         violatingValues.push(key);
       }
     });
@@ -200,7 +200,7 @@ function hasLengthViolations(
   // max
   if (settings.max) {
     checkKeys.forEach((key) => {
-      if (object[key] > settings.max) {
+      if (`${object[key]}`.length > settings.max) {
         violatingValues.push(key);
       }
     });
