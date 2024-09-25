@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer,useEffect } from "react";
 function FormGenerator({
   fields,
   fetchFunctionOverride,
@@ -8,6 +8,8 @@ function FormGenerator({
   fetch_method = "POST",
   additionalDataToSend
 }) {
+  useEffect(() => {
+  }, [fields]);
   // Authorization: `Bearer ${token}`
   function commaSplitEndWithAnd(arr) {
     if (arr.length === 2) {
