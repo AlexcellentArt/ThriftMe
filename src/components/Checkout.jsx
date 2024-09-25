@@ -18,7 +18,7 @@ import Dropdown from "./Dropdown";
 import DisplayMany from "./DisplayMany";
 
 function Checkout({ props }) {
-  const { token } = useContext(AuthContext);
+  const { token, getUser } = useContext(AuthContext);
   //compressed down to these two fields holding the object from the forms
   const [address, setAddress] = useState({});
   const [creditCard, setCreditCard] = useState({});
@@ -27,10 +27,14 @@ function Checkout({ props }) {
   const [total, setTotal] = useState(0);
   const [amount, setAmount] = useState(0);
   const [cart, setCart] = useState({ mapped: {} });
+  const [user, setUser] = useState(false);
   const addressFields = [
     { key: "zip", type: "number" },
     { key: "street", type: "text" },
     { key: "apartment", type: "text" },
+    { key: "hi ", type: "text", default:"aaggggggggggggg"  },
+    { key: "yo sujoy", type: "text", default:"aaaa" },
+    { key: "hiii sujoy", type: "text", default:"uwuwuuwuwuuw" }
   ];
   const creditCardFields = [
     { key: "pin", type: "number" },
@@ -75,7 +79,16 @@ function Checkout({ props }) {
     );
   }
   //   const API = "http://localhost:3000/api/stripe/"
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const getMe = async () => {
+      const user = await getUser();
+      console.log(user);
+      console.log(user.shopping_cart);
+      // setCart(user.shopping_cart)
+      setUser(user);
+    };
+    getMe();
+  }, []);
   return (
     <div className="split-screen fill-screen flex-h">
       <div className="checkout">

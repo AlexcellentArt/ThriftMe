@@ -477,6 +477,7 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
     border-radius: var(--rounded-corners);
     font-size: large;
     height: 3em;
+    color: var(--black);
   }
 }
 /* .display-many{flex-wrap: wrap; place-content: end center;} */

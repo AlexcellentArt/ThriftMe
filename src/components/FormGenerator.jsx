@@ -65,6 +65,7 @@ function FormGenerator({
           value: initialValue,
           isValid: false,
           name: field.key,
+          default: field.default? field.default:"",
         };
         if ("label" in field) {
           obj["label"] = field.label;
@@ -72,6 +73,9 @@ function FormGenerator({
         if ("options" in field) {
           obj["options"] = field.options;
         }
+        // if ("default" in field) {
+        //   obj["value"] = field.default;
+        // }
       });
       return obj;
     }
@@ -215,6 +219,7 @@ function FormGenerator({
       );
     }
     function makeInput(key) {
+      console.log(formData[key])
       return (
         <input
         className="merriweather-regular"
@@ -224,6 +229,7 @@ function FormGenerator({
           onChange={(e) =>
             handleUpdateFormData(e.target.type, key, e.target.value)
           }
+          defaultValue={formData[key].default}
         />
       );
     }
