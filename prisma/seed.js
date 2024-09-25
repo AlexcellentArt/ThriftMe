@@ -214,83 +214,83 @@ const seed = async () => {
     // ======================
     const shopping_cart = [
       {
-        id: 1,
+        // id: 1,
         user_id: 1, // User Larry
         item_dict: { 3: 2, 1: 2 }, // $20 Roger Rabbit Shirt x 3 , $5 Tulum Dress x 2
         total_cost: 50,
       },
 
       {
-        id: 2,
+        // id: 2,
         user_id: 2, // User Susan
         item_dict: { 1: 2, 2: 2 }, // $5 Tulum Dress x 2, $10 Hawaii Shirt x 2
         total_cost: 30,
       },
 
       {
-        id: 3,
+        // id: 3,
         user_id: 3, // User Julio
         item_dict: { 1: 2, 3: 4 }, // $5 Tulum Dress x 2, $20 Roger Rabbit Shirt x 4
         total_cost: 100,
       },
 
       {
-        id: 4,
+        // id: 4,
         user_id: 4, // User Laura Piglet
         item_dict: { 4: 3 }, // $100 Cool Suit x 3
         total_cost: 300,
       },
 
       {
-        id: 5,
+        // id: 5,
         user_id: 5, // User Melissa Cat
         item_dict: { 2: 10 }, // $10 Hawaii Shirt x 10
         total_cost: 200,
       },
       {
-        id: 6,
+        // id: 6,
         user_id: 6, // User Roger Rabbit
         item_dict: { 3: 5, 4: 3 }, // $20 Roger Rabbit Shirt x 5, $100 Cool Suit x 3
         total_cost: 400,
       },
       {
-        id: 7,
+        // id: 7,
         user_id: 7,
         item_dict: { 3: 4, 1: 2 }, // $20 Roger Rabbit Shirt x 4, $10 Hawaii Shirt x 2
         total_cost: 90,
       },
       {
-        id: 8,
+        // id: 8,
         user_id: 8,
         item_dict: { 2: 10 }, // $10 Hawaii Shirt x 10
         total_cost: 100,
       },
       {
-        id: 9,
+        // id: 9,
         user_id: 9,
         item_dict: { 2: 30 }, // $10 Hawaii Shirt x 30
         total_cost: 300,
       },
       {
-        id: 10,
+        // id: 10,
         user_id: 10,
         item_dict: { 4: 4 }, // $100 Cool Suit x 4
         total_cost: 400,
       },
       {
-        id: 11,
+        // id: 11,
         user_id: 11,
         item_dict: { 4: 5 }, // $100 Cool Suit x 5
         total_cost: 500,
       },
       {
-        id: 12,
+        // id: 12,
         user_id: 12,
         item_dict: { 4: 2 }, // $100 Cool Suit x 2
         total_cost: 200,
       },
       {
-        id: 13,
+        // id: 13,
         item_dict: { 4: 2 }, // $100 Cool Suit x 2
         total_cost: 200,
       },
@@ -302,70 +302,70 @@ const seed = async () => {
   const CreateBrowsingHistory = async () => {
     const browsing_history = [
       {
-        id: 1,
+        // id: 1,
         user_id: 1, // Larry
         looked_at_tags: ["women's fashion"],
       },
 
       {
-        id: 2,
+        // id: 2,
         user_id: 2, // Susan
         looked_at_tags: ["women's activewear", "nightlife"],
       },
 
       {
-        id: 3,
+        // id: 3,
         user_id: 3, // Julio
         looked_at_tags: ["men's fashion"],
       },
 
       {
-        id: 4,
+        // id: 4,
         user_id: 4, // Laura Piglet
         looked_at_tags: ["men's activeware"],
       },
 
       {
-        id: 5,
+        // id: 5,
         user_id: 5, // Melissa Cat
         looked_at_tags: ["men's suits", "men's activeware"],
       },
       {
-        id: 6,
+        // id: 6,
         user_id: 6, // Roger Rabbit
         looked_at_tags: ["women's suits"],
       },
       {
-        id: 7,
+        // id: 7,
         user_id: 7,
         looked_at_tags: ["women's fashion"],
       },
 
       {
-        id: 8,
+        // id: 8,
         user_id: 8,
         looked_at_tags: ["women's activewear", "nightlife"],
       },
 
       {
-        id: 9,
+        // id: 9,
         user_id: 9,
         looked_at_tags: ["men's fashion"],
       },
 
       {
-        id: 10,
+        // id: 10,
         user_id: 10,
         looked_at_tags: ["men's activeware"],
       },
 
       {
-        id: 11,
+        // id: 11,
         user_id: 11,
         looked_at_tags: ["men's suits", "men's activeware"],
       },
       {
-        id: 12,
+        // id: 12,
         user_id: 12,
         looked_at_tags: ["women's suits"],
       },
@@ -415,9 +415,9 @@ const seed = async () => {
           qty -= 1;
         }
         user_id -= 1;
-        console.log(user_id, qty);
+        // console.log(user_id, qty);
       }
-    console.log(cards);
+    // console.log(cards);
     /// Now Salting Cards
     for (let index = 0; index < cards.length; index++) {
       cards[index].pin = await bcrypt.hash(cards[index].pin, salt);
@@ -471,9 +471,9 @@ const seed = async () => {
         qty -= 1;
       }
       user_id -= 1;
-      console.log(user_id, qty);
+      // console.log(user_id, qty);
     }
-    console.log(addresses);
+    // console.log(addresses);
     await prisma.address.createMany({ data: addresses });
   };
   // all tables are created

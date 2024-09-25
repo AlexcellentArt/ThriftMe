@@ -83,10 +83,13 @@ router.post("/register", async (req, res, next) => {
     const salt = await bcrypt.genSalt(13);
     inputs["password"] = await bcrypt.hash(inputs["password"], salt);
     // validateInputs
-    const user = await prisma.user.create({ data: inputs });
+    const user = await prisma.user.create({ data: inputs});
+    // automatically make cart and browsing history
+    const browsing_History = await prisma.browsing_History.create({data: { user_id:user.id,looked_at_tags:[] }});
+    const shopping_cart = await prisma.shopping_Cart.create({ data: { user_id:user.id, item_dict:{}, total_cost:0 }  });
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user: user, token });
+    res.json({ user: user, token:token });
   } catch (error) {
     next(error);
   }
@@ -168,11 +171,11 @@ router.post("/", async (req, res, next) => {
     if (missing) {
       next(missing);
     }
-    // const lengthViolations = gen_errors.hasLengthViolations()
-    // if (lengthViolations){}
-    // const notUnique = await gen_errors.isNotUnique("user","email",email);
-    // if (notUnique) {next(notUnique)}
-    const user = await prisma.user.create({ data: inputs });
+    const user = await prisma.user.create({ data: inputs});
+    // automatically make cart and browsing history
+    const browsing_History = await prisma.browsing_History.create({data: { user_id:user.id,looked_at_tags:[] }});
+    const shopping_cart = await prisma.shopping_Cart.create({ data: { user_id:user.id, item_dict:{}, total_cost:0 }  });
+
     res.json(user);
   } catch (error) {
     next(error);
