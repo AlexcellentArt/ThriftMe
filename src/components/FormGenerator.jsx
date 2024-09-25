@@ -264,7 +264,7 @@ function FormGenerator({
       return makeLabel(inputKey, content);
     }
     return (
-      <form key="form" id="form" onSubmit={handleSubmit}>
+      <form className="generatedForm" key="form" id="form" onSubmit={handleSubmit}>
         {error && <p>{error}</p>}
         <div className={`formInputs`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
