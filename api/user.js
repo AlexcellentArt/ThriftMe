@@ -44,7 +44,7 @@ router.get("/", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = await req.body;
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email },include:{shopping_cart:true} });
     if (!user) {
       return next(gen_errors.genericNotFoundError("user", "email", email));
     }
@@ -55,7 +55,7 @@ router.post("/login", async (req, res, next) => {
     }
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user, token });
+    res.json({ user, token, shopping_cart });
   } catch (error) {
     next(error);
   }

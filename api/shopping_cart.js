@@ -16,25 +16,39 @@ router.get("/", async (req, res, next) => {
   }
 });
 // Returns shopping_cart matching id
-router.get("/:userId/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
-    const userId = +req.params.userId;
     const shopping_cart = await prisma.shopping_Cart.findUnique({where: { id } });
     if (!shopping_cart) {
       return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
     }
-    if (shopping_cart.user_id === userId) {
-      res.json(shopping_cart);
-    } else
-      next({
-        status: 403,
-        message: `There is an error that suggests this shopping cart does not belong to you.`,
-      });
+    res.json(shopping_cart);
   } catch (error) {
     next(error);
   }
 });
+
+// // Returns shopping_cart matching id
+// router.get("/:userId/:id", async (req, res, next) => {
+//   try {
+//     const id = +req.params.id;
+//     const userId = +req.params.userId;
+//     const shopping_cart = await prisma.shopping_Cart.findUnique({where: { id } });
+//     if (!shopping_cart) {
+//       return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
+//     }
+//     if (shopping_cart.user_id === userId) {
+//       res.json(shopping_cart);
+//     } else
+//       next({
+//         status: 403,
+//         message: `There is an error that suggests this shopping cart does not belong to you.`,
+//       });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 // Returns the only unique shopping cart that exist for a individual user
 
 // ### POST ###
