@@ -7,8 +7,8 @@ function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
   const [displayType, setDisplayType] = useState("users"); // default to users
-  const [items, setItems] = useState([]); // state to store items or users
-  const [users, setUsers] = useState([]);
+  const [items, setItems] = useState([{}]); // state to store items or users
+  const [users, setUsers] = useState([{}]);
   const [showContextMenu, setShowContextMenu] = useState(false); // control context menu visibility
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
@@ -21,6 +21,13 @@ function AdminDashboard() {
     if (!isAdmin) {
       navigate("/");
     }
+    // const fetchData = async () => {
+    //   await fetchItems()
+    //   console.log("TRYING TO FETCH")
+    //  await fetchUsers()
+    //  console.log("DATA FETCHED")
+    // }
+    // fetchData()
   }, [isAdmin, navigate]);
 
   const handleDisplayToggle = (type) => {
@@ -31,15 +38,18 @@ function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
+      console.log("trying for response");
       const response = await fetch(`http://localhost:3000/api/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       });
+      console.log("got response");
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
-      console.log(data);
+      console.log("Users got", data);
       setUsers(data); // Set fetched users to the items state
+      // return data
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -49,6 +59,7 @@ function AdminDashboard() {
     const response = await fetch(`http://localhost:3000/api/item`);
     const data = await response.json();
     setItems(data);
+    return data;
   };
 
   //   fetches data depending on display type
@@ -173,12 +184,13 @@ function AdminDashboard() {
   };
 
   function generateCard(data) {
+    console.log("THIS IS DATA", data);
     if (displayType === "users") {
       return (
         <div className="item-card">
           <p>{data.name}</p>
           <p>{data.email}</p>
-          <p>{data.addresses}</p>
+          <DisplayMany data={data.addresses} />
         </div>
       );
     } else {
