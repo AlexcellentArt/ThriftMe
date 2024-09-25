@@ -9,11 +9,10 @@ function AdminDashboard() {
   const [displayType, setDisplayType] = useState("users"); // default to users
   const [items, setItems] = useState([]); // state to store items or users
   const [showContextMenu, setShowContextMenu] = useState(false); // control context menu visibility
-  // const [currentItem, setCurrentItem ] = useState(0);
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
     y: 0,
-  }); //control context meny position once clicked
+  }); //control context menu position once clicked
   const [selectedItem, setSelectedItem] = useState(null);
 
   // redirect to homepage if not an admin
@@ -26,13 +25,37 @@ function AdminDashboard() {
   const handleDisplayToggle = (type) => {
     setDisplayType(type);
     // Fetch users or items based on the display type
-    fetchItems(type);
+    fetchData(type);
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setItems(data); // Set fetched users to the items state
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   const fetchItems = async () => {
     const response = await fetch(`http://localhost:3000/api/item`);
     const data = await response.json();
     setItems(data);
+  };
+
+  //   fetches data depending on display type
+  const fetchData = (type) => {
+    if (type === "users") {
+      fetchUsers();
+    } else if (type === "products") {
+      fetchItems();
+    }
   };
 
   // conext menu appears upon click
@@ -57,13 +80,40 @@ function AdminDashboard() {
         navigate(`/products/${selectedItem.id}`); // redirect to the single product page
         break;
       case "delete":
-        await deleteItem(selectedItem.id);
+        if (confirm(`Delete ${selectedItem.name}?`)) {
+          await deleteItem(selectedItem.id);
+        } else {
+          alert("Cancelled deleting " + selectedItem.name);
+        }
+        break;
+      case "editName":
+        const newName = prompt("Enter new product name:", selectedItem.name);
+        await updateItemField("name", newName, selectedItem);
+        break;
+      case "editPrice":
+        const newPrice = prompt("Enter new price:", selectedItem.price);
+        if (!isNaN(parseFloat(newPrice)) && parseFloat(newPrice) > 0) {
+          await updateItemField("price", parseFloat(newPrice), selectedItem);
+        } else {
+          alert("Invalid price. Please enter a valid number.");
+        }
         break;
       case "changePhoto":
         // add functionality for changing the photo (can be a separate component/modal)
         await updateItemField(
           "default_photo",
-          prompt("Enter new photo URL:"),
+          prompt("Enter new photo URL:", selectedItem.default_photo),
+          selectedItem
+        );
+        break;
+      case "changeAdditionalPhoto":
+        // add functionality for changing the photo (can be a separate component/modal)
+        await updateItemField(
+          "additional_photos",
+          prompt(
+            "Enter/Edit new/in photo URL(s) ,(comma separated):",
+            selectedItem.additional_photos
+          ).split(","),
           selectedItem
         );
         break;
@@ -71,7 +121,7 @@ function AdminDashboard() {
         // add functionality for editing the description
         await updateItemField(
           "description",
-          prompt("Enter new description:"),
+          prompt("Enter new description:", selectedItem.description),
           selectedItem
         );
         break;
@@ -120,29 +170,39 @@ function AdminDashboard() {
     fetchItems(displayType);
   };
 
-  function generateCard(item) {
-    return (
-      <div className="item-card">
-        <div>
-          <img
-            src={item.default_photo}
-            alt="Default Item Card Photo"
-            className="square"
-          />
-          <p>{item.name}</p>
-          <p>${item.price}</p>
+  function generateCard(data) {
+    if (displayType === "users") {
+      return (
+        <div className="item-card">
+          <p>{data.name}</p>
+          <p>{data.email}</p>
+          <p>{data.addresses}</p>
         </div>
+      );
+    } else {
+      return (
+        <div className="item-card">
+          <div>
+            <img
+              src={data.default_photo}
+              alt="Default Item Card Photo"
+              className="square"
+            />
+            <p>{data.name}</p>
+            <p>${data.price}</p>
+          </div>
 
-        <div>
-          <button
-            className="three-d-button"
-            onClick={(event) => handleEditClick(event, item)}
-          >
-            Edit Item
-          </button>
+          <div>
+            <button
+              className="three-d-button"
+              onClick={(event) => handleEditClick(event, data)}
+            >
+              Edit Item
+            </button>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   return (
@@ -176,9 +236,27 @@ function AdminDashboard() {
           </button>
           <button
             className="big-text"
+            onClick={() => handleEditMenuAction("editName")}
+          >
+            Edit Name
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editPrice")}
+          >
+            Edit Price
+          </button>
+          <button
+            className="big-text"
             onClick={() => handleEditMenuAction("changePhoto")}
           >
             Change Photo
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
+          >
+            Change Additional Photos
           </button>
           <button
             className="big-text"
