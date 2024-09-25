@@ -10,6 +10,8 @@
   --pill-shape: 100px;
   --rounded-corners: 4px;
   --ultra-rounded-corners: 2%/25%; /*2%/25%*/
+  --downward-tab:0% 0% 5% 5%/100%;
+  --upward-tab:5% 5% 0% 0%/100%;
   --heart:url("/src/assets/OptHeartMask.svg")
   /* url('data:image/svg+xml,"M 61.564201,82.458533 C 42.081199,81.931334 24.28973,98.830886 23.482556,118.25554 c -1.009918,12.79631 7.103113,23.7938 14.741445,33.20034 10.890416,12.53211 20.561562,27.4047 22.47175,44.25781 0.675777,6.24697 -0.339337,12.63819 -2.708977,18.39612 8.233263,-4.63117 16.389983,-10.09216 24.514285,-15.15542 19.592821,-12.77609 39.212321,-25.96148 55.911381,-42.44934 9.34572,-9.44807 15.04561,-23.47807 11.28794,-36.67417 -4.12215,-16.31921 -20.47258,-28.797256 -37.45064,-27.216426 -6.79566,0.461672 -13.4568,2.871151 -18.942257,6.915388 C 86.4731,89.005571 74.112231,82.358142 61.564201,82.458533 Z') */
   /* polygon(24.75% 24.75%, 32.86% 19.15%, 39.34% 19.15%, 45.05% 22.23%, 46.71% 26.92%, 46.71% 31.9%, 51.44% 27.32%, 59.24% 22.72%, 68.22% 21.51%, 74.26% 24.75%, 78.41% 30.66%, 77.97% 37.87%, 74.26% 46.78%, 69.16% 54.63%, 50.64% 65.77%, 30.09% 74.26%, 24.35% 60.35%, 21.43% 48.44%, 20.11% 40.39%, 20.18% 31.9%); */
@@ -171,6 +173,15 @@ button:focus-visible {
   flex: 2
 }
 
+.nav-tabs{
+  background-color: var(--white);
+  border-radius: var(--downward-tab);
+   /* var(--ultra-rounded-corners); */
+  color:var(--black);
+  padding: 2% 5%;
+  /* 5% 5% 0% 0%/100%  */
+
+}
 .search-bar {
   display: flex;
   flex-direction: row;
@@ -233,6 +244,9 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
 }
+.move-up{
+  margin-bottom: -0.5%;
+}
 .unexpanded{
   height: 0vh;
   visibility: hidden;
@@ -241,6 +255,9 @@ button:focus-visible {
   border: transparent;
   background-color: transparent;
 }
+.light-bg{background-color: var(--periwinkle);}
+.dark-bg{background-color: var(--yinmn-blue);}
+
 .fill-screen{width: 100%; height: 100%;}
 .scroll-x{overflow-x: scroll; clip-path: fill-box;}
 .scroll-y{overflow-y: scroll; clip-path: fill-box;}
@@ -364,7 +381,7 @@ button:focus-visible {
   
   position:relative;
   offset-position: 1%;
-  >button{background-color: var(--periwinkle);color: var(--delft-blue); font-size: larger; border-radius: 5% 5% 0% 0%/100% ;   border: 2px solid var(--delft-blue);  z-index: auto; 
+  >button{background-color: var(--periwinkle);color: var(--delft-blue); font-size: larger; border-radius: var(--upward-tab) ;   border: 2px solid var(--delft-blue);  z-index: auto; 
     border-width: 1.25px 3px 1.75px;}
   span{background-color: var(--white);}
 }
@@ -407,6 +424,9 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
     
   }
 }
+.force-fill-main{
+  height: 85vh;
+}
 .fit-to-parent{
   width: 100%;
   height: 100%;
@@ -422,6 +442,9 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
 .photo{
   /* margin: 3%; */
 }
+.little-margin{
+  margin: 1%;
+}
 .generated-form{
   display: flex;
   flex-direction: column;
@@ -429,10 +452,16 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
   justify-content: space-around;
   align-items: stretch;
   margin: 4% 2%;
+  margin-top: 1%;
   padding: 2% 1.25%;
   background-color: var(--periwinkle);
   width: -webkit-fill-available;
   /* height: 100% */
+  button{
+    margin-top: 2%;
+    align-self: center;
+    font-size: 3em;
+  }
 }
 .form-inputs{
   align-content: stretch;
@@ -444,6 +473,10 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
   input{
     width: -webkit-fill-available;
     align-self: start;
+    background-color: var(--white);
+    border-radius: var(--rounded-corners);
+    font-size: large;
+    height: 3em;
   }
 }
 /* .display-many{flex-wrap: wrap; place-content: end center;} */

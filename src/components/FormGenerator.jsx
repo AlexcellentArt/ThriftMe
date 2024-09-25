@@ -270,7 +270,7 @@ function FormGenerator({
         <div className={`form-inputs flex-v stretch`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
         </div>
-        <button className="large-text" type="submit">
+        <button className="three-d-button" type="submit">
           Submit
         </button>
       </form>
