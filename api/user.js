@@ -17,15 +17,21 @@ const JWT = process.env.JWT || "shhh";
 
 // Gets all user
 router.get("/", async (req, res, next) => {
-  const decode = await decodeToken(req.headers.authorization)
-  if(decode.message){return next(decode)}
-  if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
-  try {
-    const user = await prisma.user.findMany({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
+  console.log("AAAAAAAAAa")
+  const users = await prisma.user.findMany({ where: {},include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+  console.log(users)
+  res.json(users);
+  // const decode = await decodeToken(req.headers.authorization)
+  // if(decode.message){return next(decode)}
+  // if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
+  // console.log("vvvvvvvvvvvvvvvvvvv")
+
+  // try {
+  //   const user = await prisma.user.findMany({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+  //   res.json(user);
+  // } catch (error) {
+  //   next(error);
+  // }
 });
 // const validateInputs = async (inputs) => {
 //   const inputs = { name, email, password } = await req.body;
