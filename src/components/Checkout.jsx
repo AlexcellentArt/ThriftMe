@@ -38,7 +38,7 @@ function Checkout({ props }) {
   ];
   const creditCardFields = [
     { key: "pin", type: "number" },
-    { key: "exp_date", type: "month" },
+    { key: "exp_date", type: "month"},
     { key: "cvc", type: "number" },
   ];
   const makePayment = async () => {
@@ -84,6 +84,10 @@ function Checkout({ props }) {
       const user = await getUser();
       console.log(user);
       console.log(user.shopping_cart);
+      console.log("Seller Transactions:",user.past_transactions_seller)
+      console.log("Buyer Transactions:",user.past_transactions_buyer)
+      console.log("Buyer Transaction 1 Total Cost:",user.past_transactions_buyer[0].total_cost)
+
       // setCart(user.shopping_cart)
       setUser(user);
     };
