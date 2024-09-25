@@ -1,8 +1,6 @@
 const prisma = require("../prisma");
 const bcrypt = require("bcrypt");
 
-// ### SALT ###
-const salt = await bcrypt.genSalt(13);
 // ### HELPER FUNCTIONS ###
 const randNumString = (length, digitMin = 0) => {
   const arr = [];
@@ -45,6 +43,8 @@ const GenTemplate = (base, suffix, prefix) => {
 };
 
 const seed = async () => {
+  // ### SALT ###
+  const salt = await bcrypt.genSalt(13);
   const createUsers = async () => {
     const users = [
       //Larry, Susan, and Julio simulate users who have sold and bought
@@ -460,7 +460,7 @@ const seed = async () => {
       while (qty > 0) {
         const address = {
           user_id: user_id,
-          zip: randNumString(5, 0),
+          zip: Number(randNumString(5, 0)),
           street: GenTemplate(name, suffix, prefix),
         };
         // 50 / 50 on if apt num is generated and added
