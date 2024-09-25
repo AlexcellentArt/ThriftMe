@@ -4,9 +4,11 @@ export function AuthContextProvider({ children }) {
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const cartId = 12;
-  const userId = 12
+  const userId = 12;
+  const [cartToken, setCartToken] = useState(null);
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
+  const local_cart={}
   function AutoHeader(){return {'Content-Type':'application/json','authorization':token}}
   async function NotLoggedIn(){
     if (!token) {
@@ -53,12 +55,21 @@ export function AuthContextProvider({ children }) {
   async function modifyCart(item_id, by) {
     // get cart
     try {
-      // if ()
-      const res = await fetch(`http://localhost:3000/api/shopping_cart/${userId}/${cartId}`);
-      const cart = await res.json();
+      let cart;
+      // if not logged in, modify local cart
+      // need to make cart take and give token, but this works for now
+      if (NotLoggedIn()){
+        if (!cartToken){
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`);
+          setCartToken(res.id)
+        }
+      }
+      else {
+        const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`,{headers:{authorization:token}});
+        cart= await res.json();
+      }
       // modify gotten cart
       if (res.ok) {
-        console.log(cart);
         // if not in dict,
         if (item_id < 1){throw new Error("Id cannot be less than 1")}
         if (!cart.item_dict[item_id]){cart.item_dict[item_id] = 0}
@@ -112,6 +123,7 @@ export function AuthContextProvider({ children }) {
     setToken(obj.token);
     console.log("USER IS: " + obj.user);
     window.localStorage.setItem("token", obj.token);
+    setCartToken(obj.shopping_cart.id)
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
     setIsAdmin(true);
   }
