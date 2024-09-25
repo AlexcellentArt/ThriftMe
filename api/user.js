@@ -21,7 +21,7 @@ router.get("/", async (req, res, next) => {
   if(decode.message){return next(decode)}
   if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
   try {
-    const user = await prisma.user.findMany();
+    const user = await prisma.user.findMany({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
     res.json(user);
   } catch (error) {
     next(error);
@@ -42,11 +42,9 @@ router.get("/", async (req, res, next) => {
 // }
 
 router.post("/login", async (req, res, next) => {
-  console.log("LOPGGING IN");
   try {
     const { email, password } = await req.body;
-    const salt = await bcrypt.genSalt(13);
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email },include:{shopping_cart:true} });
     if (!user) {
       return next(gen_errors.genericNotFoundError("user", "email", email));
     }
@@ -57,7 +55,7 @@ router.post("/login", async (req, res, next) => {
     }
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user, token });
+    res.json({ user, token, shopping_cart:user.shopping_cart });
   } catch (error) {
     next(error);
   }
@@ -83,10 +81,13 @@ router.post("/register", async (req, res, next) => {
     const salt = await bcrypt.genSalt(13);
     inputs["password"] = await bcrypt.hash(inputs["password"], salt);
     // validateInputs
-    const user = await prisma.user.create({ data: inputs });
+    const user = await prisma.user.create({ data: inputs});
+    // automatically make cart and browsing history
+    await prisma.browsing_History.create({data: { user_id:user.id,looked_at_tags:[] }});
+    await prisma.shopping_Cart.create({ data: { user_id:user.id, item_dict:{}, total_cost:0 }  });
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user: user, token });
+    res.json({ user: user, token:token });
   } catch (error) {
     next(error);
   }
@@ -108,7 +109,7 @@ router.get("/me", async (req, res, next) => {
       if(decode.message){return next(decode)}
       if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
     const id = decode.userId
-    const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,browsing_history:true,shopping_cart:true} });
+    const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
     //redit_cards:true --- need to replace BigInt with something else
     console.log("user:",user)
     // const user = await prisma.user.findUnique({ where: { id: id } });
@@ -168,11 +169,11 @@ router.post("/", async (req, res, next) => {
     if (missing) {
       next(missing);
     }
-    // const lengthViolations = gen_errors.hasLengthViolations()
-    // if (lengthViolations){}
-    // const notUnique = await gen_errors.isNotUnique("user","email",email);
-    // if (notUnique) {next(notUnique)}
-    const user = await prisma.user.create({ data: inputs });
+    const user = await prisma.user.create({ data: inputs});
+    // automatically make cart and browsing history
+    const browsing_History = await prisma.browsing_History.create({data: { user_id:user.id,looked_at_tags:[] }});
+    const shopping_cart = await prisma.shopping_Cart.create({ data: { user_id:user.id, item_dict:{}, total_cost:0 }  });
+
     res.json(user);
   } catch (error) {
     next(error);

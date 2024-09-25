@@ -12,24 +12,31 @@ import { useNavigate } from "react-router-dom";
 // const stripe = loadStripe("pk_test_51Q0LdjJFsQYrrxOA8E1Mgkyzknj11Gby2Qgf3mI9XdnRRko6G135tdate7BdeXYfk8FEzd1yokda5iPj0YFFAfCr00iGWB7kDL", {
 //   betas: ['custom_checkout_beta_3'],
 // });
+import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 
 import DisplayMany from "./DisplayMany";
 
-function Checkout({props}){
+function Checkout({ props }) {
   const { token } = useContext(AuthContext);
-  // see if I can't fix this to use form generator
-  //   const stripe = useStripe();
-  //   const elements = useElements();
-  const [city, setCity] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [error, setError] = useState(null);
+  //compressed down to these two fields holding the object from the forms
+  const [address, setAddress] = useState({});
+  const [creditCard, setCreditCard] = useState({});
+  // const [error, setError] = useState(null);
   // Related To Summary
   const [total, setTotal] = useState(0);
   const [amount, setAmount] = useState(0);
-  const [cart, setCart] = useState({mapped:{}});
+  const [cart, setCart] = useState({ mapped: {} });
+  const addressFields = [
+    { key: "zip", type: "number" },
+    { key: "street", type: "text" },
+    { key: "apartment", type: "text" },
+  ];
+  const creditCardFields = [
+    { key: "pin", type: "number" },
+    { key: "exp_date", type: "month" },
+    { key: "cvc", type: "number" },
+  ];
   const makePayment = async () => {
     // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
     const body = {
@@ -51,61 +58,53 @@ function Checkout({props}){
   };
   function updateCheckout(cart) {
     console.log("update checkout:");
-    console.log(cart)
-    const quantity = Object.values(cart.item_dict).reduce((acc, currentQty) => acc + currentQty,
-    0)
-    setAmount(quantity)
+    console.log(cart);
+    const quantity = Object.values(cart.item_dict).reduce(
+      (acc, currentQty) => acc + currentQty,
+      0
+    );
+    setAmount(quantity);
     setTotal(cart.total_cost);
-    setCart(cart)
+    setCart(cart);
   }
   function summarizeItem(obj) {
-    return (<p>{obj.name}({obj.quantity}) - ${obj.quantity*obj.price}</p>)
+    return (
+      <p>
+        {obj.name}({obj.quantity}) - ${obj.quantity * obj.price}
+      </p>
+    );
   }
-  const options = {
-    // passing the client secret obtained from the server
-    clientSecret: '{{CLIENT_SECRET}}',
-  };
-//   const API = "http://localhost:3000/api/stripe/"
-  useEffect(() => {
-    // async function setupStripe(params) { try{
-    //     const response = await fetch('http://localhost:3000/api/stripe/create-setup-intent', {
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({userId:12}),
-    //       });
-          
-    //       const res = await response.json();
-    //       if (!response.ok) {
-    //         if (setError !== null) {
-    //           setError(res.message);
-    //         }
-    //         throw new Error(res.message);
-    //       }
-    //       const json = await response.json();
-    //       options["clientSecret"] = json.client_secret
-    //       return res;
-    //     } catch (err) {
-    //       console.error(err)
-    //       return null;
-    //     }}
-    // // Render the form using the clientSecret
-    //   setupStripe()
-  }, []);
+  //   const API = "http://localhost:3000/api/stripe/"
+  useEffect(() => {}, []);
   return (
-    // <Elements stripe={stripePromise} options={options}>
-    // <Elements stripe={stripePromise} options={options}>
     <div className="split-screen fill-screen flex-h">
       <div className="checkout">
-        <Dropdown label="Credit Card">TBM</Dropdown>
-        <Dropdown label="Address">TBM</Dropdown>
+        <Dropdown label="Credit Card">
+          <FormGenerator
+            fields={addressFields}
+            postSuccessFunction={(obj) => {
+              setAddress(obj);
+            }}
+          />
+        </Dropdown>
+        <Dropdown label="Address">
+          <FormGenerator
+            fields={creditCardFields}
+            postSuccessFunction={(obj) => {
+              setCreditCard(obj);
+            }}
+          />
+        </Dropdown>
         <Dropdown label="Summary">
-          <DisplayMany data={cart.mapped} factory={summarizeItem} additionalClasses="flex-v"/>
+          <DisplayMany
+            data={cart.mapped}
+            factory={summarizeItem}
+            additionalClasses="flex-v"
+          />
           <hr />
           <p className="merriweather-bold">Total: ${total}</p>
           <hr />
-        <button className="three-d-button">Checkout</button>
+          <button className="three-d-button">Checkout</button>
         </Dropdown>
       </div>
       <Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />

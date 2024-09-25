@@ -39,17 +39,12 @@ function App() {
           <Route path="/products:query" element={<Products />} />
           <Route path="/products/:id" element={<SingleProduct />} />
 
-          <Route path="/cart" element={<Cart />} />
-
-          {/* Only logged-in users can check out */}
+          {/* <Route path="/cart" element={<Cart />} /> */}
           <Route
             path="/checkout"
             element={
-              <Checkout/>
-             // token ? <Checkout/> : <Navigate to="/login" />
-            }
-          />
-
+              <Checkout/>}/>
+              
           <Route
             path="/order/:id"
             element={

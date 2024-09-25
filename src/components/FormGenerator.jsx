@@ -6,28 +6,30 @@ function FormGenerator({
   apiPath = "user",
   labelAdditionalClasses = "",
   fetch_method = "POST",
+  additionalDataToSend
 }) {
-    // Authorization: `Bearer ${token}`
-    function commaSplitEndWithAnd(arr) {
-      if (arr.length === 2) {
-        return `${arr[0]} and ${arr[1]}`;
-      }
-      const last = arr.pop();
-      let newStr = arr.join(", ");
-      return newStr + ", and " + last;
+  // Authorization: `Bearer ${token}`
+  function commaSplitEndWithAnd(arr) {
+    if (arr.length === 2) {
+      return `${arr[0]} and ${arr[1]}`;
     }
+    const last = arr.pop();
+    let newStr = arr.join(", ");
+    return newStr + ", and " + last;
+  }
   async function defaultFetch(url, obj, setError = null) {
-    const API_URL = `http://localhost:3000/api/${url}`
+    const API_URL = `http://localhost:3000/api/${url}`;
     try {
-      console.log(API_URL)
-      console.log(obj)
-      //verify path exists 
-      console.log("AAAAAAAAAA")
+      console.log(API_URL);
+      console.log(obj);
+      //verify path exists
+      console.log("AAAAAAAAAA");
       // const exists = await fetch(API_URL,
       //   { method: "HEAD",        headers: {
       //     "Content-Type": "application/json",
       //   }, })
       //   if (!exists.ok){const mes = await exists.json(); throw new Error(mes)}
+      if (additionalDataToSend){obj = {obj,...additionalDataToSend}}
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -44,7 +46,7 @@ function FormGenerator({
       }
       return res;
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return null;
     }
   }
@@ -62,7 +64,7 @@ function FormGenerator({
           type: field.type,
           value: initialValue,
           isValid: false,
-          name:field.key
+          name: field.key,
         };
         if ("label" in field) {
           obj["label"] = field.label;
@@ -126,11 +128,21 @@ function FormGenerator({
       if (!allValid) {
         return;
       }
-      const res = await defaultFetch(apiPath, compileFormData(), setError);
-      if (res === null) {
-        return;
+      let res;
+      const compiled = compileFormData()
+      // if not making a call to an api path, which is assumed by the lack of it, then the compiled data is set as the result and passed straight to the on success function if set
+      if (apiPath) {
+        try {
+          res = await defaultFetch(apiPath, compiled, setError);
+          if (res === null) {
+            return;
+          }
+        } catch (error) {
+          console.error(error);
+          setError(error);
+        }
       }
-
+      else{res = compiled}
       if (isFirstTry === true) {
         setIsFirstTry(false);
       }
@@ -149,14 +161,16 @@ function FormGenerator({
       Object.values(formData).forEach((obj) => {
         if (obj.isValid === false) {
           allDataValid = false;
-          console.log(obj)
+          console.log(obj);
           invalidFields.push(obj.name);
         }
       });
       try {
         if (!allDataValid) {
           throw Error(
-            allDataValid.length > 1 ?` ${commaSplitEndWithAnd(invalidFields)} are invalid` :`${invalidFields[0]} is invalid.`
+            allDataValid.length > 1
+              ? ` ${commaSplitEndWithAnd(invalidFields)} are invalid`
+              : `${invalidFields[0]} is invalid.`
           );
         }
         return true;
@@ -190,7 +204,7 @@ function FormGenerator({
     function makeLabel(key, content) {
       return (
         <label
-          className={createInputClassName(formData[key].type, key)}
+          className={"merriweather-bold "+createInputClassName(formData[key].type, key)}
           key={key}
           id={key}
           htmlFor={key}
@@ -203,6 +217,7 @@ function FormGenerator({
     function makeInput(key) {
       return (
         <input
+        className="merriweather-regular"
           type={formData[key].type}
           name={key}
           id={key}
@@ -250,12 +265,14 @@ function FormGenerator({
       return makeLabel(inputKey, content);
     }
     return (
-      <form key="form" id="form" onSubmit={handleSubmit}>
+      <form className="generated-form" key="form" id="form" onSubmit={handleSubmit}>
         {error && <p>{error}</p>}
-        <div className={`formInputs`}>
+        <div className={`form-inputs flex-v stretch`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
         </div>
-        <button className="big-text" type="submit">Submit</button>
+        <button className="three-d-button" type="submit">
+          Submit
+        </button>
       </form>
     );
   }

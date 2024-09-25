@@ -38,7 +38,7 @@ function Navigations() {
             </li>
 
             <li className="navLinks">
-              <Link to="/cart">Cart</Link>
+              <Link to="/checkout">Checkout</Link>
             </li>
             <li>
               <SearchBar/>
