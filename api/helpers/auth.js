@@ -18,7 +18,9 @@ const isLoggedIn = async(req, res, next)=>{
 const isAdmin = async(req, res, next)=>{
   try {
     console.log(req.headers)
-    req.user = await findUserWithToken(req.headers.isAdmin)
+    // req.user = await findUserWithToken(req.headers.isAdmin)
+    const token = await decodeToken(req.headers.authorization)
+    if(!token.isAdmin){throw new Error("NOT ADMIN")}
     next()
   } catch (error) {
     next(error)
