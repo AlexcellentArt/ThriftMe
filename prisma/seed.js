@@ -439,20 +439,11 @@ const seed = async () => {
     ];
     const suffix = ["Drive", "Lane", "Parkway", "Corner", "Ave", "Street"];
     const prefix = ["", "", "", "", "", "North", "East", "West", "South"];
+    const city_base = ["Pelican","Lark","Chicken","Nightingale","Swan","Penguin"]
+    const city_suffix =["City","Town","Ville","Village"]
+    const state = ["GA","LA","CA","TN"]
     // used a bunch of "" in prefix to simulate a 50% chance of not getting one. Not gonna spend time programming in percentage based randomization as I don't want to confuse anyone.
-    const addresses = [
-      // {
-      //   user_id:12,
-      //   zip : 41867,
-      //   street:"Domino Drive",
-      //   apartment:"Turtle 204"
-      // },
-      // {
-      //   user_id:12,
-      //   zip : 73041,
-      //   street:"Hurricane Lane"
-      // }
-    ];
+    const addresses = [];
     let user_id = 12;
     while (user_id != 0) {
       // below 4, then plus one to ensure no blanks
@@ -461,6 +452,8 @@ const seed = async () => {
         const address = {
           user_id: user_id,
           zip: Number(randNumString(5, 0)),
+          city:GenTemplate(city_base,city_suffix),
+          state:state[randDigit(0, state.length - 1)],
           street: GenTemplate(name, suffix, prefix),
         };
         // 50 / 50 on if apt num is generated and added
