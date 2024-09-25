@@ -44,8 +44,8 @@ function App() {
             path="/checkout"
             element={
               <Checkout/>}/>
-
-          {/* <Route
+              
+          <Route
             path="/order/:id"
             element={
               <OrderConfirmation/>
@@ -55,7 +55,7 @@ function App() {
               //   <Navigate to="/login" />
               // )
             }
-          /> */}
+          />
 
           <Route path="/login" element={<Login/>} />
 
