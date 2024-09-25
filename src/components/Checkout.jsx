@@ -17,7 +17,7 @@ import Dropdown from "./Dropdown";
 
 import DisplayMany from "./DisplayMany";
 
-function Checkout({props}){
+function Checkout({ props }) {
   const { token } = useContext(AuthContext);
   //compressed down to these two fields holding the object from the forms
   const [address, setAddress] = useState({});
@@ -26,9 +26,17 @@ function Checkout({props}){
   // Related To Summary
   const [total, setTotal] = useState(0);
   const [amount, setAmount] = useState(0);
-  const [cart, setCart] = useState({mapped:{}});
-  const addressFields = [{key:"zip",type:"number"},{key:"street",type:"text"},{key:"apartment",type:"text"}]
-  const creditCardFields = [{key:"pin",type:"number"},{key:"exp_date",type:"month"},{key:"cvc",type:"number"}]
+  const [cart, setCart] = useState({ mapped: {} });
+  const addressFields = [
+    { key: "zip", type: "number" },
+    { key: "street", type: "text" },
+    { key: "apartment", type: "text" },
+  ];
+  const creditCardFields = [
+    { key: "pin", type: "number" },
+    { key: "exp_date", type: "month" },
+    { key: "cvc", type: "number" },
+  ];
   const makePayment = async () => {
     // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
     const body = {
@@ -50,31 +58,53 @@ function Checkout({props}){
   };
   function updateCheckout(cart) {
     console.log("update checkout:");
-    console.log(cart)
-    const quantity = Object.values(cart.item_dict).reduce((acc, currentQty) => acc + currentQty,
-    0)
-    setAmount(quantity)
+    console.log(cart);
+    const quantity = Object.values(cart.item_dict).reduce(
+      (acc, currentQty) => acc + currentQty,
+      0
+    );
+    setAmount(quantity);
     setTotal(cart.total_cost);
-    setCart(cart)
+    setCart(cart);
   }
   function summarizeItem(obj) {
-    return (<p>{obj.name}({obj.quantity}) - ${obj.quantity*obj.price}</p>)
+    return (
+      <p>
+        {obj.name}({obj.quantity}) - ${obj.quantity * obj.price}
+      </p>
+    );
   }
-//   const API = "http://localhost:3000/api/stripe/"
-  useEffect(() => {
-   
-  }, []);
+  //   const API = "http://localhost:3000/api/stripe/"
+  useEffect(() => {}, []);
   return (
     <div className="split-screen fill-screen flex-h">
       <div className="checkout">
-        <Dropdown label="Credit Card"><FormGenerator labelAdditionalClasses="formLabel" fields ={addressFields} postSuccessFunction={(obj)=>{goToAccount(obj)}}/></Dropdown>
-        <Dropdown label="Address"><FormGenerator labelAdditionalClasses="formLabel" fields ={creditCardFields} postSuccessFunction={(obj)=>{goToAccount(obj)}}/></Dropdown>
+        <Dropdown label="Credit Card">
+          <FormGenerator
+            fields={addressFields}
+            postSuccessFunction={(obj) => {
+              setAddress(obj);
+            }}
+          />
+        </Dropdown>
+        <Dropdown label="Address">
+          <FormGenerator
+            fields={creditCardFields}
+            postSuccessFunction={(obj) => {
+              setCreditCard(obj);
+            }}
+          />
+        </Dropdown>
         <Dropdown label="Summary">
-          <DisplayMany data={cart.mapped} factory={summarizeItem} additionalClasses="flex-v"/>
+          <DisplayMany
+            data={cart.mapped}
+            factory={summarizeItem}
+            additionalClasses="flex-v"
+          />
           <hr />
           <p className="merriweather-bold">Total: ${total}</p>
           <hr />
-        <button className="three-d-button">Checkout</button>
+          <button className="three-d-button">Checkout</button>
         </Dropdown>
       </div>
       <Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />
