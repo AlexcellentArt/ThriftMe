@@ -6,6 +6,7 @@ function Login() {
   // Login form as seen on page 2 of our mockflow
   // make get call to user with inputs from the form
   // if error is not gotten back, run login with what's received back then navigate to account
+  const nav = useNavigate()
   const fields = [
     { key: "email", type: "email" },
     { key: "password", type: "text" },
@@ -17,7 +18,7 @@ function Login() {
       return;
     }
     login(obj);
-    navigate("/products");
+    nav("/products");
   }
   const { login } = useContext(AuthContext);
   return (
