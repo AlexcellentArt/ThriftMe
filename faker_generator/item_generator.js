@@ -1,17 +1,8 @@
 //to generate data run: "node generate_mock_data.js" in terminal
-const faker = require("faker");
+/// Hi Andre, can you see me
+const { faker } = require('@faker-js/faker');
 const custom_helpers = require("./custom_helpers");
-const { fa } = require("faker/lib/locales");
-// const { fa } = require('faker/lib/locales');
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-}
-// async function getLoremFlicker(tags){
-//     const photo = await fetch("https://loremflickr.com/1080/1080/"+tags.join(",")+"/all")
-//     console.log(photo)
-// }
+
 function generateMockProductData(users = [{ id: 1 }, { id: 2 }, { id: 3 }]) {
   const products = [];
   let sellerId = 1; // Start with seller_id = 1
@@ -100,7 +91,7 @@ function generateMockProductData(users = [{ id: 1 }, { id: 2 }, { id: 3 }]) {
       ];
       const color = custom_helpers.randFromArray(colors)
       const base = custom_helpers.randFromArray(item_base);
-      const price = faker.datatype.number({ min: 5, max: 200 })
+      const price = faker.commerce.price({ min: 5, max: 200 })
     //   const photo = await getLoremFlicker([base,material,color])
       const product = {
         seller_id: users[i].id,
