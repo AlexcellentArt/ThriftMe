@@ -39,7 +39,7 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
     try {
       const inputs = { user_id, zip, street, apartment } = await req.body;
-      const isMissingInputs = gen_errors.hasMissingInputs(inputs,["zip","street"])
+      const isMissingInputs = gen_errors.hasMissingInputs(inputs,["user_id","zip","street"])
       if(isMissingInputs){return next(isMissingInputs)}
       const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
       if (isZip5){return next(isZip5)}
@@ -62,10 +62,11 @@ router.post("/", async (req, res, next) => {
       }
 		const inputs = { user_id, zip, street, apartment } = await req.body;
     // check inputs
-    const isMissingInputs = gen_errors.hasMissingInputs(inputs,["zip","street"])
+    const isMissingInputs = gen_errors.hasMissingInputs(inputs,["user_id","zip","street"])
     if(isMissingInputs){return next(isMissingInputs)}
     const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
     if (isZip5){return next(isZip5)}
+    console.log(inputs.zip)
     // safe to put
       const address = await prisma.address.update({
         where: { id },
