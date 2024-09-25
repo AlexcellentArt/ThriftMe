@@ -1,6 +1,10 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
+const {
+  isLoggedIn,
+  decodeToken,
+} = require("./helpers/auth.js");
 
 const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
@@ -22,6 +26,31 @@ router.get("/:id", async (req, res, next) => {
     const shopping_cart = await prisma.shopping_Cart.findUnique({where: { id } });
     if (!shopping_cart) {
       return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
+    }
+    // check if shopping cart has user_id, if so does authorization match
+    if (shopping_cart.user_id)
+    {
+try {
+        const {authorization} = await req.headers
+        if(!authorization)
+        {
+          throw "you have no authorization"
+        }
+        const decode = await decodeToken(authorization)
+        if(decode.message){return next(decode)}
+        "if is admin, then bypass these next checks"
+        if (!decode.isAdmin)
+        {
+          if (!decode.userId){return "you have no token"}
+          const id = decode.userId
+          if (shopping_cart.user_id !== id){throw "you are not the cart owner"}
+        }
+} catch (error) {
+  next({
+    status: 403,
+    message: `There is an error that suggests this shopping cart does not belong to you. Specifically, ${error}.`,
+  });
+}
     }
     res.json(shopping_cart);
   } catch (error) {

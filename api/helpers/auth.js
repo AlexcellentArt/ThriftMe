@@ -40,7 +40,7 @@ const authenticate = async(req,res)=> {
     return next(gen_errors.genericViolationDataError("input","password","wrong"))
   }
   // res.json(authenticate(payload));
-  const token = jwt.sign({userId: user.id},JWT)
+  const token = jwt.sign({userId: user.id,isAdmin:user.is_admin},JWT)
   console.log(token)
   res.json({user,token})
 };
