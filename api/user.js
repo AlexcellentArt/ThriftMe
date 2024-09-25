@@ -17,6 +17,9 @@ const JWT = process.env.JWT || "shhh";
 
 // Gets all user
 router.get("/", async (req, res, next) => {
+  const decode = await decodeToken(req.headers.authorization)
+  if(decode.message){return next(decode)}
+  if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
   try {
     const user = await prisma.user.findMany();
     res.json(user);
