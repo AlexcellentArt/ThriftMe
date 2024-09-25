@@ -32,6 +32,9 @@ function Checkout({ props }) {
     { key: "zip", type: "number" },
     { key: "street", type: "text" },
     { key: "apartment", type: "text" },
+    { key: "hi ", type: "text", default:"aaggggggggggggg"  },
+    { key: "yo sujoy", type: "text", default:"aaaa" },
+    { key: "hiii sujoy", type: "text", default:"uwuwuuwuwuuw" }
   ];
   const creditCardFields = [
     { key: "pin", type: "number" },
