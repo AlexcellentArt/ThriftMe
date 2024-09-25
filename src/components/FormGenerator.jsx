@@ -204,7 +204,7 @@ function FormGenerator({
     function makeLabel(key, content) {
       return (
         <label
-          className={createInputClassName(formData[key].type, key)}
+          className={"merriweather-bold "+createInputClassName(formData[key].type, key)}
           key={key}
           id={key}
           htmlFor={key}
@@ -217,6 +217,7 @@ function FormGenerator({
     function makeInput(key) {
       return (
         <input
+        className="merriweather-regular"
           type={formData[key].type}
           name={key}
           id={key}
@@ -264,12 +265,12 @@ function FormGenerator({
       return makeLabel(inputKey, content);
     }
     return (
-      <form className="generatedForm" key="form" id="form" onSubmit={handleSubmit}>
+      <form className="generated-form" key="form" id="form" onSubmit={handleSubmit}>
         {error && <p>{error}</p>}
-        <div className={`formInputs`}>
+        <div className={`form-inputs flex-v stretch`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
         </div>
-        <button className="big-text" type="submit">
+        <button className="large-text" type="submit">
           Submit
         </button>
       </form>

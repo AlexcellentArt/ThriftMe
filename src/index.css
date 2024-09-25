@@ -422,6 +422,30 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
 .photo{
   /* margin: 3%; */
 }
+.generated-form{
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-around;
+  align-items: stretch;
+  margin: 4% 2%;
+  padding: 2% 1.25%;
+  background-color: var(--periwinkle);
+  width: -webkit-fill-available;
+  /* height: 100% */
+}
+.form-inputs{
+  align-content: stretch;
+  justify-content: space-around;
+  align-items: stretch;
+  text-align: left;
+  display: flex;
+  label{flex:1}
+  input{
+    width: -webkit-fill-available;
+    align-self: start;
+  }
+}
 /* .display-many{flex-wrap: wrap; place-content: end center;} */
 .item-card {
   /* width: 15%;
@@ -483,7 +507,13 @@ hr:nth-of-type(odd){border-bottom: 1.5px solid var(--delft-blue);}
 .big-text{
   font-size: x-large;
 }
-
+.large-text{font-size: large;}
+.medium-text{
+  font-size: medium;
+}
+.small-text{
+  font-size: small;
+}
 .merriweather-light {
   font-family: "Merriweather", serif;
   font-weight: 300;
