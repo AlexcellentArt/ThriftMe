@@ -105,13 +105,13 @@ export function AuthContextProvider({ children }) {
       console.error(error);
     }
   }
-  async function getUser({overrideToken}) {
-    const local_token = overrideToken ? overrideToken:token
+  async function getUser() {
+    // const local_token = overrideToken ? overrideToken:token
     try {
-      if (!local_token){throw Error("User Not Logged In")}
-      console.log("getting user with token "+local_token)
+      if (!token){throw Error("User Not Logged In")}
+      console.log("getting user with token "+token)
       // only returning l for now, assuming everyone is using it to test login
-      const res = await fetch(API_URL + "user/me",{headers:{"token":local_token}});
+      const res = await fetch(API_URL + "user/me",{headers:{"token":token}});
       if (res.ok) {
         const json = await res.json();
         console.log(json);
