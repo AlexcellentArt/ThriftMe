@@ -18,7 +18,9 @@ function Login() {
       return;
     }
     login(obj);
-    nav("/products");
+    console.log(obj)
+    if (obj.is_admin === true){nav("/admin")}
+    else(nav("/products"))
   }
   const { login } = useContext(AuthContext);
   return (
