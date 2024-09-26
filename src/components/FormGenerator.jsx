@@ -72,10 +72,12 @@ function FormGenerator({
     // New will always be 0 by default
 try {
       const options = [{value:"New",text:"New"}]
+      // if autoFillOptionFormatter, then use it.
+      const formatter = autoFillOptionFormatter?autoFillOptionFormatter:(obj)=>{return {value: obj, text: JSON.stringify(obj)}}
       autofillOptions.forEach((op,idx) => {
         const id = idx+1
         // options[id]={value: op, text: op.option_label?op.option_label:JSON.stringify(op)};
-        options.push({value: op, text: op.option_label?op.option_label:JSON.stringify(op)})
+        options.push(formatter(op)) 
       })
       console.log(options)
       return options
@@ -400,15 +402,6 @@ try {
     }
     return makeLabel(inputKey, content);
   }
-  function processOptions(options){
-      try {
-        if (autoFillOptionFormatter){return autoFillOptionFormatter(options)}
-            // options.map((obj) => {
-            //   return { value: obj, text: autoFillOptionFormatter?autoFillOptionFormatter(obj):JSON.stringify(obj)}})
-      } catch (error) {
-        console.error(error)
-      }
-    }
   return (
     <>
     {console.log(autoFillData)}
@@ -416,7 +409,7 @@ try {
         <SelectionGenerator
           label={"aaa"}
           // if there is a formatter, run the options through that as th
-          options={autoFillOptionFormatter? autoFillOptionFormatter(autoFillData):autoFillData}
+          options={autoFillData}
           // handleChange={(obj) => {
           //   autoFill(obj)
           // }}

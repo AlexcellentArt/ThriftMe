@@ -16,7 +16,7 @@ import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 
 import DisplayMany from "./DisplayMany";
-import SelectionGenerator from "./SelectionGenerator";
+// import SelectionGenerator from "./SelectionGenerator";
 
 function Checkout({ props }) {
   const { token, getUser, cartToken } = useContext(AuthContext);
@@ -38,7 +38,7 @@ function Checkout({ props }) {
 
   const [addressFields, setAddressFields] = useState([
     { key: "zip", type: "number" },
-    { key: "state", type: "text" },
+    { key: "state", type: "text", default: "aaa" },
     { key: "city", type: "text" },
     { key: "street", type: "text" },
     { key: "apartment", type: "number" },
@@ -91,26 +91,25 @@ function Checkout({ props }) {
     // }
   };
   function autoFill(obj, fields, setterFunc) {
-    const objKeys = Object.keys(obj)
-    
+    const objKeys = Object.keys(obj);
+
     const filled = fields.map((field) => {
       // see if object has key matching field
-      console.log(field)
-      console.log(obj)
-      console.log(field.key)
-      console.log(    objKeys.includes(field.key)
-      )
-      if (    objKeys.includes(field.key)) {
+      console.log(field);
+      console.log(obj);
+      console.log(field.key);
+      console.log(objKeys.includes(field.key));
+      if (objKeys.includes(field.key)) {
         // if so, add default to the field and set it equal to the object's value
         field["default"] = obj[field.key];
       }
       return field;
     });
-    console.log(filled)
+    console.log(filled);
     // if setterFunc, use that, and just in case something wants this, return the filled form obj as well
     if (setterFunc) {
       setterFunc(filled);
-      console.log("SET FILLED")
+      console.log("SET FILLED");
     }
     return filled;
   }
@@ -138,41 +137,50 @@ function Checkout({ props }) {
   //   const API = "http://localhost:3000/api/stripe/"
   return (
     <div className="split-screen fill-screen flex-h">
-      <button onClick={()=>{[addressFields,creditCardFields].forEach((obj)=>{console.log(obj)})}}>Print Status of States</button>
+      <button
+        onClick={() => {
+          [addressFields, creditCardFields].forEach((obj) => {
+            console.log(obj);
+          });
+        }}
+      >
+        Print Status of States
+      </button>
       <div className="checkout">
         {/* autoFill(obj,creditCardFields,setCreditCardFields) */}
         <Dropdown label="Credit Card">
-          {user && (
+          {/* {user && (
             <SelectionGenerator
               label={"aaa"}
-              options={user.credit_cards.map((o,idx)=>{return {value:idx,text:JSON.stringify(o)}})}
+              options={user.credit_cards.map((o, idx) => {
+                return { value: idx, text: JSON.stringify(o) };
+              })}
               handleChange={(id) => {
-                autoFill(user.credit_cards[id], creditCardFields, setCreditCardFields);
+                autoFill(
+                  user.credit_cards[id],
+                  creditCardFields,
+                  setCreditCardFields
+                );
               }}
             />
-          )}
+          )} */}
           <FormGenerator
             fields={creditCardFields}
+            autofillOptions={user?user.credit_cards:undefined}
             postSuccessFunction={(obj) => {
               setAddress(obj);
             }}
+            autoFillOptionFormatter={(obj)=>{return {value:obj,text:`${obj.pin} ${obj.exp_date}`.trim()}}}
           />
         </Dropdown>
         <Dropdown label="Address">
-          {user && (
-            <SelectionGenerator
-              label={"aaa"}
-              options={user.addresses.map((o,idx)=>{return {value:idx,text:JSON.stringify(o)}})}
-              handleChange={(id) => {
-                autoFill(user.addresses[id], addressFields, setAddressFields);
-              }}
-            />
-          )}
-                    <FormGenerator
+          <FormGenerator
             fields={addressFields}
             postSuccessFunction={(obj) => {
               setAddress(obj);
             }}
+            autoFillOptionFormatter={(obj)=>{return {value:obj,text:`${obj.zip} ${obj.state} ${obj.city} ${obj.street} ${obj.apartment&&obj.apartment}`.trim()}}}
+            autofillOptions={user?user.addresses:undefined}
           />
         </Dropdown>
         <Dropdown label="Summary">
