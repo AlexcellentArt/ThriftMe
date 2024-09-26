@@ -61,7 +61,7 @@ router.post("/login", async (req, res, next) => {
     }
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user, token, shopping_cart:user.shopping_cart });
+    res.json({ user, token, shopping_cart:user.shopping_cart,is_admin:user.is_admin });
   } catch (error) {
     next(error);
   }
@@ -307,9 +307,24 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
 router.delete("/:id", isLoggedIn, async (req, res, next) => {
   try {
     const id = +req.params.id;
-    const exists = await prisma.user.findUnique({ where: { id } });
-    if (!exists) {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
       return next(gen_errors.genericNotFoundError("user", "id", id));
+    }
+    if (user.is_admin === true){
+      // get admin count
+      const adminAmount = await prisma.user.count({
+        select: {
+          is_admin:true
+          },
+        },
+      )
+      console.log("Admins in system:"+adminAmount.is_admin)
+      // if deleting , reject delete request
+      if (adminAmount.is_admin - 1 <= 1)
+      {
+        return next({status:400,message:"There must be at least one admin in existence."})
+      }
     }
     await prisma.user.delete({ where: { id } });
     res.sendStatus(204);

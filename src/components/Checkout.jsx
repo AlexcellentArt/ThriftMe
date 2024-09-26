@@ -16,10 +16,13 @@ import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 
 import DisplayMany from "./DisplayMany";
+import SelectionGenerator from "./SelectionGenerator";
 
 function Checkout({ props }) {
-  const { token, getUser } = useContext(AuthContext);
+  const { token, getUser, cartToken } = useContext(AuthContext);
   //compressed down to these two fields holding the object from the forms
+  // const [addresses, setAddresses] = useState({});
+  // const [creditCards, setCreditCards] = useState({});
   const [address, setAddress] = useState({});
   const [creditCard, setCreditCard] = useState({});
   // const [error, setError] = useState(null);
@@ -27,20 +30,47 @@ function Checkout({ props }) {
   const [total, setTotal] = useState(0);
   const [amount, setAmount] = useState(0);
   const [cart, setCart] = useState({ mapped: {} });
-  const [user, setUser] = useState(false);
-  const addressFields = [
+  const [user, setUser] = useState({
+    credit_cards: [],
+    addresses: [],
+    shopping_cart: { item_dict: {} },
+  });
+
+  const [addressFields, setAddressFields] = useState([
     { key: "zip", type: "number" },
+    { key: "state", type: "text" },
+    { key: "city", type: "text" },
     { key: "street", type: "text" },
-    { key: "apartment", type: "text" },
-    { key: "hi ", type: "text", default:"aaggggggggggggg"  },
-    { key: "yo sujoy", type: "text", default:"aaaa" },
-    { key: "hiii sujoy", type: "text", default:"uwuwuuwuwuuw" }
-  ];
-  const creditCardFields = [
-    { key: "pin", type: "number" },
-    { key: "exp_date", type: "month" },
+    { key: "apartment", type: "number" },
+  ]);
+  const [creditCardFields, setCreditCardFields] = useState([
+    { key: "pin", type: "text" },
+    { key: "exp_date", type: "text" },
     { key: "cvc", type: "number" },
-  ];
+  ]);
+  useEffect(() => {
+    const getMe = async () => {
+      const user = await getUser();
+      if (user === undefined) {
+        const guest = {
+          credit_cards: [],
+          addresses: [],
+          shopping_cart: { item_dict: {} },
+        };
+        const response = await fetch(
+          `http://localhost:3000/api/shopping_cart/${cartToken}`
+        );
+        if (response.ok) {
+          console.log("CART FOUND AND NO USER");
+          guest.shopping_cart = await response.json();
+          return;
+        }
+        setUser(guest);
+      }
+      setUser(user);
+    };
+    getMe();
+  }, []);
   const makePayment = async () => {
     // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
     const body = {
@@ -60,6 +90,33 @@ function Checkout({ props }) {
     //   console.log(result.error);
     // }
   };
+  function autoFill(obj, fields, setterFunc) {
+    const objKeys = Object.keys(obj)
+    
+    const filled = fields.map((field) => {
+      // see if object has key matching field
+      console.log(field)
+      console.log(obj)
+      console.log(field.key)
+      console.log(    objKeys.includes(field.key)
+      )
+      if (    objKeys.includes(field.key)) {
+        // if so, add default to the field and set it equal to the object's value
+        field["default"] = obj[field.key];
+      }
+      return field;
+    });
+    console.log(filled)
+    // if setterFunc, use that, and just in case something wants this, return the filled form obj as well
+    if (setterFunc) {
+      setterFunc(filled);
+      console.log("SET FILLED")
+    }
+    return filled;
+  }
+  // function autoFillCreditCard(){}
+  // function autoFillAddress(){}
+
   function updateCheckout(cart) {
     console.log("update checkout:");
     console.log(cart);
@@ -79,32 +136,42 @@ function Checkout({ props }) {
     );
   }
   //   const API = "http://localhost:3000/api/stripe/"
-  useEffect(() => {
-    const getMe = async () => {
-      const user = await getUser();
-      console.log(user);
-      console.log(user.shopping_cart);
-      // setCart(user.shopping_cart)
-      setUser(user);
-    };
-    getMe();
-  }, []);
   return (
     <div className="split-screen fill-screen flex-h">
+      <button onClick={()=>{[addressFields,creditCardFields].forEach((obj)=>{console.log(obj)})}}>Print Status of States</button>
       <div className="checkout">
+        {/* autoFill(obj,creditCardFields,setCreditCardFields) */}
         <Dropdown label="Credit Card">
+          {user && (
+            <SelectionGenerator
+              label={"aaa"}
+              options={user.credit_cards.map((o,idx)=>{return {value:idx,text:JSON.stringify(o)}})}
+              handleChange={(id) => {
+                autoFill(user.credit_cards[id], creditCardFields, setCreditCardFields);
+              }}
+            />
+          )}
           <FormGenerator
-            fields={addressFields}
+            fields={creditCardFields}
             postSuccessFunction={(obj) => {
               setAddress(obj);
             }}
           />
         </Dropdown>
         <Dropdown label="Address">
-          <FormGenerator
-            fields={creditCardFields}
+          {user && (
+            <SelectionGenerator
+              label={"aaa"}
+              options={user.addresses.map((o,idx)=>{return {value:idx,text:JSON.stringify(o)}})}
+              handleChange={(id) => {
+                autoFill(user.addresses[id], addressFields, setAddressFields);
+              }}
+            />
+          )}
+                    <FormGenerator
+            fields={addressFields}
             postSuccessFunction={(obj) => {
-              setCreditCard(obj);
+              setAddress(obj);
             }}
           />
         </Dropdown>
@@ -120,7 +187,7 @@ function Checkout({ props }) {
           <button className="three-d-button">Checkout</button>
         </Dropdown>
       </div>
-      <Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />
+      {/* <Cart shopping_cart={user.shopping_cart} passUpCart={updateCheckout} /> */}
     </div>
   );
 }
