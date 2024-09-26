@@ -61,7 +61,7 @@ router.post("/login", async (req, res, next) => {
     }
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user, token, shopping_cart:user.shopping_cart });
+    res.json({ user, token, shopping_cart:user.shopping_cart,is_admin:user.is_admin });
   } catch (error) {
     next(error);
   }
