@@ -236,6 +236,7 @@ function FormGenerator({
       );
     }
     function makeSelect(key) {
+      console.log("making select")
       // make options out of keys
       return (
         <select

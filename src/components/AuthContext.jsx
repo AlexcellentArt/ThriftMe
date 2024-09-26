@@ -3,8 +3,8 @@ const AuthContext = createContext("AuthContext");
 export function AuthContextProvider({ children }) {
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const cartId = 12;
-  const userId = 12;
+  // const cartId = 12;
+  // const userId = 12;
   const [cartToken, setCartToken] = useState(null);
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
@@ -66,7 +66,7 @@ export function AuthContextProvider({ children }) {
 
         }
       }
-      const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`,{headers:{authorization:token}});
+      const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:{authorization:token}});
       cart= await res.json();
       // modify gotten cart
       if (res.ok) {
@@ -86,7 +86,7 @@ export function AuthContextProvider({ children }) {
         cart.total_cost = await calculatePrice(cart.item_dict)
         console.log(cart)
         try {
-          const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`, {
+          const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -123,11 +123,11 @@ export function AuthContextProvider({ children }) {
     setToken(obj.token);
     console.log("USER IS: " + obj.user);
     window.localStorage.setItem("token", obj.token);
-    setCartToken(obj.shopping_cart.id)
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
     const user = await getUser()
     console.log(user)
     setIsAdmin(user.is_admin);
+    setCartToken(user.shopping_cart.id)
   }
   function logout() {
     setToken(null);
@@ -159,6 +159,7 @@ export function AuthContextProvider({ children }) {
         API_PATH: API_URL,
         token,
         isAdmin,
+        cartToken,
         login,
         logout,
         NotLoggedIn,
