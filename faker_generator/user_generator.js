@@ -1,9 +1,12 @@
 const { faker } = require("@faker-js/faker");
 
 function generateMockUserData() {
+
+    const firstName = faker.person.firstName();
+
     return {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
+        name: firstName,
+        email: faker.internet.email({ firstName: firstName }),
         password: faker.internet.password(10),
     };
 }
