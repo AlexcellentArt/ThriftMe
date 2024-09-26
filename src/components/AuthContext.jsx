@@ -58,10 +58,12 @@ export function AuthContextProvider({ children }) {
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
-      if (NotLoggedIn()){
+      if (!NotLoggedIn()){
         if (!cartToken){
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`);
-          setCartToken(res.id)
+          console.log("MAKING NEW CART")
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/`,{method:"POST"});
+          const newCart = await res.json()
+          setCartToken(newCart.id)
           window.localStorage.setItem("cart_id",res.id);
 
         }
@@ -103,18 +105,20 @@ export function AuthContextProvider({ children }) {
       console.error(error);
     }
   }
-  async function getUser() {
+  async function getUser({overrideToken}) {
+    const local_token = overrideToken ? overrideToken:token
     try {
-      console.log("getting user with token "+token)
+      if (!local_token){throw Error("User Not Logged In")}
+      console.log("getting user with token "+local_token)
       // only returning l for now, assuming everyone is using it to test login
-      const res = await fetch(API_URL + "user/me",{headers:{"token":token}});
+      const res = await fetch(API_URL + "user/me",{headers:{"token":local_token}});
       if (res.ok) {
         const json = await res.json();
         console.log(json);
         return json;
       }
     } catch (error) {
-      console.error(res);
+      console.error(error);
     }
   }
  async function login(obj) {
@@ -122,12 +126,13 @@ export function AuthContextProvider({ children }) {
     // add in verification of user
     setToken(obj.token);
     console.log("USER IS: " + obj.user);
+    console.log(obj.user)
     window.localStorage.setItem("token", obj.token);
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
-    const user = await getUser()
-    console.log(user)
-    setIsAdmin(user.is_admin);
-    setCartToken(user.shopping_cart.id)
+    // const user = await getUser(obj.token)
+    // console.log(user)
+    setIsAdmin(obj.is_admin);
+    setCartToken(obj.shopping_cart.id)
   }
   function logout() {
     setToken(null);
