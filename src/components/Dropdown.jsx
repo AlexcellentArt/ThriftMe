@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-function Dropdown({label, children}) {
-    const [expanded, setExpanded] = useState(false);
+function Dropdown({label, startExpanded=false,children}) {
+    const [expanded, setExpanded] = useState(startExpanded);
     return (<span className="dropdown flex-v">
         <button className='transparent' onClick={()=>{setExpanded(!expanded)}}>{label}</button>
         {expanded && <span>{children}</span>}

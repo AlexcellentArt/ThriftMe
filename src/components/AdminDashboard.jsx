@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { useContext, useState, useEffect } from "react";
 import DisplayMany from "./DisplayMany";
+import Dropdown from "./Dropdown";
 
 function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
@@ -249,54 +250,89 @@ function AdminDashboard() {
     console.log("THIS IS DATA", data);
     if (displayType === "users") {
       return (
-        <div className="item-card">
-          <p>User Name: {data.name}</p>
-          <p>Email: {data.email}</p>
-          <p>Is Admin: {data.is_admin ? "Yes" : "No"}</p>
-          {/* <DisplayMany data={data.addresses} /> */}
-          {data.addresses && data.addresses.length > 0 ? (
-            data.addresses.map((address, index) => (
-              <div key={index}>
-                <p>Street: {address.street}</p>
-                {address.apartment && <p>Apartment: {address.apartment}</p>}
-                <p>City: {address.city}</p>
-                <p>Zip: {address.zip}</p>
-              </div>
-            ))
-          ) : (
-            <p>No address available</p>
+        <div className="small-text item-card">
+          <p className="merriweather-bold admin-tab">{data.id}</p>
+          <Dropdown  label={"Info"} startExpanded={true}>
+            <div>
+            <p className="merriweather-regular">
+              <span className="merriweather-bold">User Name:</span> {data.name}
+            </p>
+            <p className="merriweather-regular">
+              <span className="merriweather-bold">Email:</span> {data.email}
+            </p>
+            <p className="merriweather-regular">
+              <span className="merriweather-bold">Is Admin:</span>{" "}
+              {data.is_admin ? (
+                <span className="positive">Yes</span>
+              ) : (
+                <span className="negative">No</span>
+              )}
+            </p>
+            </div>
+          </Dropdown>
+          {data.addresses && (
+            <Dropdown label={"Addresses"} startExpanded={true}>
+              {data.addresses && data.addresses.length > 0 ? (
+                data.addresses.map((address, index) => (
+                  <div key={index}>
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">Street:</span>{" "}
+                      {address.street}
+                    </p>
+                    {address.apartment && (
+                      <p>
+                        <span className="merriweather-bold">Apartment:</span>{" "}
+                        {address.apartment}
+                      </p>
+                    )}
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">City:</span>{" "}
+                      {address.city}
+                    </p>
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">Zip:</span>{" "}
+                      {address.zip}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>{data.name} has no addresses available</p>
+              )}
+            </Dropdown>
           )}
-          {/* Delete User Button */}
-          <button
-            className="three-d-button"
-            onClick={() => {
-              if (confirm(`Are you sure you want to delete ${data.name}?`)) {
-                deleteUser(data.id);
-              }
-            }}
-          >
-            Delete User
-          </button>
-
-          {/* Promote to Admin Button */}
-          {!data.is_admin && (
+          <div>
+            {/* Delete User Button */}
             <button
               className="three-d-button"
-              onClick={() => promoteUser(data.id)}
+              onClick={() => {
+                if (confirm(`Are you sure you want to delete ${data.name}?`)) {
+                  deleteUser(data.id);
+                }
+              }}
             >
-              Promote to Admin
+              Delete User
             </button>
-          )}
 
-          {/* Demote from Admin Button */}
-          {data.is_admin && (
-            <button
-              className="three-d-button"
-              onClick={() => demoteUser(data.id)}
-            >
-              Demote from Admin
-            </button>
-          )}
+            {/* Promote to Admin Button */}
+            {!data.is_admin && (
+              <button
+                className="three-d-button"
+                onClick={() => promoteUser(data.id)}
+              >
+                Promote to Admin
+              </button>
+            )}
+
+            {/* Demote from Admin Button */}
+            {data.is_admin && (
+              <button
+                className="three-d-button"
+                onClick={() => demoteUser(data.id)}
+              >
+                Demote from Admin
+              </button>
+            )}
+          </div>
         </div>
       );
     } else {
@@ -342,6 +378,7 @@ function AdminDashboard() {
       <DisplayMany
         data={displayType === "users" ? users : items}
         factory={generateCard}
+        additionalClasses={"scroll-y wrap"}
       />
 
       {showContextMenu && (
