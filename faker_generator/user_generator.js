@@ -11,8 +11,17 @@ function generateMockUserData() {
     };
 }
 
-
-
-const fakeUser = Array.from({ length: 10}, generateMockUserData);
-
-console.log(fakeUser);
+function generateManyMockUserData(amount) {
+    const users = []
+    while(amount != 0)
+    {
+        users.push(generateMockUserData())
+        amount -= 1;
+    }
+    console.log(`Made ${users.length} users.`);
+    return users
+}
+module.exports = {
+    generateManyMockUserData,
+    generateMockUserData,
+  };

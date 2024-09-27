@@ -47,7 +47,7 @@ const seed = async () => {
   // ### SALT ###
   const salt = await bcrypt.genSalt(13);
   const createUsers = async () => {
-    const users = [
+    let users = [
       //Larry, Susan, and Julio simulate users who have sold and bought
       { name: "Larry", email: "larry@Larrybird.com", password: "wordTheB1rd" },
       { name: "Susan", email: "susan@gmail.com", password: "suzieQ" },
@@ -73,7 +73,15 @@ const seed = async () => {
       { name: "Isabelle", email: "isabelle@nookazon", password: "Helpb3ll" },
       // L is made so sparse to make logging in and out for testing purposes as easy and fast as possible. Making an admin for ease of testing those as well.
       { name: "L", email: "l@l", password: "l", is_admin: true },
+      { name: "K", email: "k@k", password: "k", is_admin: true },
+      { name: "A", email: "a@a", password: "a", is_admin: true },
+      { name: "S", email: "s@s", password: "s", is_admin: true },
+
+
     ];
+    const generated = userGenerator.generateManyMockUserData(50)
+    users = [...users,...generated]
+    console.log(users)
     // encrypt passwords
     for (let index = 0; index < users.length; index++) {
       users[index].password = await bcrypt.hash(users[index].password, salt);
