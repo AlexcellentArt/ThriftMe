@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 // const stripe = loadStripe("pk_test_51Q0LdjJFsQYrrxOA8E1Mgkyzknj11Gby2Qgf3mI9XdnRRko6G135tdate7BdeXYfk8FEzd1yokda5iPj0YFFAfCr00iGWB7kDL", {
 //   betas: ['custom_checkout_beta_3'],
 // });
+import Login from "./Login";
+import Register from "./Register";
 import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 
@@ -20,22 +22,25 @@ import DisplayMany from "./DisplayMany";
 
 function Checkout({ props }) {
   const { token, getUser, cartToken } = useContext(AuthContext);
-  //compressed down to these two fields holding the object from the forms
-  // const [addresses, setAddresses] = useState({});
-  // const [creditCards, setCreditCards] = useState({});
-  const [address, setAddress] = useState({});
-  const [creditCard, setCreditCard] = useState({});
-  // const [error, setError] = useState(null);
-  // Related To Summary
-  const [total, setTotal] = useState(0);
-  const [amount, setAmount] = useState(0);
-  const [cart, setCart] = useState({ mapped: {} });
+  const [isGuest, setIsGuest] = useState(true);
+  // raw user data
   const [user, setUser] = useState({
     credit_cards: [],
     addresses: [],
     shopping_cart: { item_dict: {} },
   });
 
+  //  cart data with the fetched items and them mapped
+  const [cart, setCart] = useState({ mapped: {} });
+  // Related To Summary
+  // total is the total price of all items in the cart
+  const [total, setTotal] = useState(0);
+  // amount is NOT FOR PRICE, it's for the amount of items total in the cart
+  const [amount, setAmount] = useState(0);
+// info that needs to get passed to order confirmation
+  const [address, setAddress] = useState({});
+  const [creditCard, setCreditCard] = useState({});
+// Fields for generating the forms
   const [addressFields, setAddressFields] = useState([
     { key: "zip", type: "number" },
     { key: "state", type: "text", default: "aaa" },
@@ -66,55 +71,13 @@ function Checkout({ props }) {
           return;
         }
         setUser(guest);
+      } else {
+        setUser(user);
+        setIsGuest(false);
       }
-      setUser(user);
     };
     getMe();
-  }, []);
-  const makePayment = async () => {
-    // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
-    const body = {
-      products: cart,
-    };
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    // const response = await fetch(`${apiURL}/create-checkout-session`, {
-    //   method: "POST",
-    //   headers: headers,
-    //   body: JSON.stringify(body),
-    // });
-    // const session = await response.json();
-    // const result = stripe.redirectToCheckout({ sessionId: session.id });
-    // if (result.error) {
-    //   console.log(result.error);
-    // }
-  };
-  function autoFill(obj, fields, setterFunc) {
-    const objKeys = Object.keys(obj);
-
-    const filled = fields.map((field) => {
-      // see if object has key matching field
-      console.log(field);
-      console.log(obj);
-      console.log(field.key);
-      console.log(objKeys.includes(field.key));
-      if (objKeys.includes(field.key)) {
-        // if so, add default to the field and set it equal to the object's value
-        field["default"] = obj[field.key];
-      }
-      return field;
-    });
-    console.log(filled);
-    // if setterFunc, use that, and just in case something wants this, return the filled form obj as well
-    if (setterFunc) {
-      setterFunc(filled);
-      console.log("SET FILLED");
-    }
-    return filled;
-  }
-  // function autoFillCreditCard(){}
-  // function autoFillAddress(){}
+  }, [token]);
 
   function updateCheckout(cart) {
     console.log("update checkout:");
@@ -134,68 +97,130 @@ function Checkout({ props }) {
       </p>
     );
   }
-  //   const API = "http://localhost:3000/api/stripe/"
+  function formatAddress(obj) {
+    return (
+      obj.street + `${obj.apartment && obj.apartment}` + obj.city + `${obj.zip}`
+    );
+  }
+  function formatCreditCard(obj) {
+    return `${obj.pin} ${obj.exp_date} ${obj.cvc}`;
+  }
+  function GoToOrderConfirmation(obj){
+    // insert logic here navigating/passing data to order confirmation
+    // that's the stage then where a new past transaction would be made.
+    // I've assembled here everything I think might be needed to make a past transaction, which we can have created at the OrderConfirmation page with this data funneled into it somehow.
+    const OrderInfo = {cart:shopping_cart,address:address,credit:creditCard,total:total}
+    // since we don't have a stripe backend, we could probably get away with just going visually 'charge made, shipping to x, but not actually saving the address and card.
+    // OR, we can add shipping address and charged card to the schema. Maybe a receiving card for the money to be transferred to for the seller too.
+    // If alive, talk to team about it tomorrow.
+    //
+  }
   return (
     <div className="split-screen fill-screen flex-h">
-      <button
-        onClick={() => {
-          [addressFields, creditCardFields].forEach((obj) => {
-            console.log(obj);
-          });
-        }}
-      >
-        Print Status of States
-      </button>
       <div className="checkout">
-        {/* autoFill(obj,creditCardFields,setCreditCardFields) */}
-        <Dropdown label="Credit Card">
-          {/* {user && (
-            <SelectionGenerator
-              label={"aaa"}
-              options={user.credit_cards.map((o, idx) => {
-                return { value: idx, text: JSON.stringify(o) };
-              })}
-              handleChange={(id) => {
-                autoFill(
-                  user.credit_cards[id],
-                  creditCardFields,
-                  setCreditCardFields
-                );
-              }}
+        {isGuest === true ? (
+          <Dropdown label="Login Or Register To Continue Checkout">
+            <div className="flex-h">
+              <Login stayOnPage={true} />
+              <Register stayOnPage={true} />
+            </div>
+          </Dropdown>
+        ) : (
+          <>
+            <Dropdown label="Credit Card">
+              {Object.keys(creditCard).length > 2 ? (
+                <>
+                  {" "}
+                  <p>Selected Credit Card:{formatCreditCard(creditCard)}</p>
+                  <button
+                    className="medium-text"
+                    onClick={() => {
+                      setCreditCard({});
+                    }}
+                  >
+                    Clear
+                  </button>
+                </>
+              ) : (
+                <FormGenerator
+                  fields={creditCardFields}
+                  autofillOptions={user ? user.credit_cards : undefined}
+                  postSuccessFunction={(obj) => {
+                    setCreditCard(obj);
+                  }}
+                  autoFillOptionFormatter={(obj) => {
+                    return {
+                      value: obj,
+                      text: `${obj.pin} ${obj.exp_date}`.trim(),
+                    };
+                  }}
+                />
+              )}
+            </Dropdown>
+
+            <Dropdown label="Credit Card">
+              {Object.keys(creditCard).length > 2 ? (
+                <>
+                  <p>Selected Address:{formatAddress(address)}</p>
+                  <button
+                    className="medium-text"
+                    onClick={() => {
+                      setAddress({});
+                    }}
+                  >
+                    Clear
+                  </button>
+                </>
+              ) : (
+                <FormGenerator
+                  fields={addressFields}
+                  postSuccessFunction={(obj) => {
+                    setAddress(obj);
+                  }}
+                  autoFillOptionFormatter={(obj) => {
+                    return { value: obj, text: formatAddress(obj) };
+                  }}
+                  autofillOptions={user ? user.addresses : undefined}
+                />
+              )}
+            </Dropdown>
+          </>
+        )}
+        {cart.mapped.length < 0 ? (
+          <h2>Nothing To Checkout</h2>
+        ) : (
+          <Dropdown label="Summary">
+            <p>
+              Selected Credit Card:
+              {Object.keys(creditCard).length > 2 ? (
+                formatCreditCard(creditCard)
+              ) : (
+                <span className="error">Needs Filling Out</span>
+              )}
+            </p>
+            <p>
+              Selected Address:
+              {Object.keys(address).length > 4 ? (
+                formatAddress(address)
+              ) : (
+                <span className="error">Needs Filling Out</span>
+              )}
+            </p>
+            <DisplayMany
+              data={cart.mapped}
+              factory={summarizeItem}
+              additionalClasses="flex-v"
             />
-          )} */}
-          <FormGenerator
-            fields={creditCardFields}
-            autofillOptions={user?user.credit_cards:undefined}
-            postSuccessFunction={(obj) => {
-              setAddress(obj);
-            }}
-            autoFillOptionFormatter={(obj)=>{return {value:obj,text:`${obj.pin} ${obj.exp_date}`.trim()}}}
-          />
-        </Dropdown>
-        <Dropdown label="Address">
-          <FormGenerator
-            fields={addressFields}
-            postSuccessFunction={(obj) => {
-              setAddress(obj);
-            }}
-            autoFillOptionFormatter={(obj)=>{return {value:obj,text:`${obj.zip} ${obj.state} ${obj.city} ${obj.street} ${obj.apartment&&obj.apartment}`.trim()}}}
-            autofillOptions={user?user.addresses:undefined}
-          />
-        </Dropdown>
-        <Dropdown label="Summary">
-          <DisplayMany
-            data={cart.mapped}
-            factory={summarizeItem}
-            additionalClasses="flex-v"
-          />
-          <hr />
-          <p className="merriweather-bold">Total: ${total}</p>
-          <hr />
-          <button className="three-d-button">Checkout</button>
-        </Dropdown>
+            <hr />
+            <p className="merriweather-bold">Total: ${total}</p>
+            <hr />
+            {creditCard && address != null && (
+              <button className="three-d-button" onClick={()=>{GoToOrderConfirmation()}}>Checkout</button>
+            )}
+          </Dropdown>
+        )}
       </div>
-      {/* <Cart shopping_cart={user.shopping_cart} passUpCart={updateCheckout} /> */}
+      <Cart shopping_cart={user.shopping_cart} passUpCart={updateCheckout} />
     </div>
   );
 }
