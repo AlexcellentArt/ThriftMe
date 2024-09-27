@@ -62,6 +62,8 @@ function FormGenerator({
       return null;
     }
   }
+  // version is used to force rereneder of form
+  const [version, setVersion] = useState(0);
   const [autoFillData, autoFillDispatch] = useReducer(
     autoFillDataReducer,
     createAutoFillOptions()
@@ -70,42 +72,14 @@ function FormGenerator({
     switch (action.type) {
       case "reload": {
         data = createAutoFillOptions()
+        setVersion(version+1)
         return data;
       }
       case "store new": {
-        // stores the new data so it's not lost
         data[0].text = action.newData
         console.log("New Form Data Stored: ",data[0])
-        // return data;
-        // doesn't return so it will proceed onwards to autofill
         return data
       }
-      // case "autofill": {
-      //   console.log(data)
-      //   try {
-      //   console.log("Action",action)
-      //   console.log(action.selectedData)
-      //   handleAutofillFormData(action.selectedData)
-          
-      //   } catch (error) {
-      //     console.error(error)
-      //   }
-        // const filled = fields.map((field) => {
-        //   const fill = {};
-        //   // see if object has key matching field
-        //   console.log(objKeys.includes(field.key));
-        //   let val;
-        //   if (objKeys.includes(field.key)) {
-        //     // if so, add default to the field and set it equal to the object's value
-        //     // key["default"] = obj[key.key];
-        //     val = obj[field.key];
-        //   } else {
-        //     val = field.value;
-        //   }
-        //   fill[key] = val;
-        //   return fill;
-        // });
-        // console.log(filled);
       default: {
         throw Error("Unknown action: " + action.type);
       }
@@ -195,6 +169,7 @@ try {
       type: "autofill",
       filled: formData
     });
+    setVersion(version+1)
     // keys.forEach((key)=>{
     //   // try to dispatch updates to the formData
     //   console.log("trying to dispatch update: ",key,formData[key])
@@ -224,12 +199,19 @@ try {
         console.log("Action",action)
         console.log(Object.entries(action.filled))
         // console.log(action.filled])
-        // Object.keys(action.filled).forEach((key) => {
-        //   console.log(action.filled[key])
-        //   // data[key].isValid = true;
-        //   // data[key].value = action.filled[key];
-        //   // data[key].default = action.filled[key];
-        // });
+        console.log(data)
+        Object.entries(action.filled).forEach((entry) => {
+          const key = entry[0]
+          const value = entry[1]
+          console.log("Key: ",key)
+          console.log("Value:",value)
+          if (data[key])
+{          console.log("autofilling "+key)
+  data[key].isValid = true;
+          data[key].value = value;
+          data[key].default = value;
+          }
+        });
         return data;
       }
       default: {
@@ -458,7 +440,7 @@ try {
         onSubmit={handleSubmit}
       >
         {error && <p>{error}</p>}
-        <div className={`form-inputs flex-v stretch`}>
+        <div key={version} className={`form-inputs flex-v stretch`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
         </div>
         <button className="three-d-button" type="submit">
