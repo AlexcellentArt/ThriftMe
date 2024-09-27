@@ -130,8 +130,7 @@ function Checkout({ props }) {
             <Dropdown label="Credit Card">
               {Object.keys(creditCard).length > 2 ? (
                 <>
-                  {" "}
-                  <p>Selected Credit Card:{formatCreditCard(creditCard)}</p>
+                  <p>Selected Credit Card: {formatCreditCard(creditCard)}</p>
                   <button
                     className="medium-text"
                     onClick={() => {
@@ -159,9 +158,9 @@ function Checkout({ props }) {
             </Dropdown>
 
             <Dropdown label="Address">
-              {Object.keys(creditCard).length > 2 ? (
+              {Object.keys(address).length > 3 ? (
                 <>
-                  <p>Selected Address:{formatAddress(address)}</p>
+                  <p>Selected Address: {formatAddress(address)}</p>
                   <button
                     className="medium-text"
                     onClick={() => {

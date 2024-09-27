@@ -2,10 +2,10 @@ import DisplayMany from "./DisplayMany";
 import { useState, useEffect,useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import { useParams, useNavigate } from "react-router-dom";
-
+import Favorite from "./Favorite";
 function Home() {
   const navigate = useNavigate();
-  const {getUser} = useContext(AuthContext)
+  const {getUser,addToCart} = useContext(AuthContext)
   const [data, setData] = useState([{}]);
   const [normal, updated_normal_page] = useState();
   const user_id = 2;
@@ -56,14 +56,7 @@ function Home() {
     return (
       <div className="item-card">
         <div>
-          <button
-            className="three-d-button"
-            onClick={() => {
-              toggleFavorite(obj.id);
-            }}
-          >
-            Add To Favorites
-          </button>
+        <Favorite id={obj.id} />
           <img
             src={obj.default_photo}
             alt="Default Item Card Photo"
