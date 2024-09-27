@@ -71,11 +71,11 @@ function SelectionGenerator({ label, options, handleChange }) {
           // console.log(val)
           console.log(val + " selected!")
           handleChange
-          // returns the true value, the index of the current value, and the previously selected value.
+          // returns the true value, the index of the current value, and the previously selected idx.
             ? handleChange(val,e.target.value, previousSelection)
             : console.log(val + " selected!");
           // then set the new previous selection
-          setPreviousSelection(val);
+          setPreviousSelection(e.target.value);
         }}
       >
         {buildOptions()}
