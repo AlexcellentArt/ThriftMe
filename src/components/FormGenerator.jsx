@@ -8,7 +8,7 @@ function FormGenerator({
   autoFillOptionFormatter,
   fetchFunctionOverride,
   postSuccessFunction = null,
-  apiPath = "user",
+  apiPath,
   labelAdditionalClasses = "",
   fetch_method = "POST",
   additionalDataToSend,
@@ -18,6 +18,11 @@ function FormGenerator({
     // make dispatch here to autofill
     // autoFill(autofill);
     // createAutoFillOptions()
+    // const emptyForm = {};
+    // Object.keys(fields).forEach((key) => {
+    //   emptyForm[key] = "";
+    // });
+    // setNewFormData(emptyForm);
   }, [fields]);
   // version is used to force rereneder of form
   const [version, setVersion] = useState(0);
@@ -30,7 +35,13 @@ function FormGenerator({
     createInitialValues()
   );
 
-  const [newFormData, setNewFormData] = useState(undefined);
+  const [newFormData, setNewFormData] = useState( ()=>{   const emptyForm = {};
+    Object.keys(fields).forEach((key) => {
+      emptyForm[key] = "";
+    });
+    return emptyForm});
+  // const [autofillOptions, setAutofillOptions] = useState(undefined);
+
   const [autoFillData, autoFillDispatch] = useReducer(
     autoFillDataReducer,
     createAutoFillOptions()
@@ -63,16 +74,15 @@ function FormGenerator({
     // New will always be 0 by default
     try {
       const options = [];
-      if (newFormData === undefined) {
-        const emptyForm = {};
-        Object.keys(fields).forEach((key) => {
-          emptyForm[key] = "";
-        });
-        setNewFormData(emptyForm);
-        options.push({ value: emptyForm, text: "New" });
-      } else {
+      if (newFormData !== undefined) {
         console.log("NOT UNDEFINED");
         options.push({ value: newFormData, text: "New" });
+        // const emptyForm = {};
+        // Object.keys(fields).forEach((key) => {
+        //   emptyForm[key] = "";
+        // });
+        // setNewFormData(emptyForm);
+        // options.push({ value: emptyForm, text: "New" });
       }
 
       // if autoFillOptionFormatter, then use it.
@@ -179,12 +189,13 @@ function FormGenerator({
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    const allValid = await validateForm();
-    if (!allValid) {
-      return;
-    }
+    // const allValid = await validateForm();
+    // if (!allValid) {
+    //   return;
+    // }
     let res;
     const compiled = compileFormData();
+    console.log("Compiled Data")
     // if not making a call to an api path, which is assumed by the lack of it, then the compiled data is set as the result and passed straight to the on success function if set
     if (apiPath) {
       try {
@@ -203,6 +214,8 @@ function FormGenerator({
       setIsFirstTry(false);
     }
     if (postSuccessFunction !== null) {
+      console.log("PSF")
+      console.log(res)
       postSuccessFunction(res);
     }
     setIsFirstTry(true);
@@ -365,10 +378,38 @@ function FormGenerator({
   function buildInputs(inputKey) {
     //DOCUMENTATION: based on type, content is generated and setup according to what's at the key in formData. Label is setup the same way, with content being placed inside it.
     let content;
-    if (formData[inputKey].type === "select") {
-      return makeSelect(inputKey);
-    } else {
-      content = makeInput(inputKey);
+    // if (formData[inputKey].type === "select") {
+    //   return makeSelect(inputKey);
+    // } else {
+    //   content = makeInput(inputKey);
+    // }
+
+    // specialized types get their own cases, while all non specialized get made by make input
+    switch (formData[inputKey].type) {
+      // case "select":
+      //   content =  makeSelect(inputKey);
+      //   break
+      case "textarea":
+        content =  (
+          <textarea
+            className="merriweather-regular"
+            name={key}
+            id={key}
+            onChange={(e) =>
+              handleUpdateFormData(e.target.type, key, e.target.value)
+            }
+            defaultValue={formData[key].default}
+          />
+        );
+        break
+      case "multiple files":
+        return <input className="merriweather-regular" type="file"             name={key}
+        id={key}
+        onChange={(e) =>
+          handleUpdateFormData(e.target.type, key, e.target.value)
+        } multiple></input>
+      default:
+        content = makeInput(inputKey);
     }
     return makeLabel(inputKey, content);
   }
@@ -382,16 +423,17 @@ function FormGenerator({
           options={autoFillData}
           handleChange={(obj, idx, prev) => {
             // console.log()
-            console.log("CHANGED from " + prev + " to " + obj);
-            // console.log(formData)
-            if (idx === 0) {
+            console.log("CHANGED from " + prev + " to " + idx);
+            console.log(formData)
+            if (prev === 0) {
+              // previous selection was new, save the form's current state before updating
               setNewFormData(formData);
               autoFillDispatch({
                 type: "updateNew",
                 newData: formData,
               });
             }
-            if (obj === "new") {
+            if (idx === 0) {
               console.log("GETTING NEW");
               handleAutofillFormData(autoFillData[0]);
             } else {
