@@ -9,8 +9,8 @@ function AddItem() {
         { key: "name", type: "text" },
         { key: "price", type: "number"},
         { key: "tags", type: "text" },
-        { key: "description", type: "textarea" },
-        { key: "photos", type: "multiple files" },
+        // { key: "description", type: "textarea" },
+        // { key: "photos", type: "multiple files" },
       ];
     return (<div>Add Item <FormGenerator fields={fields}/></div>);
 }
