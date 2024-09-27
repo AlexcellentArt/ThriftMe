@@ -538,6 +538,12 @@ hr {
 }
 hr:nth-of-type(even){border-top: 1.5px solid var(--delft-blue);}
 hr:nth-of-type(odd){border-bottom: 1.5px solid var(--delft-blue);}
+
+.error{
+  font-size: larger;
+  background-color: palevioletred;
+  color: darkred;
+}
 .big-text{
   font-size: x-large;
 }
