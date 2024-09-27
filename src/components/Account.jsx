@@ -5,7 +5,7 @@ import DisplayMany from "./DisplayMany";
 import { useEffect } from "react";
 import React from "react";
 import FormGenerator from "./FormGenerator";
-import { shopping_Cart } from "../../prisma";
+import { past_Transactions, shopping_Cart } from "../../prisma";
 import Dropdown from "./Dropdown";
 import Cart from "./Cart";
 /**
@@ -59,53 +59,58 @@ function Account() {
                 user.past_transactions_buyer]
             }
 
-            getMe());
+            getMe());}
 
 
-        }
+  
 
-        return (
-            <div className="split-screen fill-screen flex-h">
-              <div className="Address">
-                <Dropdown label="Address">
-                  <FormGenerator
-                    fields={addressFields}
-                    postSuccessFunction={(obj) => {
-                      setAddress(obj);
-                    }}
-                  />
-                </Dropdown>
-                <Dropdown label="Credit Car">
-                  <FormGenerator
-                    fields={creditCardFields}
-                    postSuccessFunction={(obj) => {
-                      setCreditCard(obj);
-                    }}
-                  />
-                </Dropdown>
-                <Dropdown label="Summary">
-                  <DisplayMany
-                    data={cart.mapped}
-                    factory={summarizeItem}
-                    additionalClasses="flex-v"
-                  />
-                  <hr />
-                  <p className="merriweather-bold">Total: ${total}</p>
-                  <hr />
-                  <button className="three-d-button">Checkout</button>
-                </Dropdown>
-              </div>
-              <Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />
-            </div>
-          );
-        }
-
-
-    });
+        : ;
 
 
 
 
+<div className="split-screen fill-screen flex-h">
+<div className="checkout">
+  <Dropdown label="Credit Card">
+    <FormGenerator
+      fields={creditCardFields}
+      data={creditCardFields.map(({key,value}))=> ({[key]:value});
+    }
+      postSuccessFunction={(obj) => {
+        setAddress(obj);
+      }}
+    />
+  </Dropdown>
+  <Dropdown label="Address">
+    <FormGenerator
+      fields={addressFields}
+      data={addressFields.map(({key,type}))=> ({[key]:value});
+    }
+      postSuccessFunction={(obj) => {
+        setCreditCard(obj);
+      }}
+    />
+  </Dropdown>
+
+  <Dropdown label="Summary">
+    <DisplayMany
+      data={past_Transactions.map(({key,value}))=> ({[key]:value});
+      }
+      factory={summarizeItem}
+      additionalClasses="flex-v"
+    />
+    <hr />
+    <p className="merriweather-bold">Total: ${total}</p>
+    <hr />
+    <button className="three-d-button">Checkout</button>
+  </Dropdown>
+</div>
+<Cart user_id={12} cart_id={12} passUpCart={updateCheckout} />
+</div>
+);
+}
+export default Checkout;
+    
 
 
 
