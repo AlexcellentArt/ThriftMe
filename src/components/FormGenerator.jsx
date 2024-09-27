@@ -66,18 +66,62 @@ function FormGenerator({
     autoFillDataReducer,
     createAutoFillOptions()
   );
+  function autoFillDataReducer(data, action) {
+    switch (action.type) {
+      case "reload": {
+        data = createAutoFillOptions()
+        return data;
+      }
+      case "store new": {
+        // stores the new data so it's not lost
+        data[0].text = action.newData
+        console.log("New Form Data Stored: ",data[0])
+        // return data;
+        // doesn't return so it will proceed onwards to autofill
+        return data
+      }
+      // case "autofill": {
+      //   console.log(data)
+      //   try {
+      //   console.log("Action",action)
+      //   console.log(action.selectedData)
+      //   handleAutofillFormData(action.selectedData)
+          
+      //   } catch (error) {
+      //     console.error(error)
+      //   }
+        // const filled = fields.map((field) => {
+        //   const fill = {};
+        //   // see if object has key matching field
+        //   console.log(objKeys.includes(field.key));
+        //   let val;
+        //   if (objKeys.includes(field.key)) {
+        //     // if so, add default to the field and set it equal to the object's value
+        //     // key["default"] = obj[key.key];
+        //     val = obj[field.key];
+        //   } else {
+        //     val = field.value;
+        //   }
+        //   fill[key] = val;
+        //   return fill;
+        // });
+        // console.log(filled);
+      default: {
+        throw Error("Unknown action: " + action.type);
+      }
+    }
+  }
   function createAutoFillOptions(){
     if(!autofillOptions){ console.log("NO AUTOFILL OPTIONS");return {}}
     console.log("AUTOFILL OPTIONS FOUND:",JSON.stringify(autofillOptions))
     // New will always be 0 by default
 try {
-      const options = [{value:"New",text:"New"}]
+      const options = [{value:"new"}]
       // if autoFillOptionFormatter, then use it.
       const formatter = autoFillOptionFormatter?autoFillOptionFormatter:(obj)=>{return {value: obj, text: JSON.stringify(obj)}}
-      autofillOptions.forEach((op,idx) => {
-        const id = idx+1
-        // options[id]={value: op, text: op.option_label?op.option_label:JSON.stringify(op)};
-        options.push(formatter(op)) 
+      autofillOptions.forEach((op) => {
+        console.log(op)
+        options.push(formatter(op))
       })
       console.log(options)
       return options
@@ -87,66 +131,15 @@ try {
     // options.push({value:"New"})
     return {}
   }
-  function autoFillDataReducer(data, action) {
-    switch (action.type) {
-      case "reload": {
-        data = createAutoFillOptions()
-        return data;
-      }
-      case "store new": {
-        // stores the new data so it's not lost
-        data["new"] = action.data
-        return data;
-      }
-      case "autofill": {
-        console.log(data)
-        const objKeys = Object.keys(autofillOptions);
-        // don't autofill if nothing to do so
-        if (objKeys.length <= 0) {
-          return;
-        }
-        objKeys.forEach((key)=>{
-          data[key]
-        })
-        const filled = fields.map((field) => {
-          const fill = {};
-          // see if object has key matching field
-          console.log(objKeys.includes(field.key));
-          let val;
-          if (objKeys.includes(field.key)) {
-            // if so, add default to the field and set it equal to the object's value
-            // key["default"] = obj[key.key];
-            val = obj[field.key];
-          } else {
-            val = field.value;
-          }
-          fill[key] = val;
-          return fill;
-        });
-        console.log(filled);
-        handleUpdateFormData()
-        return data;
-      }
-      default: {
-        throw Error("Unknown action: " + action.type);
-      }
-    }
-  }
   const [formData, dispatch] = useReducer(
     formDataReducer,
     createInitialValues()
   );
   const [error, setError] = useState();
   const [isFirstTry, setIsFirstTry] = useState(true);
-  // const [isFirstTry, setIsFirstTry] = useState(true);
-  // function createAutoFillValues(){
-  //   {user.addresses.map((o, idx) => {
-  //     return { value: idx, text: JSON.stringify(o) };
-  //   })}
-  // }
   function createInitialValues(initialValue = "") {
     const obj = {};
-    console.log(fields);
+    // console.log(fields);
     fields.forEach((field) => {
       // console.log(field.key + " default is " + field.default);
       obj[field.key] = {
@@ -189,6 +182,25 @@ try {
       type: "reset",
     });
   }
+  async function handleAutofillFormData(formData) {
+    // const keys = Object.keys(formData)
+    // // don't autofill if nothing to do so
+    // if (keys <= 0) {
+    //   console.log("selected data has no length")
+    //   return;
+    // }
+    console.log("TRYING TO HANDE",formData)
+    console.log(formData)
+    dispatch({
+      type: "autofill",
+      filled: formData
+    });
+    // keys.forEach((key)=>{
+    //   // try to dispatch updates to the formData
+    //   console.log("trying to dispatch update: ",key,formData[key])
+    //   await 
+    // })
+  }
   function formDataReducer(data, action) {
     switch (action.type) {
       case "update": {
@@ -196,6 +208,11 @@ try {
         data[action.input.key].value = action.input.value;
         return data;
       }
+      // case "update": {
+      //   data[action.input.key].isValid = action.input.isValid;
+      //   data[action.input.key].value = action.input.value;
+      //   return data;
+      // }
       case "reset": {
         Object.keys(data).forEach((key) => {
           data[key].isValid = false;
@@ -203,47 +220,51 @@ try {
         });
         return data;
       }
-      // case "autofill": {
-      //   Object.keys(action.filled).forEach((key) => {
-      //     data[key].isValid = true;
-      //     data[key].value = action.filled[key];
-      //     data[key].default = action.filled[key];
-      //   });
-      //   return data;
-      // }
+      case "autofill": {
+        console.log("Action",action)
+        console.log(Object.entries(action.filled))
+        // console.log(action.filled])
+        // Object.keys(action.filled).forEach((key) => {
+        //   console.log(action.filled[key])
+        //   // data[key].isValid = true;
+        //   // data[key].value = action.filled[key];
+        //   // data[key].default = action.filled[key];
+        // });
+        return data;
+      }
       default: {
         throw Error("Unknown action: " + action.type);
       }
     }
   }
-  async function autoFill(obj) {
-    const objKeys = Object.keys(obj);
-    // don't autofill if nothing to do so
-    if (objKeys.length <= 0) {
-      return;
-    }
-    const filled = fields.map((field) => {
-      const fill = {};
-      // see if object has key matching field
-      console.log(objKeys.includes(field.key));
-      let val;
-      if (objKeys.includes(field.key)) {
-        // if so, add default to the field and set it equal to the object's value
-        // key["default"] = obj[key.key];
-        val = obj[field.key];
-      } else {
-        val = field.value;
-      }
-      fill[key] = val;
-      return fill;
-    });
-    console.log(filled);
-    dispatch({
-      type: "autofill",
-      fields: filled,
-    });
-    return filled;
-  }
+  // async function autoFill(obj) {
+  //   const objKeys = Object.keys(obj);
+  //   // don't autofill if nothing to do so
+  //   if (objKeys.length <= 0) {
+  //     return;
+  //   }
+  //   const filled = fields.map((field) => {
+  //     const fill = {};
+  //     // see if object has key matching field
+  //     console.log(objKeys.includes(field.key));
+  //     let val;
+  //     if (objKeys.includes(field.key)) {
+  //       // if so, add default to the field and set it equal to the object's value
+  //       // key["default"] = obj[key.key];
+  //       val = obj[field.key];
+  //     } else {
+  //       val = field.value;
+  //     }
+  //     fill[key] = val;
+  //     return fill;
+  //   });
+  //   console.log(filled);
+  //   dispatch({
+  //     type: "autofill",
+  //     fields: filled,
+  //   });
+  //   return filled;
+  // }
   function compileFormData() {
     const obj = {};
     Object.entries(formData).forEach((data) => {
@@ -404,15 +425,30 @@ try {
   }
   return (
     <>
-    {console.log(autoFillData)}
+    {/* {console.log(autoFillData)} */}
       {autofillOptions && (
         <SelectionGenerator
-          label={"aaa"}
+          label="Use: "
           // if there is a formatter, run the options through that as th
-          options={autoFillData}
-          // handleChange={(obj) => {
-          //   autoFill(obj)
-          // }}
+          options={createAutoFillOptions()}
+          handleChange={(obj,prev) => {
+            // console.log()
+            console.log("CHANGE")
+            console.log(obj)
+            console.log("CHANGE")
+            if (prev === "new"){autoFillDispatch({
+              type: "store new",
+              newData:formData
+            })}
+            if (obj === "new"){
+              console.log("GETTING NEW")
+              handleAutofillFormData(autoFillData[0])
+            }
+            else
+            {
+              handleAutofillFormData(obj)
+            }
+          }}
         />
       )}
       <form
