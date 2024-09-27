@@ -36,6 +36,8 @@ function Checkout({ props }) {
     shopping_cart: { item_dict: {} },
   });
 
+  const navigate = useNavigate();
+
   const [addressFields, setAddressFields] = useState([
     { key: "zip", type: "number" },
     { key: "state", type: "text" },
@@ -71,7 +73,15 @@ function Checkout({ props }) {
     };
     getMe();
   }, []);
+
   const makePayment = async () => {
+    // order data prepped
+    const orderData = {
+      items: cart.mapped,
+      totalCost: total,
+      address: address,
+      creditCard: creditCard,
+    };
     // const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
     const body = {
       products: cart,
@@ -79,6 +89,32 @@ function Checkout({ props }) {
     const headers = {
       "Content-Type": "application/json",
     };
+
+    // -- KIM'S SUGGESTED EDITS FOR ORDER CONFIRMATION LINES 92-117 --
+    //API link is
+
+    navigate("/order-confirmation", { state: { order: orderData } });
+
+    const response = await fetch(
+      "http://localhost:3000/api/past_transactions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      }
+    );
+
+    if (response.ok) {
+      const savedOrder = await response.json();
+      navigate("/order-confirmation", {
+        state: { order: savedOrder }, // Pass order data through state
+      });
+    } else {
+      console.error(`Error when trying to fetch`, error);
+    }
+
     // const response = await fetch(`${apiURL}/create-checkout-session`, {
     //   method: "POST",
     //   headers: headers,
@@ -90,27 +126,27 @@ function Checkout({ props }) {
     //   console.log(result.error);
     // }
   };
+
   function autoFill(obj, fields, setterFunc) {
-    const objKeys = Object.keys(obj)
-    
+    const objKeys = Object.keys(obj);
+
     const filled = fields.map((field) => {
       // see if object has key matching field
-      console.log(field)
-      console.log(obj)
-      console.log(field.key)
-      console.log(    objKeys.includes(field.key)
-      )
-      if (    objKeys.includes(field.key)) {
+      console.log(field);
+      console.log(obj);
+      console.log(field.key);
+      console.log(objKeys.includes(field.key));
+      if (objKeys.includes(field.key)) {
         // if so, add default to the field and set it equal to the object's value
         field["default"] = obj[field.key];
       }
       return field;
     });
-    console.log(filled)
+    console.log(filled);
     // if setterFunc, use that, and just in case something wants this, return the filled form obj as well
     if (setterFunc) {
       setterFunc(filled);
-      console.log("SET FILLED")
+      console.log("SET FILLED");
     }
     return filled;
   }
@@ -138,16 +174,30 @@ function Checkout({ props }) {
   //   const API = "http://localhost:3000/api/stripe/"
   return (
     <div className="split-screen fill-screen flex-h">
-      <button onClick={()=>{[addressFields,creditCardFields].forEach((obj)=>{console.log(obj)})}}>Print Status of States</button>
+      <button
+        onClick={() => {
+          [addressFields, creditCardFields].forEach((obj) => {
+            console.log(obj);
+          });
+        }}
+      >
+        Print Status of States
+      </button>
       <div className="checkout">
         {/* autoFill(obj,creditCardFields,setCreditCardFields) */}
         <Dropdown label="Credit Card">
           {user && (
             <SelectionGenerator
               label={"aaa"}
-              options={user.credit_cards.map((o,idx)=>{return {value:idx,text:JSON.stringify(o)}})}
+              options={user.credit_cards.map((o, idx) => {
+                return { value: idx, text: JSON.stringify(o) };
+              })}
               handleChange={(id) => {
-                autoFill(user.credit_cards[id], creditCardFields, setCreditCardFields);
+                autoFill(
+                  user.credit_cards[id],
+                  creditCardFields,
+                  setCreditCardFields
+                );
               }}
             />
           )}
@@ -162,13 +212,15 @@ function Checkout({ props }) {
           {user && (
             <SelectionGenerator
               label={"aaa"}
-              options={user.addresses.map((o,idx)=>{return {value:idx,text:JSON.stringify(o)}})}
+              options={user.addresses.map((o, idx) => {
+                return { value: idx, text: JSON.stringify(o) };
+              })}
               handleChange={(id) => {
                 autoFill(user.addresses[id], addressFields, setAddressFields);
               }}
             />
           )}
-                    <FormGenerator
+          <FormGenerator
             fields={addressFields}
             postSuccessFunction={(obj) => {
               setAddress(obj);
