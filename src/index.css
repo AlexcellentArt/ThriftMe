@@ -232,7 +232,7 @@ button:focus-visible {
 }
 .admin-tab{ border-radius: var(--upward-tab); background-color: var(--fairy-tale); margin-top: 0;
   flex:3;}
-.stretch{align-content: stretch;}
+.stretch{align-content: stretch; align-items: stretch;}
 .square{
   object-fit: cover;
   object-position: 50% 50%;
@@ -521,6 +521,7 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
     padding: 5% 3%;
     /* padding-inline: 3%; */
   }
+  .dropdown{width: 90%; align-self: center; span{width: 97%; align-self: center;}}
   button{font-size:medium;}
 }
 .center-stretch{

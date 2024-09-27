@@ -21,13 +21,14 @@ function AdminDashboard() {
     if (!isAdmin) {
       navigate("/");
     }
-    // const fetchData = async () => {
-    //   await fetchItems()
-    //   console.log("TRYING TO FETCH")
-    //  await fetchUsers()
-    //  console.log("DATA FETCHED")
-    // }
-    // fetchData()
+    const fetchData = async () => {
+    //fetch data once first thing so that the display many below loads something first
+      await fetchItems()
+      console.log("TRYING TO FETCH")
+    fetchUsers()
+     console.log("DATA FETCHED")
+    }
+    fetchData()
   }, [isAdmin, navigate]);
 
   const handleDisplayToggle = (type) => {
@@ -377,7 +378,7 @@ function AdminDashboard() {
       <DisplayMany
         data={displayType === "users" ? users : items}
         factory={generateCard}
-        additionalClasses={"scroll-y wrap"}
+        additionalClasses={"scroll-y wrap stretch"}
       />
 
       {showContextMenu && (
