@@ -384,7 +384,7 @@ const seed = async () => {
     ];
     await prisma.browsing_History.createMany({ data: browsing_history });
   };
-  const CreateCreditCards = async () => {
+  const CreateCreditCards = async (users) => {
     // const cards = [
     //   {
     //     // id:1,
@@ -412,7 +412,7 @@ const seed = async () => {
     //   }
     // ]
     const cards = [];
-    let user_id = 12;
+    let user_id = users.length;
     while (user_id != 0)
       while (user_id != 0) {
         // below 4, then plus one to ensure no blanks
@@ -438,7 +438,7 @@ const seed = async () => {
     }
     await prisma.credit_Card.createMany({ data: cards });
   };
-  const CreateAddresses = async () => {
+  const CreateAddresses = async (users) => {
     const name = [
       "Oak",
       "Pine",
@@ -456,7 +456,7 @@ const seed = async () => {
     const state = ["GA","LA","CA","TN"]
     // used a bunch of "" in prefix to simulate a 50% chance of not getting one. Not gonna spend time programming in percentage based randomization as I don't want to confuse anyone.
     const addresses = [];
-    let user_id = 12;
+    let user_id = users.length;
     while (user_id != 0) {
       // below 4, then plus one to ensure no blanks
       let qty = randDigit(1, 3);
@@ -487,8 +487,8 @@ const seed = async () => {
   await CreateBrowsingHistory();
   await CreateShoppingCart();
   await createTransactions();
-  await CreateCreditCards();
-  await CreateAddresses();
+  await CreateCreditCards(users);
+  await CreateAddresses(users);
   // final step is adding favorites. For now, the first 5 items in seed are added to Melissa Cat as favorites. She is the only one who starts out with them so testing can be isolated.
   // Might need to make an explicit many to many model for this, but Alex can handle it and it is unlikely to effect operations as of now.
   prisma.user.update({ where: { id: 5 }, data: { favorite: [1] } });
