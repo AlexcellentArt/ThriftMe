@@ -71,6 +71,64 @@ function AdminDashboard() {
     }
   };
 
+  // function to delete a user
+  const deleteUser = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/api/user/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  // function to update a user field
+  const updateUserField = async (id, field, value) => {
+    console.log(`Updating user ${id}: Setting ${field} to ${value}`);
+
+    // create a new object to update the user
+    const userUpdate = {
+      [field]: value,
+    };
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/user/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userUpdate),
+      });
+
+      // check if the response is ok
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error: ${res.status} - ${errorText}`);
+      }
+
+      await res.json();
+      fetchUsers();
+      console.log(`User ${id} has been updated`);
+    } catch (error) {
+      console.error(`Error updating user ${id}:`, error);
+    }
+  };
+
+  // Function to promote a user to admin
+  const promoteUser = async (id) => {
+    await updateUserField(id, "is_admin", true);
+  };
+
+  // Function to demote a user from admin
+  const demoteUser = async (id) => {
+    await updateUserField(id, "is_admin", false);
+  };
+
   // conext menu appears upon click
   const handleEditClick = (event, item) => {
     event.stopPropagation();
@@ -155,17 +213,21 @@ function AdminDashboard() {
   };
 
   const deleteItem = async (id) => {
-    await fetch(`http://localhost:3000/api/item/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchItems(displayType);
+    try {
+      await fetch(`http://localhost:3000/api/item/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchItems(displayType);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   const updateItemField = async (field, value, obj) => {
-    console.log("UPATEING ATEMEP");
+    console.log("UPDATING ATTEMPT");
     console.log(value);
     if (!value) return; // if no values are provided, exit the menu
     // const updatedData = { [field]: value };
@@ -188,9 +250,53 @@ function AdminDashboard() {
     if (displayType === "users") {
       return (
         <div className="item-card">
-          <p>{data.name}</p>
-          <p>{data.email}</p>
-          <DisplayMany data={data.addresses} />
+          <p>User Name: {data.name}</p>
+          <p>Email: {data.email}</p>
+          <p>Is Admin: {data.is_admin ? "Yes" : "No"}</p>
+          {/* <DisplayMany data={data.addresses} /> */}
+          {data.addresses && data.addresses.length > 0 ? (
+            data.addresses.map((address, index) => (
+              <div key={index}>
+                <p>Street: {address.street}</p>
+                {address.apartment && <p>Apartment: {address.apartment}</p>}
+                <p>City: {address.city}</p>
+                <p>Zip: {address.zip}</p>
+              </div>
+            ))
+          ) : (
+            <p>No address available</p>
+          )}
+          {/* Delete User Button */}
+          <button
+            className="three-d-button"
+            onClick={() => {
+              if (confirm(`Are you sure you want to delete ${data.name}?`)) {
+                deleteUser(data.id);
+              }
+            }}
+          >
+            Delete User
+          </button>
+
+          {/* Promote to Admin Button */}
+          {!data.is_admin && (
+            <button
+              className="three-d-button"
+              onClick={() => promoteUser(data.id)}
+            >
+              Promote to Admin
+            </button>
+          )}
+
+          {/* Demote from Admin Button */}
+          {data.is_admin && (
+            <button
+              className="three-d-button"
+              onClick={() => demoteUser(data.id)}
+            >
+              Demote from Admin
+            </button>
+          )}
         </div>
       );
     } else {
@@ -206,6 +312,7 @@ function AdminDashboard() {
             <p>${data.price}</p>
           </div>
 
+          {/* Edit Item Button */}
           <div>
             <button
               className="three-d-button"
