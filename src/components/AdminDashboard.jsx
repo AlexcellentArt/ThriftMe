@@ -3,6 +3,7 @@ import { AuthContext } from "./AuthContext";
 import { useContext, useState, useEffect } from "react";
 import DisplayMany from "./DisplayMany";
 import Dropdown from "./Dropdown";
+import AddItem from "./AddItem";
 
 function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
@@ -16,19 +17,21 @@ function AdminDashboard() {
     y: 0,
   }); //control context menu position once clicked
   const [selectedItem, setSelectedItem] = useState(null);
+ // control context menu visibility
+
   // redirect to homepage if not an admin
   useEffect(() => {
     if (!isAdmin) {
       navigate("/");
     }
     const fetchData = async () => {
-    //fetch data once first thing so that the display many below loads something first
-      await fetchItems()
-      console.log("TRYING TO FETCH")
-    fetchUsers()
-     console.log("DATA FETCHED")
-    }
-    fetchData()
+      //fetch data once first thing so that the display many below loads something first
+      await fetchItems();
+      console.log("TRYING TO FETCH");
+      fetchUsers();
+      console.log("DATA FETCHED");
+    };
+    fetchData();
   }, [isAdmin, navigate]);
 
   const handleDisplayToggle = (type) => {
@@ -252,22 +255,23 @@ function AdminDashboard() {
       return (
         <div className="small-text item-card">
           <p className="merriweather-bold admin-tab">{data.id}</p>
-          <Dropdown  label={"Info"} startExpanded={true}>
+          <Dropdown label={"Info"} startExpanded={true}>
             <div>
-            <p className="merriweather-regular">
-              <span className="merriweather-bold">User Name:</span> {data.name}
-            </p>
-            <p className="merriweather-regular">
-              <span className="merriweather-bold">Email:</span> {data.email}
-            </p>
-            <p className="merriweather-regular">
-              <span className="merriweather-bold">Is Admin:</span>{" "}
-              {data.is_admin ? (
-                <span className="positive">Yes</span>
-              ) : (
-                <span className="negative">No</span>
-              )}
-            </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">User Name:</span>{" "}
+                {data.name}
+              </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">Email:</span> {data.email}
+              </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">Is Admin:</span>{" "}
+                {data.is_admin ? (
+                  <span className="positive">Yes</span>
+                ) : (
+                  <span className="negative">No</span>
+                )}
+              </p>
             </div>
           </Dropdown>
           {data.addresses && (
@@ -363,24 +367,22 @@ function AdminDashboard() {
   }
 
   return (
-    <div>
-      <h1>ADMIN DASHBOARD</h1>
-      <button className="big-text" onClick={() => handleDisplayToggle("users")}>
+    <div className="force-inherited-dimensions">
+
+      <div className="flex-v scroll-y">
+      <div className="fixed force-fill-width dark-bg">
+      <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
+      <div className="force-tab-shape flex-h button-box dropdown ">
+      <button className="big-text merriweather-black" onClick={() => handleDisplayToggle("users")}>
         Users
       </button>
       <button
-        className="big-text"
-        onClick={() => handleDisplayToggle("products")}
-      >
+        className="big-text merriweather-black"
+        onClick={() => handleDisplayToggle("products")}>
         Products
       </button>
-
-      <DisplayMany
-        data={displayType === "users" ? users : items}
-        factory={generateCard}
-        additionalClasses={"scroll-y wrap stretch"}
-      />
-
+      {<Dropdown label={"Add Item"} labelClasses={"merriweather-black"}><AddItem /></Dropdown>}
+      </div>
       {showContextMenu && (
         <div className="context-menu">
           <button
@@ -439,6 +441,15 @@ function AdminDashboard() {
           </button>
         </div>
       )}
+      </div>
+
+      <DisplayMany
+        data={displayType === "users" ? users : items}
+        factory={generateCard}
+        additionalClasses={"wrap stretch"}
+      />
+
+      </div>
     </div>
   );
 }
