@@ -158,7 +158,7 @@ function Checkout({ props }) {
               )}
             </Dropdown>
 
-            <Dropdown label="Credit Card">
+            <Dropdown label="Address">
               {Object.keys(creditCard).length > 2 ? (
                 <>
                   <p>Selected Address:{formatAddress(address)}</p>
