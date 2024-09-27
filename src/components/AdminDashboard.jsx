@@ -16,7 +16,6 @@ function AdminDashboard() {
     y: 0,
   }); //control context menu position once clicked
   const [selectedItem, setSelectedItem] = useState(null);
-
   // redirect to homepage if not an admin
   useEffect(() => {
     if (!isAdmin) {
@@ -271,7 +270,7 @@ function AdminDashboard() {
             </div>
           </Dropdown>
           {data.addresses && (
-            <Dropdown label={"Addresses"} startExpanded={true}>
+            <Dropdown label={"Addresses"}>
               {data.addresses && data.addresses.length > 0 ? (
                 data.addresses.map((address, index) => (
                   <div key={index}>
