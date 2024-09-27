@@ -1,5 +1,6 @@
 const prisma = require("../prisma");
 const bcrypt = require("bcrypt");
+const {itemGenerator,userGenerator} = require("../faker_generator/index")
 
 // ### HELPER FUNCTIONS ###
 const randNumString = (length, digitMin = 0) => {
@@ -77,7 +78,9 @@ const seed = async () => {
     for (let index = 0; index < users.length; index++) {
       users[index].password = await bcrypt.hash(users[index].password, salt);
     }
-    await prisma.user.createMany({ data: users });
+    const made = await prisma.user.createMany({ data: users });
+    // prisma.user.g
+    return await prisma.user.findMany({ where: {}})
   };
   const createTransactions = async () => {
     const transactions = [
@@ -132,72 +135,73 @@ const seed = async () => {
     ];
     await prisma.past_Transactions.createMany({ data: transactions });
   };
-  const CreateItem = async () => {
-    const item = [
-      {
-        seller_id: 1,
-        name: "Tulum Dress",
-        price: 5,
-        description: "Perfect 2 piece dress for Tulum",
-        default_photo:
-          "https://shopannalaura.com/cdn/shop/products/paradisemaxidress2.jpg?v=1628458759&width=1445",
-        additional_photos: [""],
-        tags: ["tulum", "summer", "dress", "women's fashion"],
-      },
-      {
-        seller_id: 2,
-        name: "Hawaii Shirt",
-        price: 10,
-        description: "Cute hawaii shirt for your travels",
-        default_photo:
-          "https://m.media-amazon.com/images/I/71-I7jCRn8L._AC_SX679_.jpg",
-        additional_photos: [
-          "https://m.media-amazon.com/images/I/912tgDq6kfL._AC_SX679_.jpg",
-          "https://m.media-amazon.com/images/I/81zJrANFdAL._AC_SX679_.jpg",
-          "https://m.media-amazon.com/images/I/8119kZidhTL._AC_SX679_.jpg",
-        ],
-        tags: [
-          "shirt",
-          "hawaii",
-          "travel",
-          "women's activewear",
-          "men's activeware",
-        ],
-      },
+  const CreateItem = async (users) => {
+    // const item = [
+    //   {
+    //     seller_id: 1,
+    //     name: "Tulum Dress",
+    //     price: 5,
+    //     description: "Perfect 2 piece dress for Tulum",
+    //     default_photo:
+    //       "https://shopannalaura.com/cdn/shop/products/paradisemaxidress2.jpg?v=1628458759&width=1445",
+    //     additional_photos: [""],
+    //     tags: ["tulum", "summer", "dress", "women's fashion"],
+    //   },
+    //   {
+    //     seller_id: 2,
+    //     name: "Hawaii Shirt",
+    //     price: 10,
+    //     description: "Cute hawaii shirt for your travels",
+    //     default_photo:
+    //       "https://m.media-amazon.com/images/I/71-I7jCRn8L._AC_SX679_.jpg",
+    //     additional_photos: [
+    //       "https://m.media-amazon.com/images/I/912tgDq6kfL._AC_SX679_.jpg",
+    //       "https://m.media-amazon.com/images/I/81zJrANFdAL._AC_SX679_.jpg",
+    //       "https://m.media-amazon.com/images/I/8119kZidhTL._AC_SX679_.jpg",
+    //     ],
+    //     tags: [
+    //       "shirt",
+    //       "hawaii",
+    //       "travel",
+    //       "women's activewear",
+    //       "men's activeware",
+    //     ],
+    //   },
 
-      {
-        seller_id: 3,
-        name: "Roger Rabbit Shirt",
-        price: 20,
-        description: "Dress shirt for going out",
-        default_photo:
-          "https://www.billioncreation.com/wp-content/uploads/2017/10/HUNDREDSXRRSOUVSHIRT-PARENT__1.jpg",
-        additional_photos: [
-          "https://www.billioncreation.com/wp-content/uploads/2017/10/HUNDREDSXRRSOUVSHIRT-PARENT__2.jpg",
-        ],
-        tags: ["dressy", "red", "nightout", "men's fashion"],
-      },
-      {
-        seller_id: 4,
-        name: "Cool Suit",
-        price: 100,
-        description: "Perfect suit",
-        default_photo:
-          "https://i5.walmartimages.com/seo/Wehilion-Mens-Suits-Set-Slim-Fit-Men-3-Piece-Dress-Suit-Prom-Blazer-Wedding-Formal-Jacket-Vest-Pants-Navy-Blue-XL_ce590b9b-405f-4948-af6a-a817cd66f9cd.4e404934c089dc5fabeb4616f32245e6.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF",
-        additional_photos: [""],
-        tags: ["men's suits", "women's suits"],
-      },
-      {
-        seller_id: 4,
-        name: "Cooler Suit",
-        price: 200,
-        description: "Sequin suit",
-        default_photo:
-          "https://i.ebayimg.com/images/g/neAAAOSwRq9dXg6w/s-l1000.jpg",
-        additional_photos: [""],
-        tags: ["men's suits", "women's suits", "sequins"],
-      },
-    ];
+    //   {
+    //     seller_id: 3,
+    //     name: "Roger Rabbit Shirt",
+    //     price: 20,
+    //     description: "Dress shirt for going out",
+    //     default_photo:
+    //       "https://www.billioncreation.com/wp-content/uploads/2017/10/HUNDREDSXRRSOUVSHIRT-PARENT__1.jpg",
+    //     additional_photos: [
+    //       "https://www.billioncreation.com/wp-content/uploads/2017/10/HUNDREDSXRRSOUVSHIRT-PARENT__2.jpg",
+    //     ],
+    //     tags: ["dressy", "red", "nightout", "men's fashion"],
+    //   },
+    //   {
+    //     seller_id: 4,
+    //     name: "Cool Suit",
+    //     price: 100,
+    //     description: "Perfect suit",
+    //     default_photo:
+    //       "https://i5.walmartimages.com/seo/Wehilion-Mens-Suits-Set-Slim-Fit-Men-3-Piece-Dress-Suit-Prom-Blazer-Wedding-Formal-Jacket-Vest-Pants-Navy-Blue-XL_ce590b9b-405f-4948-af6a-a817cd66f9cd.4e404934c089dc5fabeb4616f32245e6.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF",
+    //     additional_photos: [""],
+    //     tags: ["men's suits", "women's suits"],
+    //   },
+    //   {
+    //     seller_id: 4,
+    //     name: "Cooler Suit",
+    //     price: 200,
+    //     description: "Sequin suit",
+    //     default_photo:
+    //       "https://i.ebayimg.com/images/g/neAAAOSwRq9dXg6w/s-l1000.jpg",
+    //     additional_photos: [""],
+    //     tags: ["men's suits", "women's suits", "sequins"],
+    //   },
+    // ];
+    const item = await itemGenerator.generateMockProductData(users)
     await prisma.item.createMany({ data: item });
   };
   // We are Creating Shopping Cart, Checkout Page, Browsing History
@@ -470,8 +474,8 @@ const seed = async () => {
     await prisma.address.createMany({ data: addresses });
   };
   // all tables are created
-  await createUsers();
-  await CreateItem();
+  const users = await createUsers();
+  await CreateItem(users);
   await CreateBrowsingHistory();
   await CreateShoppingCart();
   await createTransactions();

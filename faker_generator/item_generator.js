@@ -17,9 +17,10 @@ function getImages(tags=[], additional=0){
   )
   return imgs
 }
-function generateMockProductData(users = [{ id: 1 }, { id: 2 }, { id: 3 }]) {
+function generateMockProductData(users = []) {
+  console.log(users)
   const products = [];
-  let sellerId = 1; // Start with seller_id = 1
+  // let sellerId = 1; // Start with seller_id = 1
   // Predefined products with incremental seller_id
   const product1 = {
     seller_id: users[0].id,
@@ -107,7 +108,7 @@ function generateMockProductData(users = [{ id: 1 }, { id: 2 }, { id: 3 }]) {
       ];
       const color = faker.color.human();
       const base = faker.helpers.arrayElement(item_base);
-      const price = faker.commerce.price({ min: 5, max: 200 });
+      const price = Number(faker.commerce.price({ min: 5, max: 200 }));
       //   const photo = await getLoremFlicker([base,material,color])
       const tags = [base, color, material, ...adjectives, ].map((str)=>{return str.toLowerCase()});
       const imgs = getImages(tags.slice(0,3))
@@ -134,9 +135,14 @@ function generateMockProductData(users = [{ id: 1 }, { id: 2 }, { id: 3 }]) {
       //   createHowMany -= 1;
     }
   }
+  console.log(`Made ${products.length} products.`);
   return products;
 }
-const mockData = generateMockProductData();
-console.log(mockData);
-console.log(`Made ${mockData.length} products.`);
-console.log();
+// const mockData = generateMockProductData();
+// console.log(mockData);
+// console.log(`Made ${mockData.length} products.`);
+// console.log();
+
+module.exports ={
+  generateMockProductData
+}
