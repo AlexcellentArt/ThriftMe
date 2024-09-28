@@ -109,7 +109,7 @@ router.get("/me", async (req, res, next) => {
       if(decode.message){return next(decode)}
       if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
     const id = decode.userId
-    const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+    const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,browsing_history:true,shopping_cart:true} });
     //redit_cards:true --- need to replace BigInt with something else
     console.log("user:",user)
     // const user = await prisma.user.findUnique({ where: { id: id } });
