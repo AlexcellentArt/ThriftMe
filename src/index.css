@@ -124,7 +124,6 @@ button:hover {
   color: var(--white);
 }
 
-
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -169,11 +168,11 @@ button:focus-visible {
 }
 
 .navLinks {
-  flex: 1
+  flex: 1;
 }
 
 .navSearch {
-  flex: 2
+  flex: 2;
 }
 
 .nav-tabs{
@@ -198,16 +197,15 @@ button:focus-visible {
     border-color: transparent;
     color: var(--black);
   }
-  form{
-    input:nth-of-type(1){
+  form {
+    input:nth-of-type(1) {
       background-color: var(--fairy-tale);
     }
-    input:nth-of-type(2){
+    input:nth-of-type(2) {
       background-color: var(--yinmn-blue);
       color: var(--periwinkle);
     }
   }
-  
 
   button {
     width: 10%;
@@ -227,7 +225,7 @@ button:focus-visible {
   }
 
   button:nth-of-type(2)::before {
-    content: '\1F50E';
+    content: "\1F50E";
   }
 
   div {
@@ -241,17 +239,16 @@ button:focus-visible {
   align-items: center;
 }
 .square{
-  
   object-fit: cover;
   object-position: 50% 50%;
   aspect-ratio: 1/1;
   padding: 2% 3%;
 }
-.flex-h{
+.flex-h {
   display: flex;
   flex-direction: row;
 }
-.flex-v{
+.flex-v {
   display: flex;
   flex-direction: column;
 }
@@ -292,21 +289,22 @@ button:focus-visible {
     /* width: 50vw; */
     flex:1
   }
-  .display-many{
+  .display-many {
     flex-wrap: wrap;
     > * {
       width: inherit;
     }
   }
 }
-.three-d-button{
+.three-d-button {
   font-size: x-large;
   align-items: center;
   width: 90%;
   appearance: none;
   border-radius: var(--rounded-corners);
   border-width: 0;
-  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,var(--delft-blue) 0 -3px 0 inset;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, var(--delft-blue) 0 -3px 0 inset;
   box-sizing: border-box;
   cursor: pointer;
   justify-content: center;
@@ -317,14 +315,16 @@ button:focus-visible {
   padding-right: 16px;
   text-align: center;
   text-decoration: none;
-  transition: box-shadow .15s,transform .15s;
+  transition: box-shadow 0.15s, transform 0.15s;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   white-space: nowrap;
-  will-change: box-shadow,transform;}
-.three-d-button:hover{
-  box-shadow:rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,var(--dark-periwinkle) 0 -3px 0 inset;
+  will-change: box-shadow, transform;
+}
+.three-d-button:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, var(--dark-periwinkle) 0 -3px 0 inset;
   border-color: var(--dark-periwinkle);
   background-color: var(--periwinkle);
   color: var(--black);
@@ -399,8 +399,10 @@ button:focus-visible {
   .dropdown{
     margin-bottom: -0.5%;
   }
-  .dropdown>span>p:last-of-type{font-size: x-large;}
-  .display-many{
+  .dropdown > span > p:last-of-type {
+    font-size: x-large;
+  }
+  .display-many {
     place-content: center;
   }
 }
@@ -451,14 +453,20 @@ flex-direction: column;
   display: flex;
   place-content: stretch space-evenly;
   button {
-  width: 100%;
-  margin: 0;
-  flex:1;
-  border-radius: 0%;
+    width: 100%;
+    margin: 0;
+    flex: 1;
+    border-radius: 0%;
+  }
+  p,
+  input {
+    flex: 10;
+    width: 100%;
+    background-color: var(--white);
+    color: var(--black);
+  }
 }
-p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black);}
-}
-.info{
+.info {
   width: inherit;
   height: inherit;
 }
@@ -581,8 +589,7 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
     flex:2;
     /* margin: 5% 2%; */
   }
-  a{color:var(--delft-blue); font-size: x-large;}
-  >div:nth-of-type(1){
+  > div:nth-of-type(1) {
     background-color: var(--delft-blue);
     display: flex;
     flex-direction: column;
@@ -615,7 +622,7 @@ p,input{flex:10; width: 100%; background-color: var(--white); color: var(--black
   place-items: center stretch;
   text-align: center;
 }
-.display-many{
+.display-many {
   display: flex;
   place-content: end space-between;
 }
