@@ -10,21 +10,16 @@ import { AuthContext } from "./AuthContext";
 import { SearchContext } from "./SearchContext";
 import { useEffect } from "react";
 import Favorite from "./Favorite";
-function Products() {
+function Products({ data }) {
   const nav = useNavigate();
-  // const [tags, setTags]= useState([{}]);
-  // let [searchParams,setSearch] = useSearchParams();
   const { searchParams } = useContext(SearchContext);
-  const [products, setProduct] = useState([{}]);
+  const [products, setProduct] = useState(data ? data : [{}]);
 
   const { addToCart, AutoHeader } = useContext(AuthContext);
 
   useEffect(() => {
     async function getProduct() {
       try {
-        // const query = {"search_text":searchParams.get("search_text"),"tags":searchParams.get("tags")}
-        // console.log("query")
-        // console.log(query)
         const head = AutoHeader();
         const response = await fetch(
           `http://localhost:3000/api/item/search?${createSearchParams(
@@ -51,9 +46,10 @@ function Products() {
         console.error(error);
       }
     }
-    getProduct();
-  }, [searchParams]);
-  
+    if (!data) {
+      getProduct();
+    }
+  }, [!data && searchParams]);
 
   function generateCard(obj) {
     return (
@@ -65,11 +61,18 @@ function Products() {
             alt="Default Item Card Photo"
             className="square"
           />
-          <p className="merriweather-regular relative-left-corner ">${obj.price}</p>
+          <p className="merriweather-regular relative-left-corner ">
+            ${obj.price}
+          </p>
         </div>
 
         <div className="flex-v">
-          <a className="merriweather-black" href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
+          <a
+            className="merriweather-black dark-text"
+            href={`http://localhost:5173/products/${obj.id}`}
+          >
+            {obj.name}
+          </a>
           <button
             className="three-d-button merriweather-bold"
             onClick={() => {
@@ -84,12 +87,16 @@ function Products() {
   }
   return (
     <div className="flex-v scroll-y">
-    <div className="fixed force-fill-width dark-bg">
-
-    <h1 className="merriweather-regular">Products</h1>
-</div>
-    <DisplayMany data={products} factory={generateCard}         additionalClasses={"stretch wrap "}
-    />
+      {!data && (
+        <div className="fixed force-fill-width dark-bg">
+          <h1 className="merriweather-regular">Products</h1>
+        </div>
+      )}
+      <DisplayMany
+        data={products}
+        factory={generateCard}
+        additionalClasses={"stretch wrap "}
+      />
     </div>
   );
 }
