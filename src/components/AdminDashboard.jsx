@@ -353,7 +353,7 @@ function AdminDashboard() {
           </div>
 
           {/* Edit Item Button */}
-          <div>
+          <div className="flex-v">
             <button
               className="three-d-button"
               onClick={(event) => handleEditClick(event, data)}
@@ -367,89 +367,86 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="force-inherited-dimensions">
-
-      <div className="flex-v scroll-y">
-      <div className="fixed force-fill-width dark-bg">
-      <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
-      <div className="force-tab-shape flex-h button-box dropdown ">
-      <button className="big-text merriweather-black" onClick={() => handleDisplayToggle("users")}>
-        Users
-      </button>
-      <button
-        className="big-text merriweather-black"
-        onClick={() => handleDisplayToggle("products")}>
-        Products
-      </button>
-      {<Dropdown label={"Add Item"} labelClasses={"merriweather-black"}><AddItem /></Dropdown>}
+    <div className="flex-v scroll-y">
+    <div className="fixed force-fill-width dark-bg">
+    <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
+    <div className="force-tab-shape button-box dropdown">
+    <button className="big-text merriweather-black" onClick={() => handleDisplayToggle("users")}>
+      Users
+    </button>
+    <button
+      className="big-text merriweather-black"
+      onClick={() => handleDisplayToggle("products")}>
+      Products
+    </button>
+    {<Dropdown label={"Add Item"} labelClasses={"merriweather-black"}><AddItem /></Dropdown>}
+    </div>
+    {showContextMenu && (
+      <div className="context-menu">
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("view")}
+        >
+          View Product
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("delete")}
+        >
+          Delete Listing
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editName")}
+        >
+          Edit Name
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editPrice")}
+        >
+          Edit Price
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("changePhoto")}
+        >
+          Change Photo
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
+        >
+          Change Additional Photos
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editDescription")}
+        >
+          Edit Description
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editTags")}
+        >
+          Edit Tags
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("cancel")}
+        >
+          Cancel Edit
+        </button>
       </div>
-      {showContextMenu && (
-        <div className="context-menu">
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("view")}
-          >
-            View Product
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("delete")}
-          >
-            Delete Listing
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editName")}
-          >
-            Edit Name
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editPrice")}
-          >
-            Edit Price
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changePhoto")}
-          >
-            Change Photo
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
-          >
-            Change Additional Photos
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editDescription")}
-          >
-            Edit Description
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editTags")}
-          >
-            Edit Tags
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("cancel")}
-          >
-            Cancel Edit
-          </button>
-        </div>
-      )}
-      </div>
+    )}
+    </div>
 
-      <DisplayMany
-        data={displayType === "users" ? users : items}
-        factory={generateCard}
-        additionalClasses={"wrap stretch"}
-      />
+    <DisplayMany
+      data={displayType === "users" ? users : items}
+      factory={generateCard}
+      additionalClasses={"stretch wrap "}
+    />
 
-      </div>
     </div>
   );
 }

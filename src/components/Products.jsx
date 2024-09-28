@@ -53,29 +53,25 @@ function Products() {
     }
     getProduct();
   }, [searchParams]);
+  
 
   function generateCard(obj) {
     return (
       <div className="item-card">
         <div>
-          <Favorite id={obj.id} />
-          {/* <button
-          className="Favorites" onClick={()=> {toggleFavorite(obj.id);}}
-          >Add To Favorites
-          </button> */}
+          {/* <Favorite id={obj.id} /> */}
           <img
             src={obj.default_photo}
             alt="Default Item Card Photo"
             className="square"
           />
-          <p>${obj.price}</p>
+          <p className="merriweather-regular relative-left-corner ">${obj.price}</p>
         </div>
 
-        <div>
-          <a href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
-          {/* <p>{obj.name}</p> */}
+        <div className="flex-v">
+          <a className="merriweather-black" href={`http://localhost:5173/products/${obj.id}`}>{obj.name}</a>
           <button
-            className="three-d-button"
+            className="three-d-button merriweather-bold"
             onClick={() => {
               addToCart(obj.id);
             }}
@@ -87,9 +83,13 @@ function Products() {
     );
   }
   return (
-    <div>
-      <h1 className="merriweather-bold little-margin">Products</h1>
-      <DisplayMany data={products} factory={generateCard} />
+    <div className="flex-v scroll-y">
+    <div className="fixed force-fill-width dark-bg">
+
+    <h1 className="merriweather-regular">Products</h1>
+</div>
+    <DisplayMany data={products} factory={generateCard}         additionalClasses={"stretch wrap "}
+    />
     </div>
   );
 }

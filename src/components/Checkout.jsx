@@ -116,8 +116,12 @@ function Checkout({ props }) {
     //
   }
   return (
-    <div className="split-screen fill-screen flex-h">
-      <div className="checkout">
+    <div className="flex-v scroll-y">
+    <div className="fixed force-fill-width dark-bg">
+    <h1 className="merriweather-regular">CHECKOUT</h1>
+    </div>
+    <div className="split-screen centered">
+    <div className="checkout">
         {isGuest === true ? (
           <Dropdown label="Login Or Register To Continue Checkout">
             <div className="flex-h">
@@ -220,6 +224,7 @@ function Checkout({ props }) {
         )}
       </div>
       <Cart shopping_cart={user.shopping_cart} passUpCart={updateCheckout} />
+    </div>
     </div>
   );
 }

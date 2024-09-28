@@ -25,7 +25,7 @@ function Login({stayOnPage=false}) {
   }
   const { login } = useContext(AuthContext);
   return (
-    <div className="light-bg flex-v force-fill-main">
+    <div className="light-bg flex-v width-scale centered">
       {/* <nav className="move-up">
         <ul className="flex-h">
           <li className="navLinks nav-tabs">
