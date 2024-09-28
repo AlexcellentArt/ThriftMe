@@ -2,7 +2,8 @@ import { useState,useContext } from "react";
 import DisplayMany from "./DisplayMany";
 import { useNavigate, createSearchParams } from "react-router-dom";
 import {SearchContext} from "./SearchContext";
-function SearchBar() {
+function SearchBar({setLocalSearch}) {
+  // setLocalSearch is how the bar knows it's local and won't nav to products
   const nav = useNavigate();
   const {setSearchParams} = useContext(SearchContext)
   const [tags, setTags] = useState([]);
@@ -16,6 +17,8 @@ function SearchBar() {
         tags: tags.map((obj) => {
           return obj.text;
         })}
+        // check if local
+        if(setLocalSearch){setLocalSearch(params); return;}
         setSearchParams(params)
         nav({
           pathname: "/products/",

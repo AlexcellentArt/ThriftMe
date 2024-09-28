@@ -9,32 +9,34 @@ import React from "react";
 import { AuthContext } from "./AuthContext";
 import { SearchContext } from "./SearchContext";
 import { useEffect } from "react";
-import Favorite from "./Favorite";
-function Products({ data }) {
+import {HeaderContext} from "./HeaderContext"
+
+function Products({ data, search, headerText="Products" }) {
+  // data will override the ability to search and just display the given data. search will override the main search bar and it's params, letting a local search happen. headerText will override what the header says
   const nav = useNavigate();
   const { searchParams } = useContext(SearchContext);
   const [products, setProduct] = useState(data ? data : [{}]);
 
   const { addToCart, AutoHeader } = useContext(AuthContext);
-
+const {additonalContent} = useContext(HeaderContext)
   useEffect(() => {
     async function getProduct() {
       try {
+        const params = search?search:searchParams
         const head = AutoHeader();
         const response = await fetch(
           `http://localhost:3000/api/item/search?${createSearchParams(
-            searchParams
+            params
           )}`,
           {
             header: head,
             method: "POST",
             body: {
-              search_text: searchParams["search_text"],
-              tags: searchParams["tags"],
+              search_text: params["search_text"],
+              tags: params["tags"],
             },
           }
         );
-        console.log("responedse");
         const data = await response.json();
         console.log(data);
         setProduct(data);
@@ -46,10 +48,11 @@ function Products({ data }) {
         console.error(error);
       }
     }
+    // if just displaying data, do just that instead of searching
     if (!data) {
       getProduct();
     }
-  }, [!data && searchParams]);
+  }, [search ?search:searchParams]);
 
   function generateCard(obj) {
     return (
@@ -89,7 +92,7 @@ function Products({ data }) {
     <div className="flex-v scroll-y">
       {!data && (
         <div className="fixed force-fill-width dark-bg">
-          <h1 className="merriweather-regular">Products</h1>
+          <h1 className="merriweather-regular">{headerText}</h1>
         </div>
       )}
       <DisplayMany
