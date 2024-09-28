@@ -2,7 +2,7 @@
 CREATE TABLE "Address" (
     "id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "zip" TEXT NOT NULL,
+    "zip" INTEGER NOT NULL,
     "street" TEXT NOT NULL,
     "apartment" TEXT,
 
@@ -22,9 +22,8 @@ CREATE TABLE "Browsing_History" (
 CREATE TABLE "Credit_Card" (
     "id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "pin" INTEGER NOT NULL,
-    "cvc" INTEGER NOT NULL,
-    "exp_date" TIMESTAMP(3) NOT NULL,
+    "pin" TEXT NOT NULL,
+    "exp_date" TEXT NOT NULL,
 
     CONSTRAINT "Credit_Card_pkey" PRIMARY KEY ("id")
 );

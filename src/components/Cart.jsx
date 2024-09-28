@@ -1,7 +1,7 @@
 import React, { useContext, useState,useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import DisplayMany from "./DisplayMany";
-function Cart({user_id=12,cart_id=12, passUpCart}) {
+function Cart({shopping_cart, cart_id=12, passUpCart}) {
   const {addToCart,removeFromCart,modifyCart,mapItemDictToObjArray} = useContext(AuthContext);
   const [cart, setCart] = useState([{
     seller_id: 1,
@@ -17,10 +17,12 @@ function Cart({user_id=12,cart_id=12, passUpCart}) {
 
   useEffect(() => {
     async function fetchCart() {
+      // skip step if cart is set
+      if (shopping_cart){processCartUpdate(shopping_cart); return;}
       // get cart
       try {
         // will need to add check to see if admin and if so let get happen regardless
-        const res = await fetch(`http://localhost:3000/api/shopping_cart/${user_id}/${cart_id}`);
+        const res = await fetch(`http://localhost:3000/api/shopping_cart/${cart_id}`);
         const fetched_cart = await res.json();
         // modify gotten cart
         if (res.ok) {
@@ -65,7 +67,7 @@ function generateCard(obj){
   )
 }
   return (
-<div className="flex-v fill-screen cart">
+<div className="flex-v cart">
       <h1>YOUR CART</h1>
       <DisplayMany data={cart} factory={generateCard} emptyDataText="Your cart is empty." additionalClasses={"scroll-y"}/>
     </div>

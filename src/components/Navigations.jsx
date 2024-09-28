@@ -18,6 +18,9 @@ function Navigations() {
         <li className="navLinks">
           <Link to="/home">Home</Link>
         </li>
+        <li className="navLinks">
+              <Link to="/checkout">Checkout</Link>
+            </li>
         {!token ? (
           <>
             <li className="navSearch">
@@ -35,10 +38,6 @@ function Navigations() {
           <>
             <li className="navLinks">
               <Link to="/account">Account</Link>
-            </li>
-
-            <li className="navLinks">
-              <Link to="/cart">Cart</Link>
             </li>
             <li>
               <SearchBar/>

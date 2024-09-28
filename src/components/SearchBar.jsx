@@ -1,15 +1,33 @@
-import { AuthContext } from "./AuthContext";
-import { useContext, useState } from "react";
+import { useState,useContext } from "react";
 import DisplayMany from "./DisplayMany";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
+import {SearchContext} from "./SearchContext";
 function SearchBar() {
-  // setState searchTags, should be an array of strings
-  const { token } = useContext(AuthContext);
-  const [tags, setTags] = useState([{ text: "Test" }, { text: "Test2" }]);
+  const nav = useNavigate();
+  const {setSearchParams} = useContext(SearchContext)
+  const [tags, setTags] = useState([]);
   const [addingTag, setAddingTag] = useState(false);
-  // You are gonna want an input type search inside the div. Next to it you are gonna want a button with # inside it.
-  // setState stringArray
-  // relevant docs: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/search
+  const [searchText, setSearchText] = useState("shirt");
+  async function handleSearch() {
+    console.log(searchText, tags);
+    if (searchText || tags.length) {
+      const params = {
+        text_search: searchText,
+        tags: tags.map((obj) => {
+          return obj.text;
+        })}
+        setSearchParams(params)
+        nav({
+          pathname: "/products/",
+          search: createSearchParams({
+            text_search: searchText,
+            tags: tags.map((obj) => {
+              return obj.text;
+            }),
+          }).toString(),
+        });
+    }
+  }
   async function addTag(text) {
     // trims whitespace
     text = text.trim();
@@ -43,13 +61,23 @@ function SearchBar() {
         <p>#{obj.text}</p>
         <button
           className="transparent"
-          onClick={() => {removeSelf();}}>X</button>
+          onClick={() => {
+            removeSelf();
+          }}
+        >
+          X
+        </button>
       </div>
     );
   }
   return (
     <div className="search-bar">
-      <input type="search" />
+      <input
+        type="search"
+        onChange={(e) => {
+          setSearchText(e.target.value);
+        }}
+      />
       <DisplayMany data={tags} factory={createTag} />
       {addingTag && (
         <form
@@ -69,7 +97,12 @@ function SearchBar() {
       >
         #
       </button>
-      {/* <button></button> */}
+      <button
+        type="submit"
+        onClick={() => {
+          handleSearch();
+        }}
+      ></button>
     </div>
   );
 }

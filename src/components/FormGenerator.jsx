@@ -1,33 +1,251 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
+import SelectionGenerator from "./SelectionGenerator";
 function FormGenerator({
   fields,
+  // canAutoFill = false,
+  // autofill = [],
+  autofillOptions,
+  autoFillOptionFormatter,
   fetchFunctionOverride,
   postSuccessFunction = null,
-  apiPath = "user",
+  apiPath,
   labelAdditionalClasses = "",
   fetch_method = "POST",
+  additionalDataToSend,
 }) {
-    // Authorization: `Bearer ${token}`
-    function commaSplitEndWithAnd(arr) {
-      if (arr.length === 2) {
-        return `${arr[0]} and ${arr[1]}`;
+  useEffect(() => {
+    console.log("Form Generator Reloading Fields");
+    // make dispatch here to autofill
+    // autoFill(autofill);
+    // createAutoFillOptions()
+    // const emptyForm = {};
+    // Object.keys(fields).forEach((key) => {
+    //   emptyForm[key] = "";
+    // });
+    // setNewFormData(emptyForm);
+  }, [fields]);
+  // version is used to force rereneder of form
+  const [version, setVersion] = useState(0);
+  // states related to handling visualization of errors
+  const [error, setError] = useState();
+  const [isFirstTry, setIsFirstTry] = useState(true);
+  // states and reducers related to direct manipulation of the form and data within
+  const [formData, dispatch] = useReducer(
+    formDataReducer,
+    createInitialValues()
+  );
+
+  const [newFormData, setNewFormData] = useState( ()=>{   const emptyForm = {};
+    Object.keys(fields).forEach((key) => {
+      emptyForm[key] = "";
+    });
+    return emptyForm});
+  // const [autofillOptions, setAutofillOptions] = useState(undefined);
+
+  const [autoFillData, autoFillDispatch] = useReducer(
+    autoFillDataReducer,
+    createAutoFillOptions()
+  );
+
+  function autoFillDataReducer(data, action) {
+    switch (action.type) {
+      case "reload": {
+        data = createAutoFillOptions();
+        setVersion(version + 1);
+        return data;
       }
-      const last = arr.pop();
-      let newStr = arr.join(", ");
-      return newStr + ", and " + last;
+      case "updateNew": {
+        console.log("STORING NEW");
+        data[0].value = action.newData;
+        console.log("New Form Data Stored: ", data[0]);
+        return data;
+      }
+      default: {
+        throw Error("Unknown action: " + action.type);
+      }
     }
-  async function defaultFetch(url, obj, setError = null) {
-    const API_URL = `http://localhost:3000/api/${url}`
+  }
+  function createAutoFillOptions() {
+    console.log("REMAKING");
+    if (!autofillOptions) {
+      console.log("NO AUTOFILL OPTIONS");
+      return {};
+    }
+    // New will always be 0 by default
     try {
-      console.log(API_URL)
-      console.log(obj)
-      //verify path exists 
-      console.log("AAAAAAAAAA")
-      // const exists = await fetch(API_URL,
-      //   { method: "HEAD",        headers: {
-      //     "Content-Type": "application/json",
-      //   }, })
-      //   if (!exists.ok){const mes = await exists.json(); throw new Error(mes)}
+      const options = [];
+      if (newFormData !== undefined) {
+        console.log("NOT UNDEFINED");
+        options.push({ value: newFormData, text: "New" });
+        // const emptyForm = {};
+        // Object.keys(fields).forEach((key) => {
+        //   emptyForm[key] = "";
+        // });
+        // setNewFormData(emptyForm);
+        // options.push({ value: emptyForm, text: "New" });
+      }
+
+      // if autoFillOptionFormatter, then use it.
+      const formatter = autoFillOptionFormatter
+        ? autoFillOptionFormatter
+        : (obj) => {
+            return { value: obj, text: JSON.stringify(obj) };
+          };
+      autofillOptions.forEach((op) => {
+        options.push(formatter(op));
+      });
+      return options;
+    } catch (error) {
+      console.error("ERROR PROCESSING AUTOFILL DATA: ", error);
+    }
+    // options.push({value:"New"})
+    return {};
+  }
+  // ### FORM DATA SETUP ###
+
+  function createInitialValues(initialValue = "") {
+    const obj = {};
+    // console.log(fields);
+    fields.forEach((field) => {
+      // console.log(field.key + " default is " + field.default);
+      obj[field.key] = {
+        type: field.type,
+        value: initialValue,
+        isValid: false,
+        name: field.key,
+        default: field.default ? field.default : "",
+      };
+      if ("label" in field) {
+        obj["label"] = field.label;
+      }
+      if ("options" in field) {
+        obj["options"] = field.options;
+      }
+      // if ("default" in field) {
+      //   obj["default"] = field.default;
+      // }
+    });
+    return obj;
+  }
+  function formDataReducer(data, action) {
+    switch (action.type) {
+      case "update": {
+        data[action.input.key].isValid = action.input.isValid;
+        data[action.input.key].value = action.input.value;
+        return data;
+      }
+      case "reset": {
+        Object.keys(data).forEach((key) => {
+          data[key].isValid = false;
+          data[key].value = "";
+        });
+        return data;
+      }
+      case "autofill": {
+        Object.entries(action.filled).forEach((entry) => {
+          const key = entry[0];
+          const value = entry[1];
+          if (data[key]) {
+            data[key].isValid = true;
+            data[key].value = value;
+            data[key].default = value;
+          }
+        });
+        return data;
+      }
+      default: {
+        throw Error("Unknown action: " + action.type);
+      }
+    }
+  }
+  // ### FORM DATA HANDLERS ###
+  async function handleUpdateFormData(type, key, value = "") {
+    // if input type is one that works with strings, trim the value
+    if ((type = "text" || "email")) {
+      value = value.trim();
+    }
+    const valid = await verifyInput(type, value);
+    await dispatch({
+      type: "update",
+      input: {
+        key: key,
+        isValid: valid,
+        value: value,
+      },
+    });
+  }
+  async function handleResetFormData() {
+    await dispatch({
+      type: "reset",
+    });
+  }
+  async function handleAutofillFormData(formData) {
+    console.log(formData);
+    dispatch({
+      type: "autofill",
+      filled: formData,
+    });
+    setVersion(version + 1);
+  }
+  async function handleSubmit(e) {
+    e.preventDefault();
+    // const allValid = await validateForm();
+    // if (!allValid) {
+    //   return;
+    // }
+    let res;
+    const compiled = compileFormData();
+    console.log("Compiled Data")
+    // if not making a call to an api path, which is assumed by the lack of it, then the compiled data is set as the result and passed straight to the on success function if set
+    if (apiPath) {
+      try {
+        res = await defaultFetch(apiPath, compiled, setError);
+        if (res === null) {
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+        setError(error);
+      }
+    } else {
+      res = compiled;
+    }
+    if (isFirstTry === true) {
+      setIsFirstTry(false);
+    }
+    if (postSuccessFunction !== null) {
+      console.log("PSF")
+      console.log(res)
+      postSuccessFunction(res);
+    }
+    setIsFirstTry(true);
+    Object.values(e.target.children[0].children).forEach(
+      (c) => (c.children[0].value = "")
+    );
+    await handleResetFormData();
+  }
+  // ### FORM DATA HELPER FUNCTIONS ###
+  function compileFormData() {
+    const obj = {};
+    Object.entries(formData).forEach((data) => {
+      obj[data[0]] = data[1].value;
+    });
+    return obj;
+  }
+  function commaSplitEndWithAnd(arr) {
+    if (arr.length === 2) {
+      return `${arr[0]} and ${arr[1]}`;
+    }
+    const last = arr.pop();
+    let newStr = arr.join(", ");
+    return newStr + ", and " + last;
+  }
+  async function defaultFetch(url, obj, setError = null) {
+    const API_URL = `http://localhost:3000/api/${url}`;
+    try {
+      if (additionalDataToSend) {
+        obj = { obj, ...additionalDataToSend };
+      }
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -44,191 +262,106 @@ function FormGenerator({
       }
       return res;
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return null;
     }
   }
-  {
-    const [formData, dispatch] = useReducer(
-      formDataReducer,
-      createInitialValues()
-    );
-    const [error, setError] = useState();
-    const [isFirstTry, setIsFirstTry] = useState(true);
-    function createInitialValues(initialValue = "") {
-      const obj = {};
-      fields.forEach((field) => {
-        obj[field.key] = {
-          type: field.type,
-          value: initialValue,
-          isValid: false,
-          name:field.key
-        };
-        if ("label" in field) {
-          obj["label"] = field.label;
-        }
-        if ("options" in field) {
-          obj["options"] = field.options;
-        }
-      });
-      return obj;
-    }
-
-    async function handleUpdateFormData(type, key, value = "") {
-      // if input type is one that works with strings, trim the value
-      if ((type = "text" || "email")) {
-        value = value.trim();
+  // ### FORM DATA VALIDATION FUNCTIONS ###
+  async function validateForm() {
+    let allDataValid = true;
+    const invalidFields = [];
+    Object.values(formData).forEach((obj) => {
+      if (obj.isValid === false) {
+        allDataValid = false;
+        invalidFields.push(obj.name);
       }
-      const valid = await verifyInput(type, value);
-      await dispatch({
-        type: "update",
-        input: {
-          key: key,
-          isValid: valid,
-          value: value,
-        },
-      });
-    }
-    async function handleResetFormData() {
-      await dispatch({
-        type: "reset",
-      });
-    }
-    function formDataReducer(data, action) {
-      switch (action.type) {
-        case "update": {
-          data[action.input.key].isValid = action.input.isValid;
-          data[action.input.key].value = action.input.value;
-          return data;
-        }
-        case "reset": {
-          Object.keys(data).forEach((key) => {
-            data[key].isValid = false;
-            data[key].value = "";
-          });
-          return data;
-        }
-        default: {
-          throw Error("Unknown action: " + action.type);
-        }
+    });
+    try {
+      if (!allDataValid) {
+        throw Error(
+          allDataValid.length > 1
+            ? ` ${commaSplitEndWithAnd(invalidFields)} are invalid`
+            : `${invalidFields[0]} is invalid.`
+        );
       }
+      return true;
+    } catch (error) {
+      setError(error.message);
+      return false;
     }
-    function compileFormData() {
-      const obj = {};
-      Object.entries(formData).forEach((data) => {
-        obj[data[0]] = data[1].value;
-      });
-      return obj;
-    }
-    async function handleSubmit(e) {
-      e.preventDefault();
-      const allValid = await validateForm();
-      if (!allValid) {
-        return;
-      }
-      const res = await defaultFetch(apiPath, compileFormData(), setError);
-      if (res === null) {
-        return;
-      }
-
-      if (isFirstTry === true) {
-        setIsFirstTry(false);
-      }
-      if (postSuccessFunction !== null) {
-        postSuccessFunction(res);
-      }
-      setIsFirstTry(true);
-      Object.values(e.target.children[0].children).forEach(
-        (c) => (c.children[0].value = "")
-      );
-      await handleResetFormData();
-    }
-    async function validateForm() {
-      let allDataValid = true;
-      const invalidFields = [];
-      Object.values(formData).forEach((obj) => {
-        if (obj.isValid === false) {
-          allDataValid = false;
-          console.log(obj)
-          invalidFields.push(obj.name);
-        }
-      });
-      try {
-        if (!allDataValid) {
-          throw Error(
-            allDataValid.length > 1 ?` ${commaSplitEndWithAnd(invalidFields)} are invalid` :`${invalidFields[0]} is invalid.`
-          );
-        }
-        return true;
-      } catch (error) {
-        setError(error.message);
-        return false;
-      }
-    }
-    async function verifyInput(key, inputVal) {
-      let res = false;
-      switch (key) {
-        case "email":
-        case "text":
-          if (inputVal.split().length > 0) {
-            res = true;
-          }
-          break;
-        default:
+  }
+  async function verifyInput(key, inputVal) {
+    let res = false;
+    switch (key) {
+      case "email":
+      case "text":
+        if (inputVal.split().length > 0) {
           res = true;
-          break;
-      }
-      return res;
+        }
+        break;
+      default:
+        res = true;
+        break;
     }
-    function createInputClassName(base = "", key) {
-      if (isFirstTry || !formData[key].isValid === true) {
-        return `${base} ${labelAdditionalClasses}`;
-      } else {
-        return `${base} ${labelAdditionalClasses} invalid`;
-      }
+    return res;
+  }
+  // ### FORM ASSEMBLY FUNCTIONS ###
+  function createInputClassName(base = "", key) {
+    if (isFirstTry || !formData[key].isValid === true) {
+      return `${base} ${labelAdditionalClasses}`;
+    } else {
+      return `${base} ${labelAdditionalClasses} invalid`;
     }
-    function makeLabel(key, content) {
-      return (
-        <label
-          className={createInputClassName(formData[key].type, key)}
-          key={key}
-          id={key}
-          htmlFor={key}
-        >
-          {`${"label" in formData[key] ? formData[key].label : key}:`}
-          {content}
-        </label>
-      );
-    }
-    function makeInput(key) {
-      return (
-        <input
-          type={formData[key].type}
-          name={key}
-          id={key}
-          onChange={(e) =>
-            handleUpdateFormData(e.target.type, key, e.target.value)
-          }
-        />
-      );
-    }
-    function makeSelect(key) {
-      // make options out of keys
-      return (
-        <select
-          name={key}
-          key={key}
-          id={key}
-          onChange={(e) =>
-            handleUpdateFormData(e.target.type, key, e.target.value)
-          }
-        >
-          {makeOptions(formData[key].options)}
-        </select>
-      );
-    }
+  }
+  function makeLabel(key, content) {
+    return (
+      <label
+        className={
+          "merriweather-bold " + createInputClassName(formData[key].type, key)
+        }
+        key={key}
+        id={key}
+        htmlFor={key}
+      >
+        {`${"label" in formData[key] ? formData[key].label : key}:`}
+        {content}
+      </label>
+    );
+  }
+  function makeInput(key) {
+    // console.log(formData[key])
+    return (
+      <input
+        className="merriweather-regular"
+        type={formData[key].type}
+        name={key}
+        id={key}
+        onChange={(e) =>
+          handleUpdateFormData(e.target.type, key, e.target.value)
+        }
+        defaultValue={formData[key].default}
+      />
+    );
+  }
+  function makeSelect(key) {
+    // make options out of keys
+    return (
+      <select
+        name={key}
+        key={key}
+        id={key}
+        onChange={(e) =>
+          handleUpdateFormData(e.target.type, key, e.target.value)
+        }
+      >
+        {makeOptions(formData[key].options)}
+      </select>
+    );
+  }
 
-    function makeOptions(options) {
+  function makeOptions(options) {
+    console.log(options);
+    try {
       if (Array.isArray(options) === true) {
         return options.map((option) => {
           return <option value={option}>{option}</option>;
@@ -238,27 +371,93 @@ function FormGenerator({
           return <option value={key}>{options[key]}</option>;
         });
       }
+    } catch (error) {
+      console.error(error);
     }
-    function buildInputs(inputKey) {
-      //DOCUMENTATION: based on type, content is generated and setup according to what's at the key in formData. Label is setup the same way, with content being placed inside it.
-      let content;
-      if (formData[inputKey].type === "select") {
-        return makeSelect(inputKey);
-      } else {
+  }
+  function buildInputs(inputKey) {
+    //DOCUMENTATION: based on type, content is generated and setup according to what's at the key in formData. Label is setup the same way, with content being placed inside it.
+    let content;
+    // if (formData[inputKey].type === "select") {
+    //   return makeSelect(inputKey);
+    // } else {
+    //   content = makeInput(inputKey);
+    // }
+
+    // specialized types get their own cases, while all non specialized get made by make input
+    switch (formData[inputKey].type) {
+      // case "select":
+      //   content =  makeSelect(inputKey);
+      //   break
+      case "textarea":
+        content =  (
+          <textarea
+            className="merriweather-regular"
+            name={key}
+            id={key}
+            onChange={(e) =>
+              handleUpdateFormData(e.target.type, key, e.target.value)
+            }
+            defaultValue={formData[key].default}
+          />
+        );
+        break
+      case "multiple files":
+        return <input className="merriweather-regular" type="file"             name={key}
+        id={key}
+        onChange={(e) =>
+          handleUpdateFormData(e.target.type, key, e.target.value)
+        } multiple></input>
+      default:
         content = makeInput(inputKey);
-      }
-      return makeLabel(inputKey, content);
     }
-    return (
-      <form key="form" id="form" onSubmit={handleSubmit}>
+    return makeLabel(inputKey, content);
+  }
+  return (
+    <>
+      {/* {console.log(autoFillData)} */}
+      {autofillOptions && (
+        <SelectionGenerator
+          label="Use: "
+          // if there is a formatter, run the options through that as th
+          options={autoFillData}
+          handleChange={(obj, idx, prev) => {
+            // console.log()
+            console.log("CHANGED from " + prev + " to " + idx);
+            console.log(formData)
+            if (prev === 0) {
+              // previous selection was new, save the form's current state before updating
+              setNewFormData(formData);
+              autoFillDispatch({
+                type: "updateNew",
+                newData: formData,
+              });
+            }
+            if (idx === 0) {
+              console.log("GETTING NEW");
+              handleAutofillFormData(autoFillData[0]);
+            } else {
+              handleAutofillFormData(obj);
+            }
+          }}
+        />
+      )}
+      <form
+        className="generated-form"
+        key="form"
+        id="form"
+        onSubmit={handleSubmit}
+      >
         {error && <p>{error}</p>}
-        <div className={`formInputs`}>
+        <div key={version} className={`form-inputs flex-v stretch`}>
           {Object.keys(formData).map((key) => buildInputs(key))}
         </div>
-        <button type="submit">Submit</button>
+        <button className="three-d-button" type="submit">
+          Submit
+        </button>
       </form>
-    );
-  }
+    </>
+  );
 }
 
 export default FormGenerator;

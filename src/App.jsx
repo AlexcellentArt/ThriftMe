@@ -15,6 +15,7 @@ import Account from './components/Account';
 import AdminDashboard from './components/AdminDashboard';
 import PageWrapper from "./components/PageWrapper.jsx";
 import { AuthContextProvider,AuthContext } from "./components/AuthContext.jsx";
+import { SearchContext,SearchContextProvider } from "./components/SearchContext.jsx";
 // import {Elements} from '@stripe/react-stripe-js';
 // import {loadStripe} from '@stripe/stripe-js';
 // const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
@@ -26,7 +27,7 @@ function App() {
   // };
   return (
     <AuthContextProvider>
-      
+    <SearchContextProvider>
     {/* <Elements stripe={stripePromise} options={options}> */}
     <BrowserRouter>
     <PageWrapper>
@@ -35,20 +36,15 @@ function App() {
           <Route path="/home" element={<Home />} />
 
           <Route path="/products" element={<Products />} />
-
+          <Route path="/products:query" element={<Products />} />
           <Route path="/products/:id" element={<SingleProduct />} />
 
-          <Route path="/cart" element={<Cart />} />
-
-          {/* Only logged-in users can check out */}
+          {/* <Route path="/cart" element={<Cart />} /> */}
           <Route
             path="/checkout"
             element={
-              <Checkout/>
-             // token ? <Checkout/> : <Navigate to="/login" />
-            }
-          />
-
+              <Checkout/>}/>
+              
           <Route
             path="/order/:id"
             element={
@@ -90,6 +86,7 @@ function App() {
     </BrowserRouter>
     
     {/* </Elements> */}
+    </SearchContextProvider>
     </AuthContextProvider>
   );
 }

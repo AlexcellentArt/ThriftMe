@@ -2,7 +2,7 @@ model Credit_Card {
   id       Int      @id @default(autoincrement())
   user     User     @relation("Credit Card", fields: [user_id], references: [id])
   user_id  Int
-  pin      BigInt
-  cvc      Int
-  exp_date DateTime @db.Date
+  pin      String
+  // cvc      String/
+  exp_date String
 }

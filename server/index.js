@@ -5,25 +5,45 @@ const express = require('express');
 require('dotenv').config()
 // const auth = require("../api/helpers/auth")
 // import { authenticate,findUserWithToken } from './auth';
-// static routes
+// Static Routes
 const client = new pg.Client(process.env.DATABASE_URL)
-// app routes
+// App Routes
 const app = express();
-// body parsing middleware
+// Body Parsing Middleware
 app.use(express.json());
 app.use(require("morgan")("dev"))
-//api routes
+// Add Access Control Allow Origin headers
+app.all('*',(req, res, next)=>{
+    res.header('Access-Control-Allow-Origin','*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.header('Access-Control-Allow-Headers', '*');
+    next();
+  });
+// app.use("/",(req, res, next) => {
+//     console.log("adding access")
+//     res.appendHeader("Access-Control-Allow-Headers", "http://localhost:5173");
+//     // res.header(
+//     //   "Access-Control-Allow-Headers",
+//     //   "Origin, X-Requested-With, Content-Type, Accept"
+//     // );
+//     next();
+//   });
+// Api Routes
 app.use("/api",require("../api"));
-// error handling middleware
+
+// Error Handling Middleware
 app.use((error,req,res,next)=>{
-    res.status(Math.floor((res.status))||500).send({error:error})
+    console.error(error.message)
+    if (!error.status){error.status = 500}
+    res.status(Math.floor((res.status))||error.status).send({error:error})
 })
-// distribution path setup
+
+// Distribution Path Setup
 const path = require('path');
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, '../client/dist/index.html')))
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// init and invocation
+// Init And Invocation
 const init = async () => {
     await client.connect()
     console.log("CLIENT Connected")

@@ -15,69 +15,6 @@ router.get("/", async (req, res, next) => {
         next(error);
         }
   });
-  // get search, filtered or otherwise
-router.get("/search", async (req, res, next) => {
-  try {
-    console.log("search request got")
-    let tags = undefined;
-    let search_text = undefined;
-    // try to get keys off query if they exist
-    if (Object.keys(req.query).length !== 0)
-    {console.log("has query content")
-      try {
-        if (req.query.search_text){search_text = JSON.parse(req.query.search_text);}
-        if (req.query.tags){tags = JSON.parse(req.query.tags);}
-      } catch (error) {
-        next(error)
-      }
-    }
-    // try to get keys off body if they exist && search_text and tags are not already filled
-    if (Object.keys(req.body).length !== 0)
-    {
-      console.log("has body content")
-        if (search_text === undefined || ''){search_text = await req.body.search_text;}
-        if (tags === undefined){tags = await req.body.tags;}
-    }
-    console.log(tags,search_text)
-    console.log("query got")
-    // console.log("p "+params)
-    // const { search_text, tags } = await req.body;
-    console.log(search_text,tags)
-    // if no search_text and tags, return all items
-    if (search_text === undefined && tags === undefined){
-      console.log("returning all")
-      const item = await prisma.item.findMany();
-      return res.json(item);
-      }
-    console.log("Building Search settings....")
-    const search = {}
-    if(tags !== undefined){
-      search["tags"]={
-          hasSome: tags,
-        }}
-    if (search_text !== undefined){
-      search["name"]={
-      contains: search_text,
-      mode: 'insensitive'
-    }}
-    // log search settings in very visible black bg in terminal for later checking
-    console.log(gen_errors.wrapConsoleLog("=====VVV SEARCH SETTINGS VVV====="))
-    console.table(search)
-    console.log(gen_errors.wrapConsoleLog("=====^^^ SEARCH SETTINGS ^^^====="))
-      const getFiltered = await prisma.item.findMany({
-        where: search
-      })
-    // if get filtered is nothing, return empty array
-    if (!getFiltered) {
-      console.log("No Matches found for filter of ")
-      console.log(`No Matches found for filter of name: ${search_text} tags:${tags}`)
-      return res.json([])
-    }
-    return res.json(getFiltered);
-  } catch(error) {
-      next(error);
-      }
-});
   // Returns item matching id
   router.get("/:id", async (req, res, next) => {
     try {
@@ -96,6 +33,7 @@ router.get("/search", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
+      console.log("post")
       const inputs = {seller_id, name, price, description, default_photo, additional_photos, tags } = await req.body;
       console.log(inputs)
       const missing = gen_errors.hasMissingInputs(inputs,["name", "price", "description","default_photo", "additional_photos", "tags"],"item")
@@ -116,7 +54,97 @@ router.post("/", async (req, res, next) => {
       next(error)
     }
   });
-
+  // post search,and get returned filtered or otherwise
+  router.post("/search", async (req, res, next) => {
+    try {
+      console.log("search request got")
+      const query = await req.query
+      const body = await req.body
+      console.log(query,body)
+      let tags = undefined;
+      let text_search = undefined;
+      // try to get keys off query if they exist
+      if (Object.keys(query).length !== 0)
+      {console.log("has query content")
+        try {
+          if (query.text_search){text_search =query.text_search;}
+          if (query.tags){tags = JSON.parse(query.tags);}
+        } catch (error) {
+          // return next(error)
+        }
+      }
+      // try to get keys off body if they exist && text_search and tags are not already filled
+      if (Object.keys(body).length !== 0)
+      {
+        console.log("has body content")
+          if (text_search === undefined || ''){text_search = await body.text_search;}
+          if (tags === undefined){tags = await body.tags;}
+      }
+      console.log(tags,text_search)
+      console.log("query got")
+      // console.log("p "+params)
+      // const { text_search, tags } = await body;
+      console.log(text_search,tags)
+      // if no text_search and tags, return all items
+      if (text_search === undefined && tags === undefined){
+        console.log("returning all")
+        const item = await prisma.item.findMany();
+        return res.json(item);
+        }
+      console.log("Building Search settings....")
+      const search = {}
+      if(tags !== undefined){
+        search["tags"]={
+            hasSome: tags,
+          }}
+      if (text_search !== undefined){
+        search["name"]={
+        contains: text_search,
+        mode: 'insensitive'
+      }}
+      // log search settings in very visible black bg in terminal for later checking
+      console.log(gen_errors.wrapConsoleLog("=====VVV SEARCH SETTINGS VVV====="))
+      console.table(search)
+      console.log(gen_errors.wrapConsoleLog("=====^^^ SEARCH SETTINGS ^^^====="))
+        const getFiltered = await prisma.item.findMany({
+          where: search
+        })
+      // if get filtered is nothing, return empty array
+      if (!getFiltered) {
+        console.log("No Matches found for filter of ")
+        console.log(`No Matches found for filter of name: ${text_search} tags:${tags}`)
+        return res.json([])
+      }
+      return res.json(getFiltered);
+    } catch(error) {
+        next(error);
+        }
+  });
+// ### PATCH ###
+// router.patch("/"), async (req, res, next) => {
+//   try {console.log("patch base reached")} catch(error){console.error(error)}}
+router.patch("/:id"), async (req, res, next) => {
+  console.log("reached patch")
+  try {
+    const id = +req.params.id;
+    const body = await req.body
+    // const {field} = await req.body
+    /* */
+    console.log("Patch Body", body)
+    const item = await prisma.item.findUnique({ where: { id } });
+    console.log("BEFORE PATCH:", item)
+    Object.keys(body).forEach((key)=>{if (!body[key] === undefined||null){item[key] = body[key]}})
+    const edited = await prisma.item.update({
+      where: { id },
+      data:  item ,
+    });
+    console.log("AFTER PATCH:",edited)
+    res.json(edited);
+  }
+  catch(err){
+    next(err)
+  }
+}
 // ### PUT ###
 
   // Updates item
