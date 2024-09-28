@@ -67,7 +67,7 @@ function generateCard(obj){
   )
 }
   return (
-<div className="flex-v fill-screen cart">
+<div className="flex-v cart">
       <h1>YOUR CART</h1>
       <DisplayMany data={cart} factory={generateCard} emptyDataText="Your cart is empty." additionalClasses={"scroll-y"}/>
     </div>

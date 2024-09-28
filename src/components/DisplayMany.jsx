@@ -38,7 +38,7 @@ function DisplayMany({ data = [], factory = undefined, emptyDataText = "" , addi
   }
   function autoKeyAndID(idx, factoryOutput) {
     return (
-      <span key={idx} id={idx}>
+      <span key={idx} id={idx} className="display-many-span">
         {factoryOutput}
       </span>
     );

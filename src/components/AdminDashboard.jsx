@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { useContext, useState, useEffect } from "react";
 import DisplayMany from "./DisplayMany";
+import Dropdown from "./Dropdown";
+import AddItem from "./AddItem";
 
 function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
@@ -15,19 +17,21 @@ function AdminDashboard() {
     y: 0,
   }); //control context menu position once clicked
   const [selectedItem, setSelectedItem] = useState(null);
+ // control context menu visibility
 
   // redirect to homepage if not an admin
   useEffect(() => {
     if (!isAdmin) {
       navigate("/");
     }
-    // const fetchData = async () => {
-    //   await fetchItems()
-    //   console.log("TRYING TO FETCH")
-    //  await fetchUsers()
-    //  console.log("DATA FETCHED")
-    // }
-    // fetchData()
+    const fetchData = async () => {
+      //fetch data once first thing so that the display many below loads something first
+      await fetchItems();
+      console.log("TRYING TO FETCH");
+      fetchUsers();
+      console.log("DATA FETCHED");
+    };
+    fetchData();
   }, [isAdmin, navigate]);
 
   const handleDisplayToggle = (type) => {
@@ -249,54 +253,90 @@ function AdminDashboard() {
     console.log("THIS IS DATA", data);
     if (displayType === "users") {
       return (
-        <div className="item-card">
-          <p>User Name: {data.name}</p>
-          <p>Email: {data.email}</p>
-          <p>Is Admin: {data.is_admin ? "Yes" : "No"}</p>
-          {/* <DisplayMany data={data.addresses} /> */}
-          {data.addresses && data.addresses.length > 0 ? (
-            data.addresses.map((address, index) => (
-              <div key={index}>
-                <p>Street: {address.street}</p>
-                {address.apartment && <p>Apartment: {address.apartment}</p>}
-                <p>City: {address.city}</p>
-                <p>Zip: {address.zip}</p>
-              </div>
-            ))
-          ) : (
-            <p>No address available</p>
+        <div className="small-text item-card">
+          <p className="merriweather-bold admin-tab">{data.id}</p>
+          <Dropdown label={"Info"} startExpanded={true}>
+            <div>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">User Name:</span>{" "}
+                {data.name}
+              </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">Email:</span> {data.email}
+              </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">Is Admin:</span>{" "}
+                {data.is_admin ? (
+                  <span className="positive">Yes</span>
+                ) : (
+                  <span className="negative">No</span>
+                )}
+              </p>
+            </div>
+          </Dropdown>
+          {data.addresses && (
+            <Dropdown label={"Addresses"}>
+              {data.addresses && data.addresses.length > 0 ? (
+                data.addresses.map((address, index) => (
+                  <div key={index}>
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">Street:</span>{" "}
+                      {address.street}
+                    </p>
+                    {address.apartment && (
+                      <p>
+                        <span className="merriweather-bold">Apartment:</span>{" "}
+                        {address.apartment}
+                      </p>
+                    )}
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">City:</span>{" "}
+                      {address.city}
+                    </p>
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">Zip:</span>{" "}
+                      {address.zip}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>{data.name} has no addresses available</p>
+              )}
+            </Dropdown>
           )}
-          {/* Delete User Button */}
-          <button
-            className="three-d-button"
-            onClick={() => {
-              if (confirm(`Are you sure you want to delete ${data.name}?`)) {
-                deleteUser(data.id);
-              }
-            }}
-          >
-            Delete User
-          </button>
-
-          {/* Promote to Admin Button */}
-          {!data.is_admin && (
+          <div>
+            {/* Delete User Button */}
             <button
               className="three-d-button"
-              onClick={() => promoteUser(data.id)}
+              onClick={() => {
+                if (confirm(`Are you sure you want to delete ${data.name}?`)) {
+                  deleteUser(data.id);
+                }
+              }}
             >
-              Promote to Admin
+              Delete User
             </button>
-          )}
 
-          {/* Demote from Admin Button */}
-          {data.is_admin && (
-            <button
-              className="three-d-button"
-              onClick={() => demoteUser(data.id)}
-            >
-              Demote from Admin
-            </button>
-          )}
+            {/* Promote to Admin Button */}
+            {!data.is_admin && (
+              <button
+                className="three-d-button"
+                onClick={() => promoteUser(data.id)}
+              >
+                Promote to Admin
+              </button>
+            )}
+
+            {/* Demote from Admin Button */}
+            {data.is_admin && (
+              <button
+                className="three-d-button"
+                onClick={() => demoteUser(data.id)}
+              >
+                Demote from Admin
+              </button>
+            )}
+          </div>
         </div>
       );
     } else {
@@ -313,7 +353,7 @@ function AdminDashboard() {
           </div>
 
           {/* Edit Item Button */}
-          <div>
+          <div className="flex-v">
             <button
               className="three-d-button"
               onClick={(event) => handleEditClick(event, data)}
@@ -327,81 +367,86 @@ function AdminDashboard() {
   }
 
   return (
-    <div>
-      <h1>ADMIN DASHBOARD</h1>
-      <button className="big-text" onClick={() => handleDisplayToggle("users")}>
-        Users
-      </button>
-      <button
-        className="big-text"
-        onClick={() => handleDisplayToggle("products")}
-      >
-        Products
-      </button>
+    <div className="flex-v scroll-y">
+    <div className="fixed force-fill-width dark-bg">
+    <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
+    <div className="force-tab-shape button-box dropdown">
+    <button className="big-text merriweather-black" onClick={() => handleDisplayToggle("users")}>
+      Users
+    </button>
+    <button
+      className="big-text merriweather-black"
+      onClick={() => handleDisplayToggle("products")}>
+      Products
+    </button>
+    {<Dropdown label={"Add Item"} labelClasses={"merriweather-black"}><AddItem /></Dropdown>}
+    </div>
+    {showContextMenu && (
+      <div className="context-menu">
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("view")}
+        >
+          View Product
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("delete")}
+        >
+          Delete Listing
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editName")}
+        >
+          Edit Name
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editPrice")}
+        >
+          Edit Price
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("changePhoto")}
+        >
+          Change Photo
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
+        >
+          Change Additional Photos
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editDescription")}
+        >
+          Edit Description
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("editTags")}
+        >
+          Edit Tags
+        </button>
+        <button
+          className="big-text"
+          onClick={() => handleEditMenuAction("cancel")}
+        >
+          Cancel Edit
+        </button>
+      </div>
+    )}
+    </div>
 
-      <DisplayMany
-        data={displayType === "users" ? users : items}
-        factory={generateCard}
-      />
+    <DisplayMany
+      data={displayType === "users" ? users : items}
+      factory={generateCard}
+      additionalClasses={"stretch wrap "}
+    />
 
-      {showContextMenu && (
-        <div className="context-menu">
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("view")}
-          >
-            View Product
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("delete")}
-          >
-            Delete Listing
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editName")}
-          >
-            Edit Name
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editPrice")}
-          >
-            Edit Price
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changePhoto")}
-          >
-            Change Photo
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
-          >
-            Change Additional Photos
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editDescription")}
-          >
-            Edit Description
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editTags")}
-          >
-            Edit Tags
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("cancel")}
-          >
-            Cancel Edit
-          </button>
-        </div>
-      )}
     </div>
   );
 }

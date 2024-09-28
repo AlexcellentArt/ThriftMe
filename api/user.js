@@ -277,26 +277,38 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     console.log("not unique reached");
-    const body = ({ name, email, password } = await req.body);
+    const body = ({ name, email, password, is_admin } = await req.body);
     // checking if not already set to that.
-    if (user.name != name) {
-      body["name"] = name;
+    if (exists.name != body.name) {
+      body["name"] = body.name;
     }
-    if (user.email != email) {
-      const notUnique = await gen_errors.isNotUnique("user", "email", email);
-      if (notUnique) {
-        next(notUnique);
+    if (exists.email !=  body.email) {
+      if (!body.email)
+      {
+        body.email = exists.email
+      }
+      else{
+        const email = body.email
+        const notUnique = await prisma.user.findUnique({ where: { email } });
+        if (notUnique) {
+          next(gen_errors.isNotUnique("user", "email", email));
+        }
       }
     }
-    if (user.password != password) {
-      body["password"] = password;
+    console.log("past uniqe checks")
+    if (exists.password != body.password) {
+      body["password"] =  body.password;
     }
-    console.log("update");
-    const user = await prisma.user.update({
+    if (exists.is_admin != body.is_admin) {
+      body["is_admin"] =  body.is_admin;
+    }
+    console.log("past checks")
+    console.log("update",body);
+    const update = await prisma.user.update({
       where: { id },
       data: body,
     });
-    res.json(user);
+    res.json(update);
   } catch (error) {
     next(error);
   }

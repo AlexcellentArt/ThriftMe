@@ -24,7 +24,7 @@ function Register({stayOnPage=false}) {
     else{navigate("/account")}
   }
   return (
-    <div className="light-bg flex-v force-fill-main">
+    <div className="light-bg flex-v centered">
       {/* <nav className="move-up">
         <ul className="flex-h">
           <li className="navLinks nav-tabs">
