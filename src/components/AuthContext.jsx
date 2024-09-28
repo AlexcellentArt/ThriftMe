@@ -3,8 +3,8 @@ const AuthContext = createContext("AuthContext");
 export function AuthContextProvider({ children }) {
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const cartId = 12;
-  const userId = 12;
+  // const cartId = 12;
+  // const userId = 12;
   const [cartToken, setCartToken] = useState(null);
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
@@ -58,16 +58,18 @@ export function AuthContextProvider({ children }) {
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
-      if (NotLoggedIn()){
+      if (!NotLoggedIn()){
         if (!cartToken){
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`);
-          setCartToken(res.id)
+          console.log("MAKING NEW CART")
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/`,{method:"POST"});
+          const newCart = await res.json()
+          setCartToken(newCart.id)
+          window.localStorage.setItem("cart_id",res.id);
+
         }
       }
-      else {
-        const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`,{headers:{authorization:token}});
-        cart= await res.json();
-      }
+      const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:{authorization:token}});
+      cart= await res.json();
       // modify gotten cart
       if (res.ok) {
         // if not in dict,
@@ -86,7 +88,7 @@ export function AuthContextProvider({ children }) {
         cart.total_cost = await calculatePrice(cart.item_dict)
         console.log(cart)
         try {
-          const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartId}`, {
+          const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -104,7 +106,9 @@ export function AuthContextProvider({ children }) {
     }
   }
   async function getUser() {
+    // const local_token = overrideToken ? overrideToken:token
     try {
+      if (!token){throw Error("User Not Logged In")}
       console.log("getting user with token "+token)
       // only returning l for now, assuming everyone is using it to test login
       const res = await fetch(API_URL + "user/me",{headers:{"token":token}});
@@ -114,18 +118,21 @@ export function AuthContextProvider({ children }) {
         return json;
       }
     } catch (error) {
-      console.error(res);
+      console.error(error);
     }
   }
-  function login(obj) {
+ async function login(obj) {
     console.log("setting token:" + obj.token);
     // add in verification of user
     setToken(obj.token);
     console.log("USER IS: " + obj.user);
+    console.log(obj.user)
     window.localStorage.setItem("token", obj.token);
-    setCartToken(obj.shopping_cart.id)
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
-    setIsAdmin(true);
+    // const user = await getUser(obj.token)
+    // console.log(user)
+    setIsAdmin(obj.is_admin);
+    setCartToken(obj.shopping_cart.id)
   }
   function logout() {
     setToken(null);
@@ -157,6 +164,7 @@ export function AuthContextProvider({ children }) {
         API_PATH: API_URL,
         token,
         isAdmin,
+        cartToken,
         login,
         logout,
         NotLoggedIn,

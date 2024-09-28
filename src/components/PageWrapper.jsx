@@ -3,7 +3,7 @@ import Navigations from "./Navigations";
 function PageWrapper({children}) {
   return (
     <body>
-      <header>
+      <header className="force-fill-width">
         <div>
           <img src={thriftmeLogo} className="logo hover" alt="ThriftMe logo" />
         </div>

@@ -17,15 +17,21 @@ const JWT = process.env.JWT || "shhh";
 
 // Gets all user
 router.get("/", async (req, res, next) => {
-  const decode = await decodeToken(req.headers.authorization)
-  if(decode.message){return next(decode)}
-  if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
-  try {
-    const user = await prisma.user.findMany({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
+  console.log("AAAAAAAAAa")
+  const users = await prisma.user.findMany({ where: {},include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+  console.log(users)
+  res.json(users);
+  // const decode = await decodeToken(req.headers.authorization)
+  // if(decode.message){return next(decode)}
+  // if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
+  // console.log("vvvvvvvvvvvvvvvvvvv")
+
+  // try {
+  //   const user = await prisma.user.findMany({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+  //   res.json(user);
+  // } catch (error) {
+  //   next(error);
+  // }
 });
 // const validateInputs = async (inputs) => {
 //   const inputs = { name, email, password } = await req.body;
@@ -55,7 +61,7 @@ router.post("/login", async (req, res, next) => {
     }
     const token = jwt.sign({ userId: user.id }, JWT);
     console.log(token);
-    res.json({ user, token, shopping_cart:user.shopping_cart });
+    res.json({ user, token, shopping_cart:user.shopping_cart,is_admin:user.is_admin });
   } catch (error) {
     next(error);
   }
@@ -271,26 +277,38 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     console.log("not unique reached");
-    const body = ({ name, email, password } = await req.body);
+    const body = ({ name, email, password, is_admin } = await req.body);
     // checking if not already set to that.
-    if (user.name != name) {
-      body["name"] = name;
+    if (exists.name != body.name) {
+      body["name"] = body.name;
     }
-    if (user.email != email) {
-      const notUnique = await gen_errors.isNotUnique("user", "email", email);
-      if (notUnique) {
-        next(notUnique);
+    if (exists.email !=  body.email) {
+      if (!body.email)
+      {
+        body.email = exists.email
+      }
+      else{
+        const email = body.email
+        const notUnique = await prisma.user.findUnique({ where: { email } });
+        if (notUnique) {
+          next(gen_errors.isNotUnique("user", "email", email));
+        }
       }
     }
-    if (user.password != password) {
-      body["password"] = password;
+    console.log("past uniqe checks")
+    if (exists.password != body.password) {
+      body["password"] =  body.password;
     }
-    console.log("update");
-    const user = await prisma.user.update({
+    if (exists.is_admin != body.is_admin) {
+      body["is_admin"] =  body.is_admin;
+    }
+    console.log("past checks")
+    console.log("update",body);
+    const update = await prisma.user.update({
       where: { id },
       data: body,
     });
-    res.json(user);
+    res.json(update);
   } catch (error) {
     next(error);
   }
@@ -301,9 +319,24 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
 router.delete("/:id", isLoggedIn, async (req, res, next) => {
   try {
     const id = +req.params.id;
-    const exists = await prisma.user.findUnique({ where: { id } });
-    if (!exists) {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
       return next(gen_errors.genericNotFoundError("user", "id", id));
+    }
+    if (user.is_admin === true){
+      // get admin count
+      const adminAmount = await prisma.user.count({
+        select: {
+          is_admin:true
+          },
+        },
+      )
+      console.log("Admins in system:"+adminAmount.is_admin)
+      // if deleting , reject delete request
+      if (adminAmount.is_admin - 1 <= 1)
+      {
+        return next({status:400,message:"There must be at least one admin in existence."})
+      }
     }
     await prisma.user.delete({ where: { id } });
     res.sendStatus(204);

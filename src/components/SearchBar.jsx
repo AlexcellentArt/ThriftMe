@@ -11,8 +11,6 @@ function SearchBar() {
   async function handleSearch() {
     console.log(searchText, tags);
     if (searchText || tags.length) {
-      
-      
       const params = {
         text_search: searchText,
         tags: tags.map((obj) => {
