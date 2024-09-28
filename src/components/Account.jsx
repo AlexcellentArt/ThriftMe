@@ -72,8 +72,8 @@ function Account() {
   }, []);
   console.log(address);
   return (
-    <div className="split-screen fill-screen flex-h">
-      <div className="checkout">
+    <div className="">
+      <div className="">
         <Dropdown label="Credit Card"></Dropdown>
         <Dropdown label="Email">
           <div>{email}</div>

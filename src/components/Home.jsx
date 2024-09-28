@@ -110,7 +110,16 @@ function Home() {
     );
   }
   return (
-    <div>
+    <div className="centered">
+      <div className="flex-h">
+        <div>
+          <h1>Our Featured Seller</h1>
+          <button>Shop Now</button>
+        </div>
+        <div>
+          <img className="square" src="" alt="" />
+        </div>
+      </div>
       Products
       <DisplayMany data={data} factory={generateCard} />
     </div>
