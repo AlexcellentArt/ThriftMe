@@ -1,9 +1,11 @@
 model Past_Transactions {
   id         Int      @id @default(autoincrement())
-  seller     User     @relation("Sold", fields: [seller_id], references: [id])
+  seller     User     @relation("Sold", fields: [seller_id], references: [id],onDelete: Cascade)
   seller_id  Int
-  buyer      User     @relation("Bought", fields: [buyer_id], references: [id])
+  buyer      User     @relation("Bought", fields: [buyer_id], references: [id],onDelete: Cascade)
   buyer_id   Int
+  shipping_address String @default("30404 Beach Lane NA 45") // static to prevent deletion issues
+  paying_card String @default("2222222222222222") // static to prevent deletion issues
   item_dict  Json // in format of {item_id:item_amount} which are both ints
   total_cost Int // ex: 1
   tags       String[] // ex: ["cool", "hat"]

@@ -4,32 +4,32 @@ import { AuthContext } from "./AuthContext";
 function Favorite(id) {
   const { token, getUser, NotLoggedIn } = useContext(AuthContext);
   const [favorite, setFavorite] = useState(false);
-  useEffect(() => {
-    async function isFavorite() {
-      try {
-        if (NotLoggedIn()) {
-          setFavorite(false);
-          return;
-        }
-        const response = await fetch(
-          `http://localhost:3000/api/user/favorite/${id}`,
-          { headers: { token: token } }
-        );
-        //              is the fetch call path above correct?
-        const res = await response.json();
-        const json = await res.json();
-        if (!res.ok) {
-          console.error(await res.text());
-        } else {
-          setFavorite(json.is_favorite);
-        }
-        console.log(res);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    isFavorite();
-  }, []);
+  // useEffect(() => {
+  //   async function isFavorite() {
+  //     try {
+  //       if (NotLoggedIn()) {
+  //         setFavorite(false);
+  //         return;
+  //       }
+  //       const response = await fetch(
+  //         `http://localhost:3000/api/user/favorite/${id}`,
+  //         { headers: { token: token } }
+  //       );
+  //       //              is the fetch call path above correct?
+  //       const res = await response.json();
+  //       const json = await res.json();
+  //       if (!res.ok) {
+  //         console.error(await res.text());
+  //       } else {
+  //         setFavorite(json.is_favorite);
+  //       }
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  //   isFavorite();
+  // }, []);
   async function toggleFavorite(id) {
     // const user = await getUser()
     if (NotLoggedIn()) {
@@ -55,7 +55,9 @@ function Favorite(id) {
         favorite ? "favorite" : "unfavorite"
       }`}
       onClick={() => {
-        toggleFavorite(id);
+        // dummying out to simulated
+        setFavorite(!favorite)
+        // toggleFavorite(id);
       }}
     >
       <svg

@@ -98,6 +98,15 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
+router.post("/guest", async (req, res, next) => {
+  try {
+    console.log("Made it to post for guest");
+    const shopping_cart = await prisma.shopping_Cart.create({ data: body });
+    res.json(shopping_cart);
+  } catch (error) {
+    next(error);
+  }
+});
 // ### PUT ###
 
 // Updates shopping_cart

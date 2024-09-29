@@ -111,7 +111,7 @@ function generateMockProductData(users = []) {
       const price = Number(faker.commerce.price({ min: 5, max: 200 }));
       //   const photo = await getLoremFlicker([base,material,color])
       const tags = [base, color, material, ...adjectives, ].map((str)=>{return str.toLowerCase()});
-      const imgs = getImages(tags.slice(0,3))
+      const imgs = getImages([base,color])
       const product = {
         seller_id: users[i].id,
         //   sellerId++, // Increment seller_id by 1 for each new product

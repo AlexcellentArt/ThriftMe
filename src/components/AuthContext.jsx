@@ -58,10 +58,10 @@ export function AuthContextProvider({ children }) {
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
-      if (!NotLoggedIn()){
+      if (NotLoggedIn()){
         if (!cartToken){
           console.log("MAKING NEW CART")
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/`,{method:"POST"});
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/`,{headers:AutoHeader(),method:"POST"});
           const newCart = await res.json()
           setCartToken(newCart.id)
           window.localStorage.setItem("cart_id",res.id);
