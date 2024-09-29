@@ -18,7 +18,7 @@ function Products({ data, search, headerText="Products" }) {
   const [products, setProduct] = useState(data ? data : [{}]);
 
   const { addToCart, AutoHeader } = useContext(AuthContext);
-const {additonalContent} = useContext(HeaderContext)
+  const {setAdditonalContent} = useContext(HeaderContext)
   useEffect(() => {
     async function getProduct() {
       try {
@@ -51,8 +51,11 @@ const {additonalContent} = useContext(HeaderContext)
     // if just displaying data, do just that instead of searching
     if (!data) {
       getProduct();
+      setAdditonalContent(<h1 className="merriweather-regular">Products</h1>
+      )
     }
-  }, [search ?search:searchParams]);
+    else{console.log(data);setProduct(data)}
+  }, [search ?search:searchParams,data&&data]);
 
   function generateCard(obj) {
     return (
@@ -89,12 +92,7 @@ const {additonalContent} = useContext(HeaderContext)
     );
   }
   return (
-    <div className="flex-v scroll-y">
-      {!data && (
-        <div className="fixed force-fill-width dark-bg">
-          <h1 className="merriweather-regular">{headerText}</h1>
-        </div>
-      )}
+    <div className={`flex-v scroll-y ${!data?"centered":""}`}>
       <DisplayMany
         data={products}
         factory={generateCard}

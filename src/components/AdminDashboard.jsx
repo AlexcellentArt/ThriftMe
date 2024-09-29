@@ -460,8 +460,6 @@ function AdminDashboard() {
 
   return (
     <div className="flex-v scroll-y">
-      {/* <h1 className="merriweather-regular">ADMIN DASHBOARD</h1> */}
-
       <DisplayMany
         data={displayType === "users" ? users : items}
         factory={generateCard}
