@@ -51,7 +51,7 @@ body {
   overflow: hidden;
 }
 main {
-  overflow: hidden scroll;
+  overflow: hidden hidden;
   clip-path: fill-box;
   margin-top: var(--nav-height);
   /* padding-top: 20%; */
@@ -368,6 +368,38 @@ will-change: box-shadow,transform;
   margin: 1% 1%;
   /* flex:2; */
 }
+.home{
+  overflow: visible scroll ;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: center;
+  justify-content: flex-start;
+  
+  .banner:first-of-type{
+    padding-top: 10%;
+    /* color: #747bff; */
+    *{font-size: larger;}
+    /* padding: 5%; */
+  }
+  padding-bottom: 5%;
+  .products{
+    height: 10vh;
+    /* scale: 0.9; */
+    /* .item-card>*{
+      max-width: 10vw;
+      max-height: 10vw;
+      sca
+    } */
+  }
+}
+.products{
+  width: 100%;
+  /* .item-card{
+    max-height: 10vh;
+    max-width: 15vw;
+  } */
+}
 .single-product{
   /* > div {flex:1;}
   .desc-box{flex:2;} */
@@ -510,6 +542,7 @@ flex-direction: column;
   border-radius: 5%;
 }
 .tag {
+  text-transform: capitalize;
   flex-direction: column;
   place-items: center;
   color: var(--delft-blue);
@@ -604,6 +637,7 @@ flex-direction: column;
   img{flex:4; max-height: 28%;}
 } */
 .shop-now{
+  text-transform: capitalize;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -611,7 +645,7 @@ flex-direction: column;
   align-items: center;
   h1,h2,h3,h4,h5{flex:2}
   button{flex:3}
-  img{flex:4; max-height: 20vh; justify-self: flex-end;}
+  img{flex:4; max-height: 10vh; justify-self: flex-end;}
 
 }
 .shop-now:nth-child(0){flex:2}
@@ -700,6 +734,7 @@ flex-direction: column;
 span:nth-of-type(even){
   .tag{
     background-color: var(--fairy-tale);
+    
   }
 }
 hr {

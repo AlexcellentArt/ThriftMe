@@ -92,7 +92,7 @@ function Products({ data, search, headerText="Products" }) {
     );
   }
   return (
-    <div className={`flex-v scroll-y ${!data&&!search?"centered":""}`}>
+    <div className={`flex-v ${!data&&!search?"centered scroll-y ":"products"}`}>
       <DisplayMany
         data={products}
         factory={generateCard}

@@ -4,6 +4,7 @@ import { SearchContext } from "./SearchContext";
 function ShopNow({
   headerMsg = "Shop Now",
   headerSize = 2,
+  subheader="Trending Now",
   bgClasses,
   img,
   alt,
@@ -13,18 +14,18 @@ function ShopNow({
 }) {
   const { setSearchParams } = useContext(SearchContext);
   const nav = useNavigate();
-  function makeHeader() {
-    switch (headerSize) {
+  function makeHeader(size,msg) {
+    switch (size) {
       case 1:
-        return <h1>{headerMsg}</h1>;
+        return <h1>{msg}</h1>;
       case 2:
-        return <h2>{headerMsg}</h2>;
+        return <h2>{msg}</h2>;
       case 3:
-        return <h3>{headerMsg}</h3>;
+        return <h3>{msg}</h3>;
       case 4:
-        return <h4>{headerMsg}</h4>;
+        return <h4>{msg}</h4>;
       case 5:
-        return <h5>{headerMsg}</h5>;
+        return <h5>{msg}</h5>;
       default:
         break;
     }
@@ -57,7 +58,8 @@ function ShopNow({
   return (
     <div className={`flex-h shop-now ${bgClasses}`}>
       <div className="flex-v">
-        {makeHeader()}
+        {makeHeader(headerSize,headerMsg)}
+        {makeHeader(headerSize+1,subheader)}
         <button
           className="merriweather-bold white-button large-text"
           onClick={() => {

@@ -145,9 +145,27 @@ function Home() {
   };
   function makeShopMe(){
     return(
+ <>
+            {/* Featured Shop Here */}
+            
+            <div className="gradient-bg banner">
+            {trendingShop!==undefined &&
+                  <ShopNow
+                  headerMsg={trendingShop.shop_name}
+                  headerSize={2}
+                  subheader={trendingShop.shop_tagline}
+                  bgClasses="transparent"
+                  img={trendingShop.default_photo}
+                  alt={"alt text here"}
+                  path={`shop/${trendingShop.shop_name}`}
+                  state={{id:trendingShop.id}}
+                />}
+                
+          </div>
+          {/* Shop Nows go here */}
         <div className="flex-h stretch force-fill-width">
         <ShopNow
-          headerMsg={shopMeData[0].tag}
+          headerMsg={shopMeData[0].tag}z
           headerSize={2}
           bgClasses="desc-box"
           img={shopMeData[0].img}
@@ -187,24 +205,11 @@ function Home() {
           </div>
         </div>
       </div>
+ </>
     )
   }
   return (
-    <div className="flex-v scroll-y force-fill-main">
-      {/* Featured Shop Here */}
-      <div className="gradient-bg banner">
-        {trendingShop!==undefined &&
-              <ShopNow
-              headerMsg={trendingShop.shop_name}
-              headerSize={1}
-              bgClasses="transparent"
-              img={trendingShop.default_photo}
-              alt={"alt text here"}
-              path={`shop/${trendingShop.shop_name}`}
-              state={{id:trendingShop.id}}
-            />}
-      </div>
-      {/* Shop Nows go here */}
+    <div className="home">
       {shopMeData.length > 1 ? makeShopMe():<h2>Shop Me</h2>}
       <div className="light-bg force-fill-width outline-black">
         <h2>Our Trendy Products</h2>
