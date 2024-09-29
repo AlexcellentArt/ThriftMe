@@ -2,26 +2,16 @@ import { AuthContext } from "./AuthContext";
 import React, { useContext, useState, useEffect } from "react";
 import Cart from "./Cart";
 import OrderConfirmation from "./OrderConfirmation";
-// import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
-// import { StripeProvider } from '@stripe/stripe-react-native';
-// import {Elements} from '@stripe/react-stripe-js';
-// import {loadStripe} from '@stripe/stripe-js';
-// const stripePromise = loadStripe('pk_test_51Q0LdjJFsQYrrxOA8E1Mgkyzknj11Gby2Qgf3mI9XdnRRko6G135tdate7BdeXYfk8FEzd1yokda5iPj0YFFAfCr00iGWB7kDL');
-// import {loadStripe} from '@stripe/stripe-js';
-// const stripe = loadStripe("pk_test_51Q0LdjJFsQYrrxOA8E1Mgkyzknj11Gby2Qgf3mI9XdnRRko6G135tdate7BdeXYfk8FEzd1yokda5iPj0YFFAfCr00iGWB7kDL", {
-//   betas: ['custom_checkout_beta_3'],
-// });
+import {HeaderContext} from "./HeaderContext"
 import Login from "./Login";
 import Register from "./Register";
 import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
-
 import DisplayMany from "./DisplayMany";
-// import SelectionGenerator from "./SelectionGenerator";
-
 function Checkout({ props }) {
   const { token, getUser, cartToken } = useContext(AuthContext);
+  const {setAdditonalContent} = useContext(HeaderContext)
   const [isGuest, setIsGuest] = useState(true);
   // raw user data
   const [user, setUser] = useState({
@@ -77,6 +67,8 @@ function Checkout({ props }) {
       }
     };
     getMe();
+    setAdditonalContent(    <h1 className="merriweather-regular">CHECKOUT</h1>
+      )
   }, [token]);
 
   function updateCheckout(cart) {
@@ -117,9 +109,6 @@ function Checkout({ props }) {
   }
   return (
     <div className="flex-v scroll-y">
-    <div className="fixed force-fill-width dark-bg">
-    <h1 className="merriweather-regular">CHECKOUT</h1>
-    </div>
     <div className="split-screen centered">
     <div className="checkout">
         {isGuest === true ? (

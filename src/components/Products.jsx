@@ -51,11 +51,11 @@ function Products({ data, search, headerText="Products" }) {
     // if just displaying data, do just that instead of searching
     if (!data) {
       getProduct();
-      setAdditonalContent(<h1 className="merriweather-regular">Products</h1>
+      setAdditonalContent(<h1 className="merriweather-regular">{headerText}</h1>
       )
     }
     else{console.log(data);setProduct(data)}
-  }, [search ?search:searchParams,data&&data]);
+  }, [search ?search:searchParams,data&&data,headerText]);
 
   function generateCard(obj) {
     return (
@@ -92,7 +92,7 @@ function Products({ data, search, headerText="Products" }) {
     );
   }
   return (
-    <div className={`flex-v scroll-y ${!data?"centered":""}`}>
+    <div className={`flex-v scroll-y ${!data&&!search?"centered":""}`}>
       <DisplayMany
         data={products}
         factory={generateCard}
