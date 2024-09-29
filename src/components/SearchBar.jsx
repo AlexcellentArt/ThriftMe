@@ -1,14 +1,15 @@
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
 import DisplayMany from "./DisplayMany";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import {SearchContext} from "./SearchContext";
-function SearchBar({setLocalSearch}) {
+import { SearchContext } from "./SearchContext";
+function SearchBar({ setLocalSearch, forcedParams }) {
   // setLocalSearch is how the bar knows it's local and won't nav to products
   const nav = useNavigate();
-  const {setSearchParams} = useContext(SearchContext)
+  const { setSearchParams } = useContext(SearchContext);
   const [tags, setTags] = useState([]);
   const [addingTag, setAddingTag] = useState(false);
   const [searchText, setSearchText] = useState("shirt");
+
   async function handleSearch() {
     console.log(searchText, tags);
     if (searchText || tags.length) {
@@ -16,19 +17,30 @@ function SearchBar({setLocalSearch}) {
         text_search: searchText,
         tags: tags.map((obj) => {
           return obj.text;
-        })}
-        // check if local
-        if(setLocalSearch){setLocalSearch(params); return;}
-        setSearchParams(params)
-        nav({
-          pathname: "/products/",
-          search: createSearchParams({
-            text_search: searchText,
-            tags: tags.map((obj) => {
-              return obj.text;
-            }),
-          }).toString(),
-        });
+        }),
+      };
+      // check if local
+      if (setLocalSearch) {
+        // if so, check for forced params and override search with them
+        //override local search params with forced ones, usually the user id
+        if (forcedParams) {
+          Object.keys(forcedParams).forEach(
+            (param) => (params[param] = forcedParams[param])
+          );
+        }
+        setLocalSearch(params);
+        return;
+      }
+      setSearchParams(params);
+      nav({
+        pathname: "/products/",
+        search: createSearchParams({
+          text_search: searchText,
+          tags: tags.map((obj) => {
+            return obj.text;
+          }),
+        }).toString(),
+      });
     }
   }
   async function addTag(text) {
