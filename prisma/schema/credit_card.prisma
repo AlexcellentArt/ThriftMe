@@ -1,8 +1,9 @@
 model Credit_Card {
   id       Int      @id @default(autoincrement())
-  user     User     @relation("Credit Card", fields: [user_id], references: [id])
+  user     User     @relation("Credit Card", fields: [user_id], references: [id], onDelete: Cascade)
   user_id  Int
   pin      String
   // cvc      String/
   exp_date String
+  is_default Boolean @default(false)
 }

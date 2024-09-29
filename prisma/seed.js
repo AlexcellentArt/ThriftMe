@@ -81,7 +81,7 @@ const seed = async () => {
     ];
     const generated = userGenerator.generateManyMockUserData(50)
     users = [...users,...generated]
-    console.log(users)
+    // console.log(users)
     // encrypt passwords
     for (let index = 0; index < users.length; index++) {
       users[index].password = await bcrypt.hash(users[index].password, salt);
@@ -90,7 +90,7 @@ const seed = async () => {
     // prisma.user.g
     return await prisma.user.findMany({ where: {}})
   };
-  const createTransactions = async () => {
+  const createTransactions = async (users,items,credit_cards,addresses) => {
     const transactions = [
       {
         seller_id: 3,
@@ -138,9 +138,29 @@ const seed = async () => {
         buyer_id: 5,
         item_dict: { 4: 1 },
         total_cost: 100,
+        shipping_address:"",
         tags: ["men's suits", "women's suits"],
       },
     ];
+    // const generated_transactions = [];
+    // users.forEach(user => {
+    //   const buyer_id = user.id;
+    //   const seller_id = items[randDigit(0,items.length)]
+    //   // skip if both are the same
+    //   if (seller_id === buyer_id){continue }
+    //   // otherwise get possible items
+    //   const possible_items = items.filter((item)=>item.seller_id === seller_id)
+    //   // get addresses
+    //   const addresses = addresses.filter((address)=>address.id === buyer_id)
+      
+    //   {
+    //     seller_id: seller_id,
+    //     buyer_id: buyer_id,
+    //     item_dict: { : 1 },
+    //     total_cost: 40,
+    //     tags: ["dressy", "red", "nightout", "men's fashion"],
+    //   }
+    // });
     await prisma.past_Transactions.createMany({ data: transactions });
   };
   const CreateItem = async (users) => {
@@ -418,12 +438,15 @@ const seed = async () => {
         // below 4, then plus one to ensure no blanks
         let qty = randDigit(1, 3);
         while (qty > 0) {
-          cards.push({
+          const card = {
             user_id: user_id,
             pin: randNumString(16),
             // cvc: randNumString(3),
             exp_date: mmyy(),
-          });
+          }
+          // if last generated, make default
+          if (qty-1 === 0){card[is_default] = true}
+          cards.push(card);
           qty -= 1;
         }
         user_id -= 1;
@@ -449,10 +472,10 @@ const seed = async () => {
       "Bear",
       "Domino",
     ];
-    const suffix = ["Drive", "Lane", "Parkway", "Corner", "Ave", "Street"];
+    const suffix = ["Drive", "Lane", "Parkway", "Corner", "Ave", "Street","Circle","Place","Gully"];
     const prefix = ["", "", "", "", "", "North", "East", "West", "South"];
-    const city_base = ["Pelican","Lark","Chicken","Nightingale","Swan","Penguin"]
-    const city_suffix =["City","Town","Ville","Village"]
+    const city_base = ["Pelican","Lark","Chicken","Nightingale","Swan","Penguin","Seagull","Fried","Finch"]
+    const city_suffix =["City","Town","Ville","Village","Port","Island","Isle","Hamlet"]
     const state = ["GA","LA","CA","TN"]
     // used a bunch of "" in prefix to simulate a 50% chance of not getting one. Not gonna spend time programming in percentage based randomization as I don't want to confuse anyone.
     const addresses = [];
@@ -472,6 +495,8 @@ const seed = async () => {
         if (randDigit(0, 1) > 0) {
           address["apartment"] = randNumString(3, 0);
         }
+        // if last generated, make default
+        if (qty-1 === 0){address[is_default] = true}
         addresses.push(address);
         qty -= 1;
       }
@@ -491,11 +516,11 @@ const seed = async () => {
   await CreateAddresses(users);
   // final step is adding favorites. For now, the first 5 items in seed are added to Melissa Cat as favorites. She is the only one who starts out with them so testing can be isolated.
   // Might need to make an explicit many to many model for this, but Alex can handle it and it is unlikely to effect operations as of now.
-  prisma.user.update({ where: { id: 5 }, data: { favorite: [1] } });
-  prisma.item.update({ where: { id: 1 }, data: { favorite: [5] } });
-  prisma.user.update({ where: { id: 12 }, data: { favorite: [2, 3] } });
-  prisma.item.update({ where: { id: 2 }, data: { favorite: [12] } });
-  prisma.item.update({ where: { id: 3 }, data: { favorite: [12] } });
+  // prisma.user.update({ where: { id: 5 }, data: { favorite: [1] } });
+  // prisma.item.update({ where: { id: 1 }, data: { favorite: [5] } });
+  // prisma.user.update({ where: { id: 12 }, data: { favorite: [2, 3] } });
+  // prisma.item.update({ where: { id: 2 }, data: { favorite: [12] } });
+  // prisma.item.update({ where: { id: 3 }, data: { favorite: [12] } });
 };
 seed()
   .then(async () => await prisma.$disconnect)

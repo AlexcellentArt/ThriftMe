@@ -4,7 +4,7 @@ model User {
     email                    String              @unique
     password                 String
     is_admin                 Boolean?            @default(false) // if user is admin or not
-    favorites                Item[]              @relation("Favorited")
+    // favorites                Item[]              @relation("Favorited")
     items                    Item[]              @relation(name: "Seller") // user is the seller of these items
     past_transactions_seller Past_Transactions[] @relation(name: "Sold") // user has sold in these transactions
     past_transactions_buyer  Past_Transactions[] @relation(name: "Bought") // user has bought in these transactions
