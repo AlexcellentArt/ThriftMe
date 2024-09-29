@@ -190,7 +190,7 @@ function Home() {
     )
   }
   return (
-    <div className="centered flex-v stretch">
+    <div className="flex-v scroll-y force-fill-main">
       {/* Featured Shop Here */}
       <div className="gradient-bg banner">
         {trendingShop!==undefined &&
