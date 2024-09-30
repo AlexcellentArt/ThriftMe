@@ -65,37 +65,31 @@ router.post("/", async (req, res, next) => {
       console.log("search request got")
       const query = await req.query
       const body = await req.body
-      console.log(query,body)
+      console.log(query)
+      console.log("body",body)
+      // search params
       let tags = undefined;
       let text_search = undefined;
+      let seller_id = undefined;
       // try to get keys off query if they exist
       if (Object.keys(query).length !== 0)
       {console.log("has query content")
         try {
           if (query.text_search){text_search =query.text_search;}
           if (query.tags){tags = JSON.parse(query.tags);}
+          if(query.seller_id){seller_id = await query.seller_id;}
         } catch (error) {
           // return next(error)
         }
       }
-      // try to get keys off body if they exist && text_search and tags are not already filled
+      // try to get keys off body if they exist && text_search and tags are not already filled. For safety reasons, seller will always be in the body
       if (Object.keys(body).length !== 0)
       {
         console.log("has body content")
           if (text_search === undefined || ''){text_search = await body.text_search;}
           if (tags === undefined){tags = await body.tags;}
+          seller_id = await body.seller_id;
       }
-      console.log(tags,text_search)
-      console.log("query got")
-      // console.log("p "+params)
-      // const { text_search, tags } = await body;
-      console.log(text_search,tags)
-      // if no text_search and tags, return all items
-      if (text_search === undefined && tags === undefined){
-        console.log("returning all")
-        const item = await prisma.item.findMany();
-        return res.json(item);
-        }
       console.log("Building Search settings....")
       const search = {}
       if(tags !== undefined){
@@ -107,17 +101,26 @@ router.post("/", async (req, res, next) => {
         contains: text_search,
         mode: 'insensitive'
       }}
+      if (seller_id){
+        search["seller"]={
+          id:Number(seller_id)
+      }}
       // log search settings in very visible black bg in terminal for later checking
       console.log(gen_errors.wrapConsoleLog("=====VVV SEARCH SETTINGS VVV====="))
       console.table(search)
       console.log(gen_errors.wrapConsoleLog("=====^^^ SEARCH SETTINGS ^^^====="))
+        // if no search settings, return all items
+        if (Object(search).length === 0){
+          console.log("returning all")
+          const item = await prisma.item.findMany();
+          return res.json(item);
+          }
         const getFiltered = await prisma.item.findMany({
           where: search
         })
       // if get filtered is nothing, return empty array
       if (!getFiltered) {
-        console.log("No Matches found for filter of ")
-        console.log(`No Matches found for filter of name: ${text_search} tags:${tags}`)
+        console.log(`No Matches found for filter of name: ${text_search} tags:${tags} seller_id:${seller_id}`)
         return res.json([])
       }
       return res.json(getFiltered);

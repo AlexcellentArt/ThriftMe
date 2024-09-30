@@ -18,7 +18,7 @@ const JWT = process.env.JWT || "shhh";
 // Gets all user
 router.get("/", async (req, res, next) => {
   console.log("AAAAAAAAAa")
-  const users = await prisma.user.findMany({ where: {},include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+  const users = await prisma.user.findMany({ where: {},include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
   console.log(users)
   res.json(users);
   // const decode = await decodeToken(req.headers.authorization)
@@ -46,6 +46,15 @@ router.get("/", async (req, res, next) => {
 //   // if (notUnique) {next(notUnique)}
 //   return null
 // }
+
+router.post("/other", async (req, res, next) => {
+  const {id , getItems} = await req.body()
+  if (!id){gen_errors.genericMissingDataError(["id"],"public_info request")}
+  const user = await prisma.user.findMany({ where: {id},include:{items:true}});
+  const info = {"name":user.name}
+  if (getItems){info["items"] = user.items}
+  res.json({"name":user.name});
+})
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -115,7 +124,7 @@ router.get("/me", async (req, res, next) => {
       if(decode.message){return next(decode)}
       if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
     const id = decode.userId
-    const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
+    const user = await prisma.user.findUnique({ where: { id:id },include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,browsing_history:true,shopping_cart:true} });
     //redit_cards:true --- need to replace BigInt with something else
     console.log("user:",user)
     // const user = await prisma.user.findUnique({ where: { id: id } });
@@ -127,28 +136,28 @@ router.get("/me", async (req, res, next) => {
     next(error);
   }
 });
-router.get("/favorite/:id", async (req, res, next) => {
-  console.log("FAVORITE")
-  // const payload = await jwt.verify(req.headers.token, JWT);
-  const id = +req.params.id;
-  // const user = await prisma.user.findUnique({ where: { id: token } });
-  // const user = await findUserWithToken(req.headers.token)
-  const decode = await decodeToken(req.headers.token)
-  try {
-    if(decode.message){return next(decode)}
-    if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
+// router.get("/favorite/:id", async (req, res, next) => {
+//   console.log("FAVORITE")
+//   // const payload = await jwt.verify(req.headers.token, JWT);
+//   const id = +req.params.id;
+//   // const user = await prisma.user.findUnique({ where: { id: token } });
+//   // const user = await findUserWithToken(req.headers.token)
+//   const decode = await decodeToken(req.headers.token)
+//   try {
+//     if(decode.message){return next(decode)}
+//     if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
   
-    const user = await prisma.user.findUnique({ where: { id:decode.userId },include:{favorites:true} });
-    if (!user) {
-      return next(gen_errors.genericNotFoundError("user", "id", id));
-    }
-    const inFavorites = user.favorites.includes(id)
-    // user.favorites.findUnique({ where: { id: id } });
-    res.json({"is_favorite":inFavorites})
-  } catch (error) {
-    return next(error)
-  }
-})
+//     const user = await prisma.user.findUnique({ where: { id:decode.userId },include:{favorites:true} });
+//     if (!user) {
+//       return next(gen_errors.genericNotFoundError("user", "id", id));
+//     }
+//     const inFavorites = user.favorites.includes(id)
+//     // user.favorites.findUnique({ where: { id: id } });
+//     res.json({"is_favorite":inFavorites})
+//   } catch (error) {
+//     return next(error)
+//   }
+// })
 // Returns user matching id
 router.get("/:id", async (req, res, next) => {
   try {
@@ -158,6 +167,18 @@ router.get("/:id", async (req, res, next) => {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+router.post("/shop/:id", async (req, res, next) => {
+  try {
+    const id = +req.params.id;
+    console.log(id)
+    if (!id){return next(gen_errors.genericMissingDataError(["id"],"shop request"))}
+    const user = await prisma.user.findUnique({ where: { id:id },include:{items:true} });
+    console.log(user)
+    res.json({items:user.items,shop_name:`${user.name}'s Shop`,username:user.name,shop_tagline:"Trending Now",id:id});
   } catch (error) {
     next(error);
   }
@@ -187,87 +208,87 @@ router.post("/", async (req, res, next) => {
 });
 // ### PUT ###
 // updates favorite
-router.put("/favorite", async (req, res, next) => {
-  console.log("FAVORITE")
-  try {
-    const decode = await decodeToken(req.headers.token)
-    if(decode.message){return next(decode)}
-    if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
-  const id = decode.userId
+// router.put("/favorite", async (req, res, next) => {
+//   console.log("FAVORITE")
+//   try {
+//     const decode = await decodeToken(req.headers.token)
+//     if(decode.message){return next(decode)}
+//     if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
+//   const id = decode.userId
 
-  const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,browsing_history:true,} });
-  console.log("user:",user)
-  const { item_id } = await req.body;
-  // const user = await prisma.user.findUnique({ where: { id: id } });
+//   const user = await prisma.user.findUnique({ where: { id:id },include:{favorites:true,browsing_history:true,} });
+//   console.log("user:",user)
+//   const { item_id } = await req.body;
+//   // const user = await prisma.user.findUnique({ where: { id: id } });
   
-  if (!user) {
-    return next(gen_errors.genericNotFoundError("user", "id", id));
-  }
-  if (!item_id) {
-    // console.error(gen_errors.genericMissingDataError("body", "item_id", id))
-    return next(gen_errors.genericMissingDataError("item_id", "body", id));
-  }
-  console.log("EXISTS");
-  const ids = user.favorites.length > 0 ? user.favorites.map((obj)=>{return {id:obj.id}}):[]
-  const idx =  user.favorites.length > 0 ? ids.findIndex(item_id):-1
-  // /? false:user.favorites.includes(item_id)
-  // .findUnique({ where: { id: item_id } })
-  console.log(idx)
-  if (idx === -1){ids.push({id:item_id})}
-  else{ids.splice(idx,1)}
-  console.log(ids)
-  if (ids === undefined){console.log("ERRR")}
-  const data = await prisma.user.update({
-    where: {
-      id: id,
-    },
-    data: {
-      favorites: {
-        set: ids,
-      },
-    },
-    include: {
-      favorites: true,
-    },
-  });
-  return res.json(data)
-  } catch (error) {
-    return next(error)
-  }
-  // if (inFavorites === true) {
-  //   const data = await prisma.user.update({
-  //     where: {
-  //       id: id,
-  //     },
-  //     data: {
-  //       favorites: {
-  //         disconnect: [{ id: item_id }],
-  //       },
-  //     },
-  //     include: {
-  //       favorites: true,
-  //     },
-  //   });
+//   if (!user) {
+//     return next(gen_errors.genericNotFoundError("user", "id", id));
+//   }
+//   if (!item_id) {
+//     // console.error(gen_errors.genericMissingDataError("body", "item_id", id))
+//     return next(gen_errors.genericMissingDataError("item_id", "body", id));
+//   }
+//   console.log("EXISTS");
+//   const ids = user.favorites.length > 0 ? user.favorites.map((obj)=>{return {id:obj.id}}):[]
+//   const idx =  user.favorites.length > 0 ? ids.findIndex(item_id):-1
+//   // /? false:user.favorites.includes(item_id)
+//   // .findUnique({ where: { id: item_id } })
+//   console.log(idx)
+//   if (idx === -1){ids.push({id:item_id})}
+//   else{ids.splice(idx,1)}
+//   console.log(ids)
+//   if (ids === undefined){console.log("ERRR")}
+//   const data = await prisma.user.update({
+//     where: {
+//       id: id,
+//     },
+//     data: {
+//       favorites: {
+//         set: ids,
+//       },
+//     },
+//     include: {
+//       favorites: true,
+//     },
+//   });
+//   return res.json(data)
+//   } catch (error) {
+//     return next(error)
+//   }
+//   // if (inFavorites === true) {
+//   //   const data = await prisma.user.update({
+//   //     where: {
+//   //       id: id,
+//   //     },
+//   //     data: {
+//   //       favorites: {
+//   //         disconnect: [{ id: item_id }],
+//   //       },
+//   //     },
+//   //     include: {
+//   //       favorites: true,
+//   //     },
+//   //   });
 
-  //   res.json(data);
-  // } else {
-  //   const data = await prisma.user.update({
-  //     where: {
-  //       id: id,
-  //     },
-  //     data: {
-  //       favorites: {
-  //         connect: [{ id: item_id }],
-  //       },
-  //     },
-  //     include: {
-  //       favorites: true,
-  //     },
-  //   });
+//   //   res.json(data);
+//   // } else {
+//   //   const data = await prisma.user.update({
+//   //     where: {
+//   //       id: id,
+//   //     },
+//   //     data: {
+//   //       favorites: {
+//   //         connect: [{ id: item_id }],
+//   //       },
+//   //     },
+//   //     include: {
+//   //       favorites: true,
+//   //     },
+//   //   });
 
-  //   res.json(data);
-  // }
-});
+//   //   res.json(data);
+//   // }
+// });
 // Updates user
 router.put("/:id", isLoggedIn, async (req, res, next) => {
   try {
@@ -277,26 +298,38 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
     console.log("not unique reached");
-    const body = ({ name, email, password } = await req.body);
+    const body = ({ name, email, password, is_admin } = await req.body);
     // checking if not already set to that.
-    if (user.name != name) {
-      body["name"] = name;
+    if (exists.name != body.name) {
+      body["name"] = body.name;
     }
-    if (user.email != email) {
-      const notUnique = await gen_errors.isNotUnique("user", "email", email);
-      if (notUnique) {
-        next(notUnique);
+    if (exists.email !=  body.email) {
+      if (!body.email)
+      {
+        body.email = exists.email
+      }
+      else{
+        const email = body.email
+        const notUnique = await prisma.user.findUnique({ where: { email } });
+        if (notUnique) {
+          next(gen_errors.isNotUnique("user", "email", email));
+        }
       }
     }
-    if (user.password != password) {
-      body["password"] = password;
+    console.log("past uniqe checks")
+    if (exists.password != body.password) {
+      body["password"] =  body.password;
     }
-    console.log("update");
-    const user = await prisma.user.update({
+    if (exists.is_admin != body.is_admin) {
+      body["is_admin"] =  body.is_admin;
+    }
+    console.log("past checks")
+    console.log("update",body);
+    const update = await prisma.user.update({
       where: { id },
       data: body,
     });
-    res.json(user);
+    res.json(update);
   } catch (error) {
     next(error);
   }

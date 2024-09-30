@@ -37,7 +37,7 @@ function Cart({shopping_cart, cart_id=12, passUpCart}) {
     }
     fetchCart()
   },
-  [] );
+  [shopping_cart] );
 async function processCartUpdate(cart) {
   const mappped = await mapItemDictToObjArray(cart.item_dict)
   setCart(mappped)
@@ -45,6 +45,7 @@ async function processCartUpdate(cart) {
   if (passUpCart){
     // mapped is added onto this data just in case
     cart["mapped"] = mappped
+    // lets add some other stuuf too
     passUpCart(cart)
   }
 }
@@ -67,7 +68,7 @@ function generateCard(obj){
   )
 }
   return (
-<div className="flex-v fill-screen cart">
+<div className="flex-v cart">
       <h1>YOUR CART</h1>
       <DisplayMany data={cart} factory={generateCard} emptyDataText="Your cart is empty." additionalClasses={"scroll-y"}/>
     </div>

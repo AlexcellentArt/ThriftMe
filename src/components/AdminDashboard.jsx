@@ -2,9 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { useContext, useState, useEffect } from "react";
 import DisplayMany from "./DisplayMany";
-
+import Dropdown from "./Dropdown";
+import AddItem from "./AddItem";
+import { HeaderContext } from "./HeaderContext";
 function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
+  const { setAdditonalContent } = useContext(HeaderContext);
   const navigate = useNavigate();
   const [displayType, setDisplayType] = useState("users"); // default to users
   const [items, setItems] = useState([{}]); // state to store items or users
@@ -15,21 +18,109 @@ function AdminDashboard() {
     y: 0,
   }); //control context menu position once clicked
   const [selectedItem, setSelectedItem] = useState(null);
+  // control context menu visibility
 
   // redirect to homepage if not an admin
   useEffect(() => {
     if (!isAdmin) {
       navigate("/");
     }
-    // const fetchData = async () => {
-    //   await fetchItems()
-    //   console.log("TRYING TO FETCH")
-    //  await fetchUsers()
-    //  console.log("DATA FETCHED")
-    // }
-    // fetchData()
+    const fetchData = async () => {
+      //fetch data once first thing so that the display many below loads something first
+      await fetchItems();
+      console.log("TRYING TO FETCH");
+      fetchUsers();
+      console.log("DATA FETCHED");
+    };
+    fetchData();
+    setAdditonalContent(
+      
+    );
   }, [isAdmin, navigate]);
-
+  const makeContextMenu = () =>{
+    return(
+      <div className="flex-v force-fill-width">
+      <div><h1 className="merriweather-regular">ADMIN DASHBOARD</h1></div>
+      <div className="force-tab-shape button-box dropdown">
+        <button
+          className="big-text merriweather-black"
+          onClick={() => handleDisplayToggle("users")}
+        >
+          Users
+        </button>
+        <button
+          className="big-text merriweather-black"
+          onClick={() => handleDisplayToggle("products")}
+        >
+          Products
+        </button>
+        {
+          <Dropdown label={"Add Item"} labelClasses={"merriweather-black"}>
+            <AddItem />
+          </Dropdown>
+        }
+      </div>
+      {showContextMenu && (
+        <div className="context-menu">
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("view")}
+          >
+            View Product
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("delete")}
+          >
+            Delete Listing
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editName")}
+          >
+            Edit Name
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editPrice")}
+          >
+            Edit Price
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("changePhoto")}
+          >
+            Change Photo
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
+          >
+            Change Additional Photos
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editDescription")}
+          >
+            Edit Description
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("editTags")}
+          >
+            Edit Tags
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleEditMenuAction("cancel")}
+          >
+            Cancel Edit
+          </button>
+        </div>
+      )}
+    </div>
+    )
+  }
   const handleDisplayToggle = (type) => {
     setDisplayType(type);
     // Fetch users or items based on the display type
@@ -71,6 +162,64 @@ function AdminDashboard() {
     }
   };
 
+  // function to delete a user
+  const deleteUser = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/api/user/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  // function to update a user field
+  const updateUserField = async (id, field, value) => {
+    console.log(`Updating user ${id}: Setting ${field} to ${value}`);
+
+    // create a new object to update the user
+    const userUpdate = {
+      [field]: value,
+    };
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/user/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userUpdate),
+      });
+
+      // check if the response is ok
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error: ${res.status} - ${errorText}`);
+      }
+
+      await res.json();
+      fetchUsers();
+      console.log(`User ${id} has been updated`);
+    } catch (error) {
+      console.error(`Error updating user ${id}:`, error);
+    }
+  };
+
+  // Function to promote a user to admin
+  const promoteUser = async (id) => {
+    await updateUserField(id, "is_admin", true);
+  };
+
+  // Function to demote a user from admin
+  const demoteUser = async (id) => {
+    await updateUserField(id, "is_admin", false);
+  };
+
   // conext menu appears upon click
   const handleEditClick = (event, item) => {
     event.stopPropagation();
@@ -86,6 +235,11 @@ function AdminDashboard() {
     return () => window.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // update the header whenever the context menu's state changes
+  useEffect(()=>{
+    setAdditonalContent(makeContextMenu())
+  },[showContextMenu]
+)
   const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
@@ -155,17 +309,21 @@ function AdminDashboard() {
   };
 
   const deleteItem = async (id) => {
-    await fetch(`http://localhost:3000/api/item/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchItems(displayType);
+    try {
+      await fetch(`http://localhost:3000/api/item/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchItems(displayType);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   const updateItemField = async (field, value, obj) => {
-    console.log("UPATEING ATEMEP");
+    console.log("UPDATING ATTEMPT");
     console.log(value);
     if (!value) return; // if no values are provided, exit the menu
     // const updatedData = { [field]: value };
@@ -187,10 +345,90 @@ function AdminDashboard() {
     console.log("THIS IS DATA", data);
     if (displayType === "users") {
       return (
-        <div className="item-card">
-          <p>{data.name}</p>
-          <p>{data.email}</p>
-          <DisplayMany data={data.addresses} />
+        <div className="small-text item-card">
+          <p className="merriweather-bold admin-tab">{data.id}</p>
+          <Dropdown label={"Info"} startExpanded={true}>
+            <div>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">User Name:</span>{" "}
+                {data.name}
+              </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">Email:</span> {data.email}
+              </p>
+              <p className="merriweather-regular">
+                <span className="merriweather-bold">Is Admin:</span>{" "}
+                {data.is_admin ? (
+                  <span className="positive">Yes</span>
+                ) : (
+                  <span className="negative">No</span>
+                )}
+              </p>
+            </div>
+          </Dropdown>
+          {data.addresses && (
+            <Dropdown label={"Addresses"}>
+              {data.addresses && data.addresses.length > 0 ? (
+                data.addresses.map((address, index) => (
+                  <div key={index}>
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">Street:</span>{" "}
+                      {address.street}
+                    </p>
+                    {address.apartment && (
+                      <p>
+                        <span className="merriweather-bold">Apartment:</span>{" "}
+                        {address.apartment}
+                      </p>
+                    )}
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">City:</span>{" "}
+                      {address.city}
+                    </p>
+                    <p className="merriweather-regular">
+                      <span className="merriweather-bold">Zip:</span>{" "}
+                      {address.zip}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>{data.name} has no addresses available</p>
+              )}
+            </Dropdown>
+          )}
+          <div>
+            {/* Delete User Button */}
+            <button
+              className="three-d-button"
+              onClick={() => {
+                if (confirm(`Are you sure you want to delete ${data.name}?`)) {
+                  deleteUser(data.id);
+                }
+              }}
+            >
+              Delete User
+            </button>
+
+            {/* Promote to Admin Button */}
+            {!data.is_admin && (
+              <button
+                className="three-d-button"
+                onClick={() => promoteUser(data.id)}
+              >
+                Promote to Admin
+              </button>
+            )}
+
+            {/* Demote from Admin Button */}
+            {data.is_admin && (
+              <button
+                className="three-d-button"
+                onClick={() => demoteUser(data.id)}
+              >
+                Demote from Admin
+              </button>
+            )}
+          </div>
         </div>
       );
     } else {
@@ -206,7 +444,8 @@ function AdminDashboard() {
             <p>${data.price}</p>
           </div>
 
-          <div>
+          {/* Edit Item Button */}
+          <div className="flex-v">
             <button
               className="three-d-button"
               onClick={(event) => handleEditClick(event, data)}
@@ -220,81 +459,12 @@ function AdminDashboard() {
   }
 
   return (
-    <div>
-      <h1>ADMIN DASHBOARD</h1>
-      <button className="big-text" onClick={() => handleDisplayToggle("users")}>
-        Users
-      </button>
-      <button
-        className="big-text"
-        onClick={() => handleDisplayToggle("products")}
-      >
-        Products
-      </button>
-
+    <div className="flex-v scroll-y">
       <DisplayMany
         data={displayType === "users" ? users : items}
         factory={generateCard}
+        additionalClasses={"stretch wrap centered "}
       />
-
-      {showContextMenu && (
-        <div className="context-menu">
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("view")}
-          >
-            View Product
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("delete")}
-          >
-            Delete Listing
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editName")}
-          >
-            Edit Name
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editPrice")}
-          >
-            Edit Price
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changePhoto")}
-          >
-            Change Photo
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
-          >
-            Change Additional Photos
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editDescription")}
-          >
-            Edit Description
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editTags")}
-          >
-            Edit Tags
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("cancel")}
-          >
-            Cancel Edit
-          </button>
-        </div>
-      )}
     </div>
   );
 }

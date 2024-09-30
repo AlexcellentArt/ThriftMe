@@ -42,22 +42,17 @@ router.get("/:id", async (req, res, next) => {
 // ### POST ###
 
 router.post("/", async (req, res, next) => {
-  try {
-    const inputs = ({ user_id, zip, street, apartment } = await req.body);
-    const isMissingInputs = gen_errors.hasMissingInputs(inputs, [
-      "user_id",
-      "zip",
-      "street",
-    ]);
-    if (isMissingInputs) {
-      return next(isMissingInputs);
-    }
-    const isZip5 = gen_errors.hasLengthViolations(inputs, ["zip"], {
-      min: 5,
-      max: 5,
-    });
-    if (isZip5) {
-      return next(isZip5);
+
+    try {
+      const inputs = { user_id, zip, street, apartment } = await req.body;
+      const isMissingInputs = gen_errors.hasMissingInputs(inputs,["user_id","zip","street"])
+      if(isMissingInputs){return next(isMissingInputs)}
+      // const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
+      // if (isZip5){return next(isZip5)}
+      const address = await prisma.address.create({ data: inputs});
+      res.json(address);
+    } catch (error) {
+      next(error)
     }
     const address = await prisma.address.create({ data: inputs });
     res.json(address);
@@ -77,29 +72,33 @@ router.put("/:id", async (req, res, next) => {
     }
     const inputs = ({ user_id, zip, street, apartment } = await req.body);
     // check inputs
-    const isMissingInputs = gen_errors.hasMissingInputs(inputs, [
-      "user_id",
-      "zip",
-      "street",
-    ]);
-    if (isMissingInputs) {
-      return next(isMissingInputs);
-    }
-    const isZip5 = gen_errors.hasLengthViolations(inputs, ["zip"], {
-      min: 5,
-      max: 5,
-    });
-    if (isZip5) {
-      return next(isZip5);
-    }
-    console.log(inputs.zip);
+    const isMissingInputs = gen_errors.hasMissingInputs(inputs,["user_id","zip","street"])
+    if(isMissingInputs){return next(isMissingInputs)}
+    // const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
+    // if (isZip5){return next(isZip5)}
+    console.log(inputs.zip)
     // safe to put
-    const address = await prisma.address.update({
-      where: { id },
-      data: inputs,
-    });
-    res.json(address);
-  } catch (error) {
+      const address = await prisma.address.update({
+        where: { id },
+        data:  inputs ,
+      });
+      if (inputs.is_default != exists.is_default){
+        // if so, make sure no others are set as such
+        const current = await prisma.address.findFirst({
+          where: { user_id:exists.user_id, is_default:true },
+        });
+        console.log(current)
+        if (current)
+        {
+          current["is_default"] = false;
+          await prisma.address.update({
+            where: { id:current.id },
+            data: current,
+          });
+        }
+      }
+      res.json(address);
+    } catch(error) {
     next(error);
   }
 });

@@ -106,15 +106,23 @@ router.post("/", async (req, res, next) => {
 });
 // ### PUT ###
 
-// Updates browsing_History
-router.put("/:id", async (req, res, next) => {
-  try {
-    const id = +req.params.id;
-    const exists = await prisma.browsing_History.findUnique({ where: { id } });
-    if (!exists) {
-      return next(
-        gen_errors.genericNotFoundError("browsing_History", "id", id)
-      );
+
+  // Updates browsing_History
+  router.put("/:id", async (req, res, next) => {
+    try {
+      const id = +req.params.id;
+      const exists = await prisma.browsing_History.findUnique({ where: { id } });
+      if (!exists) {
+        return next(gen_errors.genericNotFoundError("browsing_History","id",id));
+      }
+      const body = { looked_at_tags } = await req.body;
+      const browsing_History = await prisma.browsing_History.update({
+        where: { id },
+        data: body,
+      });
+      res.json(browsing_History);
+    } catch(error) {
+    next(error);
     }
     const body = ({ user_id, looked_at_tags } = await req.body);
     const browsing_History = await prisma.browsing_History.update({
