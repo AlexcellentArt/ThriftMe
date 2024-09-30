@@ -171,6 +171,18 @@ router.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
+router.post("/shop/:id", async (req, res, next) => {
+  try {
+    const id = +req.params.id;
+    console.log(id)
+    if (!id){return next(gen_errors.genericMissingDataError(["id"],"shop request"))}
+    const user = await prisma.user.findUnique({ where: { id:id },include:{items:true} });
+    console.log(user)
+    res.json({items:user.items,shop_name:`${user.name}'s Shop`,username:user.name,shop_tagline:"Trending Now",id:id});
+  } catch (error) {
+    next(error);
+  }
+});
 // ### POST ###
 router.post("/", async (req, res, next) => {
   try {

@@ -80,7 +80,7 @@ router.post("/", async (req, res, next) => {
       if (!exists) {
         return next(gen_errors.genericNotFoundError("browsing_History","id",id));
       }
-      const body = { user_id,looked_at_tags } = await req.body;
+      const body = { looked_at_tags } = await req.body;
       const browsing_History = await prisma.browsing_History.update({
         where: { id },
         data: body,
