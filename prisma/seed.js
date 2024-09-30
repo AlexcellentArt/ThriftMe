@@ -276,37 +276,6 @@ const seed = async () => {
           "men's activeware",
         ],
       },
-    const item = [
-      {
-        seller_id: 1,
-        name: "Tulum Dress",
-        price: 5,
-        description: "Perfect 2 piece dress for Tulum",
-        default_photo:
-          "https://shopannalaura.com/cdn/shop/products/paradisemaxidress2.jpg?v=1628458759&width=1445",
-        additional_photos: [""],
-        tags: ["tulum", "summer", "dress", "women's fashion"],
-      },
-      {
-        seller_id: 2,
-        name: "Hawaii Shirt",
-        price: 10,
-        description: "Cute hawaii shirt for your travels",
-        default_photo:
-          "https://m.media-amazon.com/images/I/71-I7jCRn8L._AC_SX679_.jpg",
-        additional_photos: [
-          "https://m.media-amazon.com/images/I/912tgDq6kfL._AC_SX679_.jpg",
-          "https://m.media-amazon.com/images/I/81zJrANFdAL._AC_SX679_.jpg",
-          "https://m.media-amazon.com/images/I/8119kZidhTL._AC_SX679_.jpg",
-        ],
-        tags: [
-          "shirt",
-          "hawaii",
-          "travel",
-          "women's activewear",
-          "men's activeware",
-        ],
-      },
 
       {
         seller_id: 3,
