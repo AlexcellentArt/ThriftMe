@@ -10,7 +10,7 @@ import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 import DisplayMany from "./DisplayMany";
 function Checkout({ props }) {
-  const { token, getUser, cartToken,AutoHeader,clearCart } = useContext
+  const { token, getUser, cartToken,AutoHeader,clearCart } = useContext(AuthContext)
   const [isGuest, setIsGuest] = useState(true);
   
   // raw user data
