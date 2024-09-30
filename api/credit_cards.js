@@ -1,5 +1,10 @@
 const router = require("express").Router();
 module.exports = router;
+const {
+  isLoggedIn,
+  decodeToken,
+  findUserWithToken,
+} = require("./helpers/auth.js");
 
 const { tr } = require("@faker-js/faker");
 const prisma = require("../prisma");

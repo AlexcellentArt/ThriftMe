@@ -1,6 +1,11 @@
 const router = require("express").Router();
 module.exports = router;
 const prisma = require("../prisma");
+const {
+  isLoggedIn,
+  decodeToken,
+  findUserWithToken,
+} = require("./helpers/auth.js");
 
 const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###

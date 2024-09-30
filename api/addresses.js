@@ -1,8 +1,13 @@
 const router = require("express").Router();
 module.exports = router;
+const {
+  isLoggedIn,
+  decodeToken,
+  findUserWithToken,
+} = require("./helpers/auth.js");
 
 const prisma = require("../prisma");
-const gen_errors = require("./helpers/gen_errors.js")
+const gen_errors = require("./helpers/gen_errors.js");
 // THINGS TO REPLACE TO GET FUNCTIONAL:
 
 //#1(Completed) REPLACE_THIS_WITH_MODEL_NAME ctrl+f or other hot key to find all and replace this with the model being interacted with. EXAMPLE: past_Transactions.
@@ -14,29 +19,30 @@ const gen_errors = require("./helpers/gen_errors.js")
 
 // Gets all addresses
 router.get("/", async (req, res, next) => {
-    try {
-      const addresses = await prisma.address.findMany();
-      res.json(addresses);
-    } catch(error) {
-        next(error);
-        }
-  });
-  // Returns address matching id
-  router.get("/:id", async (req, res, next) => {
-    try {
-      const id = +req.params.id;
-      const address = await prisma.address.findUnique({ where: { id } });
-      if (!address) {
-        return next(gen_errors.genericNotFoundError("address","id",id));
-      }
-      res.json(address);
-    } catch(error) {
-        next(error);
-        }
-  });
+  try {
+    const addresses = await prisma.address.findMany();
+    res.json(addresses);
+  } catch (error) {
+    next(error);
+  }
+});
+// Returns address matching id
+router.get("/:id", async (req, res, next) => {
+  try {
+    const id = +req.params.id;
+    const address = await prisma.address.findUnique({ where: { id } });
+    if (!address) {
+      return next(gen_errors.genericNotFoundError("address", "id", id));
+    }
+    res.json(address);
+  } catch (error) {
+    next(error);
+  }
+});
 // ### POST ###
 
 router.post("/", async (req, res, next) => {
+
     try {
       const inputs = { user_id, zip, street, apartment } = await req.body;
       const isMissingInputs = gen_errors.hasMissingInputs(inputs,["user_id","zip","street"])
@@ -48,19 +54,23 @@ router.post("/", async (req, res, next) => {
     } catch (error) {
       next(error)
     }
-  });
+    const address = await prisma.address.create({ data: inputs });
+    res.json(address);
+  } catch (error) {
+    next(error);
+  }
+});
 // ### PUT ###
 
-
-  // Updates address
-  router.put("/:id", async (req, res, next) => {
-    try {
-      const id = +req.params.id;
-      const exists = await prisma.address.findUnique({ where: { id } });
-      if (!exists) {
-        return next(gen_errors.genericNotFoundError("address","id",id));
-      }
-		const inputs = { user_id, zip, street, apartment } = await req.body;
+// Updates address
+router.put("/:id", async (req, res, next) => {
+  try {
+    const id = +req.params.id;
+    const exists = await prisma.address.findUnique({ where: { id } });
+    if (!exists) {
+      return next(gen_errors.genericNotFoundError("address", "id", id));
+    }
+    const inputs = ({ user_id, zip, street, apartment } = await req.body);
     // check inputs
     const isMissingInputs = gen_errors.hasMissingInputs(inputs,["user_id","zip","street"])
     if(isMissingInputs){return next(isMissingInputs)}
@@ -90,22 +100,21 @@ router.post("/", async (req, res, next) => {
       res.json(address);
     } catch(error) {
     next(error);
-    }
-  });
+  }
+});
 
 // ### DELETE ###
-  // deletes address matching id
+// deletes address matching id
 router.delete("/:id", async (req, res, next) => {
-
-    try {
-      const id = +req.params.id;
-      const exists = await prisma.address.findUnique({ where: { id } });
-      if (!exists) {
-        return next(gen_errors.genericNotFoundError("address","id",id));
-      }
-      await prisma.address.delete({ where: { id } });
-      res.sendStatus(204);
-    } catch(error) {
-    next(error);
+  try {
+    const id = +req.params.id;
+    const exists = await prisma.address.findUnique({ where: { id } });
+    if (!exists) {
+      return next(gen_errors.genericNotFoundError("address", "id", id));
     }
-  });
+    await prisma.address.delete({ where: { id } });
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+});
