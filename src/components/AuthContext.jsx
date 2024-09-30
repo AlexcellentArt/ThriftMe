@@ -58,6 +58,9 @@ export function AuthContextProvider({ children }) {
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
+      // try to get from local first
+      const local = window.localStorage.getItem("cart_id")
+      if (local && local !== null){setCartToken(local)}
       if (NotLoggedIn()){
         if (!cartToken){
           console.log("MAKING NEW CART")
@@ -95,7 +98,7 @@ export function AuthContextProvider({ children }) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(cart),
+            body: JSON.stringify(cart)
           });
           const res = await response.json();
           return res
@@ -121,6 +124,7 @@ export function AuthContextProvider({ children }) {
       }
     } catch (error) {
       console.error(error);
+      return undefined
     }
   }
  async function login(obj) {
@@ -139,6 +143,8 @@ export function AuthContextProvider({ children }) {
   function logout() {
     setToken(null);
     setIsAdmin(false);
+    window.localStorage.setItem("token", null);
+    window.localStorage.setItem("cart_id", null);
   }
   async function mapItemDictToObjArray(item_dict) {
     const arr = []

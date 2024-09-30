@@ -71,9 +71,10 @@ function Checkout({ props }) {
         if (response.ok) {
           console.log("CART FOUND AND NO USER");
           guest.shopping_cart = await response.json();
+          console.log(guest)
+          setUser(guest)
           return;
         }
-        setUser(guest);
       } else {
         setUser(user);
         setIsGuest(false);

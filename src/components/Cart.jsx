@@ -37,7 +37,7 @@ function Cart({shopping_cart, cart_id=12, passUpCart}) {
     }
     fetchCart()
   },
-  [] );
+  [shopping_cart] );
 async function processCartUpdate(cart) {
   const mappped = await mapItemDictToObjArray(cart.item_dict)
   setCart(mappped)
