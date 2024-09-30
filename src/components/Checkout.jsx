@@ -1,9 +1,9 @@
 import { AuthContext } from "./AuthContext";
+import { HeaderContext } from "./HeaderContext";
 import React, { useContext, useState, useEffect } from "react";
 import Cart from "./Cart";
 import OrderConfirmation from "./OrderConfirmation";
 import { useNavigate } from "react-router-dom";
-import {HeaderContext} from "./HeaderContext"
 import Login from "./Login";
 import Register from "./Register";
 import FormGenerator from "./FormGenerator";
@@ -11,6 +11,7 @@ import Dropdown from "./Dropdown";
 import DisplayMany from "./DisplayMany";
 function Checkout({ props }) {
   const { token, getUser, cartToken,AutoHeader,clearCart } = useContext(AuthContext)
+  const {setAdditonalContent} =useContext(HeaderContext)
   const [isGuest, setIsGuest] = useState(true);
   
   // raw user data
