@@ -23,6 +23,7 @@ import DisplayMany from "./DisplayMany";
 function Checkout({ props }) {
   const { token, getUser, cartToken } = useContext(AuthContext);
   const [isGuest, setIsGuest] = useState(true);
+  
   // raw user data
   const [user, setUser] = useState({
     credit_cards: [],
@@ -53,6 +54,8 @@ function Checkout({ props }) {
     { key: "exp_date", type: "text" },
     { key: "cvc", type: "number" },
   ]);
+  const nav = useNavigate();
+
   useEffect(() => {
     const getMe = async () => {
       const user = await getUser();
@@ -109,11 +112,15 @@ function Checkout({ props }) {
     // insert logic here navigating/passing data to order confirmation
     // that's the stage then where a new past transaction would be made.
     // I've assembled here everything I think might be needed to make a past transaction, which we can have created at the OrderConfirmation page with this data funneled into it somehow.
-    const OrderInfo = {cart:shopping_cart,address:address,credit:creditCard,total:total}
+    const OrderInfo = {cart:cart,address:address,credit:creditCard,total:total}
     // since we don't have a stripe backend, we could probably get away with just going visually 'charge made, shipping to x, but not actually saving the address and card.
     // OR, we can add shipping address and charged card to the schema. Maybe a receiving card for the money to be transferred to for the seller too.
     // If alive, talk to team about it tomorrow.
     //
+    nav({
+      pathname: "/order",
+      state:OrderInfo
+    });
   }
   return (
     <div className="flex-v scroll-y">

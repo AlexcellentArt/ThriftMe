@@ -46,7 +46,7 @@ function App() {
               <Checkout/>}/>
               
           <Route
-            path="/order/:id"
+            path="/order"
             element={
               <OrderConfirmation/>
               // token ? (
