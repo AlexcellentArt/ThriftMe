@@ -108,15 +108,21 @@ function Checkout({ props }) {
   function formatCreditCard(obj) {
     return `${obj.pin} ${obj.exp_date} ${obj.cvc}`;
   }
-  function GoToOrderConfirmation(obj){
+  function makePastTransactions(){
+    const base = {seller_id,buyer_id,item_dict,total_cost,tags}
+    // first, filter the cart by seller
+    console.log(cart.mapped)
+    //{obj.name}({obj.quantity}) - ${obj.quantity * obj.price}
+  }
+  function GoToOrderConfirmation(transactions){
     // insert logic here navigating/passing data to order confirmation
     // that's the stage then where a new past transaction would be made.
     // I've assembled here everything I think might be needed to make a past transaction, which we can have created at the OrderConfirmation page with this data funneled into it somehow.
-    const OrderInfo = {cart:cart,address:address,credit:creditCard,total:total}
+    const OrderInfo = {name:user.name,cart:cart,address:address,credit:creditCard,orders:transactions,total:total}
     // since we don't have a stripe backend, we could probably get away with just going visually 'charge made, shipping to x, but not actually saving the address and card.
     // OR, we can add shipping address and charged card to the schema. Maybe a receiving card for the money to be transferred to for the seller too.
     // If alive, talk to team about it tomorrow.
-    //
+    // lets work with this data to compile it for order info.
     nav({
       pathname: "/order",
       state:OrderInfo
@@ -225,7 +231,7 @@ function Checkout({ props }) {
             <p className="merriweather-bold">Total: ${total}</p>
             <hr />
             {creditCard && address != null && (
-              <button className="three-d-button" onClick={()=>{GoToOrderConfirmation()}}>Checkout</button>
+              <button className="three-d-button" onClick={()=>{makePastTransactions()}}>Checkout</button>
             )}
           </Dropdown>
         )}

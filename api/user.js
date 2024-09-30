@@ -47,7 +47,7 @@ router.get("/", async (req, res, next) => {
 //   return null
 // }
 
-router.get("/other", async (req, res, next) => {
+router.post("/other", async (req, res, next) => {
   const {id , getItems} = await req.body()
   if (!id){gen_errors.genericMissingDataError(["id"],"public_info request")}
   const user = await prisma.user.findMany({ where: {id},include:{items:true}});

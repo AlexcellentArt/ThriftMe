@@ -61,16 +61,18 @@ export function AuthContextProvider({ children }) {
       if (NotLoggedIn()){
         if (!cartToken){
           console.log("MAKING NEW CART")
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/`,{headers:AutoHeader(),method:"POST"});
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/guest`,{headers:AutoHeader(),body:{},method:"POST"});
+          console.log(res)
           const newCart = await res.json()
+          console.log(newCart)
           setCartToken(newCart.id)
-          window.localStorage.setItem("cart_id",res.id);
+          window.localStorage.setItem("cart_id",newCart.id);
 
         }
       }
       const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:{authorization:token}});
       cart= await res.json();
-      // modify gotten cart
+      // modify  gotten cart
       if (res.ok) {
         // if not in dict,
         if (item_id < 1){throw new Error("Id cannot be less than 1")}

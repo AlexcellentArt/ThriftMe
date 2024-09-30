@@ -45,6 +45,7 @@ async function processCartUpdate(cart) {
   if (passUpCart){
     // mapped is added onto this data just in case
     cart["mapped"] = mappped
+    // lets add some other stuuf too
     passUpCart(cart)
   }
 }

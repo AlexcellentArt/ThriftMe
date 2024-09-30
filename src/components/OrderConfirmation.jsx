@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
-import { useLocation } from "react-router-dom";
 
 function OrderConfirmation() {
   const { id } = useParams();
@@ -9,8 +8,45 @@ function OrderConfirmation() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // passing relevant info via state as it is unecessary to make an entire fetch call for information already compiled in checkout
-  const { state } = useLocation();
+  //   const { token } = useContext(AuthContext);
+const {state} = useLocation()
+  // fetch the order details using the order ID after checkout
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      if (!currentOrder) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/orders/${id}`,
+            {
+              // headers: {
+              //   Authorization: `Bearer ${token}`,
+              //   "Content-Type": "application/json",
+              // },
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch order details.");
+          }
+          const data = await response.json();
+          setCurrentOrder(data);
+          setLoading(false);
+        } catch (error) {
+          setError(error.message);
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+
+    if (token) {
+      // Only fetch if token exists
+      fetchOrderDetails();
+    }
+  }, [id, state]);
+
+  if (loading) return <div>Loading your order details...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   // Continue Shopping function with button
   const handleContinueShopping = () => {
@@ -22,7 +58,7 @@ function OrderConfirmation() {
       <h2>Order Confirmation</h2>
       {order ? (
         <>
-          <p>Thank you for your purchase, {order.buyer}!</p>
+          <p>Thank you for your purchase, {order.customerName}!</p>
 
           <h3>Order Number: {currentOrder.id}</h3>
           <p>Total Amount: ${currentOrder.totalCost}</p>
@@ -34,11 +70,13 @@ function OrderConfirmation() {
           </p>
 
           <h3>Items Purchased:</h3>
-          <DisplayMany
-              data={cart.mapped}
-              factory={summarizeItem}
-              additionalClasses="flex-v"
-            />
+          <ul>
+            {order.items.map((item) => (
+              <li key={item.id}>
+                {item.name} (x{item.quantity}) - ${item.price * item.quantity}
+              </li>
+            ))}
+          </ul>
 
           <h3>Order Date:</h3>
           <p>{new Date(order.createdAt).toLocaleDateString()}</p>
