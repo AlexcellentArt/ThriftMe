@@ -48,19 +48,53 @@ router.get("/:userId", async (req, res, next) => {
       next(error);
     }
   });
+
+// router.get("/order", async (req, res, next) => {
+//   try {
+//     const id = +req.params.userId;
+//     const past_transaction = await prisma.past_Transactions.findMany({ where: {buyer_id:id} });
+//     past_transaction.concat(await prisma.past_Transactions.findMany({ where: {seller_id:id} }))
+//     if (!past_transaction) {
+//       return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
+//     }
+//     res.json(past_transaction);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 // ### POST ###
 
 router.post("/", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     console.log(body)
-    const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","tags"],"transaction")
+    const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","shipping_address","paying_card","tags"],"transaction")
     if (missing){
         console.log(missing)
-        next(missing)
+        return next(missing)
     }
     const past_transaction = await prisma.past_Transactions.create({ data: body });
     res.json(past_transaction);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/checkout", async (req, res, next) => {
+  try {
+    const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
+    console.log(body)
+    const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","shipping_address","paying_card","tags"],"transaction")
+    if (missing){
+        console.log(missing)
+        return next(missing)
+    }
+    const past_transaction = await prisma.past_Transactions.create({ data: body });
+    // get seller name
+    const seller = prisma.user.findUnique({where:{id:body.seller_id}})
+    // remove sensitive info and replace with names. tags not relevant to return.
+    const censored = {seller_name:seller.name,item_dict:past_transaction.item_dict,total_cost:past_transaction.total_cost}
+    res.json(censored);
   } catch (error) {
     next(error);
   }

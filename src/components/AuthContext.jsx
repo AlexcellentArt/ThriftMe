@@ -110,6 +110,36 @@ export function AuthContextProvider({ children }) {
       console.error(error);
     }
   }
+  async function clearCart() {
+    // get cart
+    try {
+      let cart;
+      // if not logged in, modify local cart
+      // need to make cart take and give token, but this works for now
+      // try to get from local first
+      const local = window.localStorage.getItem("cart_id")
+      if (local && local !== null){setCartToken(local)}
+      if (NotLoggedIn()){
+        if (cartToken){
+          // guest carts are deleted.
+          console.log("MAKING NEW CART")
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:AutoHeader(),method:"DELETE"});
+          window.localStorage.setItem("cart_id",null);
+          return
+        }
+      }
+      // user carts are cleared
+      const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {item_dict:{},total_cost:0}
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
   async function getUser() {
     // const local_token = overrideToken ? overrideToken:token
     try {
@@ -183,6 +213,7 @@ export function AuthContextProvider({ children }) {
         getUser,
         mapItemDictToObjArray,
         AutoHeader,
+        clearCart
       }}
     >
       {children}

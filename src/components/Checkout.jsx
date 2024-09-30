@@ -21,7 +21,7 @@ import DisplayMany from "./DisplayMany";
 // import SelectionGenerator from "./SelectionGenerator";
 
 function Checkout({ props }) {
-  const { token, getUser, cartToken } = useContext(AuthContext);
+  const { token, getUser, cartToken,AutoHeader,clearCart } = useContext(AuthContext);
   const [isGuest, setIsGuest] = useState(true);
   
   // raw user data
@@ -103,31 +103,86 @@ function Checkout({ props }) {
   }
   function formatAddress(obj) {
     return (
-      obj.street + `${obj.apartment && obj.apartment}` + obj.city + `${obj.zip}`
+      obj.street + ` ${obj.apartment && obj.apartment} ` + obj.city + ` ${obj.zip}`
     );
   }
   function formatCreditCard(obj) {
     return `${obj.pin} ${obj.exp_date} ${obj.cvc}`;
   }
-  function makePastTransactions(){
-    const base = {seller_id,buyer_id,item_dict,total_cost,tags}
-    // first, filter the cart by seller
+  async function makePastTransactions(){
+    // const base = {seller_id,buyer_id,item_dict,total_cost,tags}
+    // first, break up the cart by seller
+    const sellers = {}
     console.log(cart.mapped)
-    //{obj.name}({obj.quantity}) - ${obj.quantity * obj.price}
+    cart.mapped.forEach(item => {
+      if (sellers[item.seller_id]){
+        sellers[item.seller_id].push(item)
+      }
+      else{
+        sellers[item.seller_id] = [item]
+      }
+    });
+    console.log(sellers)
+    // make transaction obj for each seller
+    let assembled = []
+    const mappedBySeller = {}
+    for (const [seller, items] of Object.entries(sellers)) {
+      assembled.push({transaction:assembleTransaction(seller,items),mapped_items:items})
+    }
+    console.log(assembled)
+    // clear cart (will impliment after confirming this works)
+    // make transactions
+    // got to order confirmation
+    const header = AutoHeader()
+    const made = []
+    for (let i = 0; i < assembled.length; i++) {
+      try {
+        const transaction = assembled[i].transaction
+        console.log("trying to make transaction",transaction)
+        const res = await fetch(`http://localhost:3000/api/past_transactions/checkout`,{headers:header,body:JSON.stringify(transaction),method:"POST"});
+        if (res.ok){
+          console.log("TRANSACTION MADE")
+          const json = await res.json()
+          // add the mapped item info onto it
+          made["items"] = assembled[i].mapped_items
+          made.push(json)
+        }
+        else{
+          throw new Error("POST FAIL")
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    // clear cart
+    // await clearCart()
+    GoToOrderConfirmation(made)
+  }
+  function assembleTransaction(id,array){
+    // cvc is not saved as that is illegal.
+    const add = formatAddress(address)
+    const base = {seller_id:Number(id),buyer_id:user.id,shipping_address:add,paying_card:`${creditCard.pin} ${creditCard.exp_date}`,item_dict:{},total_cost:0,tags:[]}
+    let price = 0
+    // reduplicate below logic for only adding unique tags to browsing history
+    array.forEach((item)=>{
+      base.item_dict[`${item.id}`]=item.quantity
+      price += item.quantity*item.price
+      item.tags.forEach((tag)=>{if (!base.tags.includes(tag)){base.tags.push(tag)}})
+    })
+    // base.item_dict = JSON.stringify(base.item_dict)
+    base.total_cost = price
+    return base
   }
   function GoToOrderConfirmation(transactions){
     // insert logic here navigating/passing data to order confirmation
     // that's the stage then where a new past transaction would be made.
     // I've assembled here everything I think might be needed to make a past transaction, which we can have created at the OrderConfirmation page with this data funneled into it somehow.
-    const OrderInfo = {name:user.name,cart:cart,address:address,credit:creditCard,orders:transactions,total:total}
+    const OrderInfo = {name:user.name,address:address,credit:creditCard,orders:transactions,total:total}
     // since we don't have a stripe backend, we could probably get away with just going visually 'charge made, shipping to x, but not actually saving the address and card.
     // OR, we can add shipping address and charged card to the schema. Maybe a receiving card for the money to be transferred to for the seller too.
     // If alive, talk to team about it tomorrow.
     // lets work with this data to compile it for order info.
-    nav({
-      pathname: "/order",
-      state:OrderInfo
-    });
+    nav("/order",{state:{info:OrderInfo}});
   }
   return (
     <div className="flex-v scroll-y">
