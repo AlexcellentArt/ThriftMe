@@ -47,6 +47,15 @@ router.get("/", async (req, res, next) => {
 //   return null
 // }
 
+router.post("/other", async (req, res, next) => {
+  const {id , getItems} = await req.body()
+  if (!id){gen_errors.genericMissingDataError(["id"],"public_info request")}
+  const user = await prisma.user.findMany({ where: {id},include:{items:true}});
+  const info = {"name":user.name}
+  if (getItems){info["items"] = user.items}
+  res.json({"name":user.name});
+})
+
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = await req.body;

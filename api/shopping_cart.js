@@ -101,7 +101,8 @@ router.post("/", async (req, res, next) => {
 router.post("/guest", async (req, res, next) => {
   try {
     console.log("Made it to post for guest");
-    const shopping_cart = await prisma.shopping_Cart.create({ data: body });
+    const shopping_cart = await prisma.shopping_Cart.create({ data: {item_dict:{},total_cost:0} });
+    console.log("made cart "+shopping_cart.id)
     res.json(shopping_cart);
   } catch (error) {
     next(error);
@@ -117,9 +118,10 @@ router.put("/:id", async (req, res, next) => {
     if (!exists) {
       return next(gen_errors.genericNotFoundError("shopping_cart", "id", id));
     }
-    const body = { user_id, item_dict, total_cost } = await req.body;
+    const body = { item_dict, total_cost } = await req.body;
+    // user id will never change, so just get it off the existing body
+    body["user_id"] = exists.user_id
     // // verify existence of participants
-
     const shopping_cart = await prisma.shopping_Cart.update({
       where: { id },
       data: body,

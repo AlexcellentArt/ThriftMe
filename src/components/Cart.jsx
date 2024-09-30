@@ -37,7 +37,7 @@ function Cart({shopping_cart, cart_id=12, passUpCart}) {
     }
     fetchCart()
   },
-  [] );
+  [shopping_cart] );
 async function processCartUpdate(cart) {
   const mappped = await mapItemDictToObjArray(cart.item_dict)
   setCart(mappped)
@@ -45,6 +45,7 @@ async function processCartUpdate(cart) {
   if (passUpCart){
     // mapped is added onto this data just in case
     cart["mapped"] = mappped
+    // lets add some other stuuf too
     passUpCart(cart)
   }
 }

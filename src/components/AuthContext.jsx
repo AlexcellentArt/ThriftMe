@@ -58,19 +58,24 @@ export function AuthContextProvider({ children }) {
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
+      // try to get from local first
+      const local = window.localStorage.getItem("cart_id")
+      if (local && local !== null){setCartToken(local)}
       if (NotLoggedIn()){
         if (!cartToken){
           console.log("MAKING NEW CART")
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/`,{headers:AutoHeader(),method:"POST"});
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/guest`,{headers:AutoHeader(),body:{},method:"POST"});
+          console.log(res)
           const newCart = await res.json()
+          console.log(newCart)
           setCartToken(newCart.id)
-          window.localStorage.setItem("cart_id",res.id);
+          window.localStorage.setItem("cart_id",newCart.id);
 
         }
       }
       const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:{authorization:token}});
       cart= await res.json();
-      // modify gotten cart
+      // modify  gotten cart
       if (res.ok) {
         // if not in dict,
         if (item_id < 1){throw new Error("Id cannot be less than 1")}
@@ -93,7 +98,7 @@ export function AuthContextProvider({ children }) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(cart),
+            body: JSON.stringify(cart)
           });
           const res = await response.json();
           return res
@@ -101,6 +106,36 @@ export function AuthContextProvider({ children }) {
           console.error(error);
         }
       }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function clearCart() {
+    // get cart
+    try {
+      let cart;
+      // if not logged in, modify local cart
+      // need to make cart take and give token, but this works for now
+      // try to get from local first
+      const local = window.localStorage.getItem("cart_id")
+      if (local && local !== null){setCartToken(local)}
+      if (NotLoggedIn()){
+        if (cartToken){
+          // guest carts are deleted.
+          console.log("MAKING NEW CART")
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:AutoHeader(),method:"DELETE"});
+          window.localStorage.setItem("cart_id",null);
+          return
+        }
+      }
+      // user carts are cleared
+      const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {item_dict:{},total_cost:0}
+      });
     } catch (error) {
       console.error(error);
     }
@@ -119,6 +154,7 @@ export function AuthContextProvider({ children }) {
       }
     } catch (error) {
       console.error(error);
+      return undefined
     }
   }
  async function login(obj) {
@@ -137,6 +173,8 @@ export function AuthContextProvider({ children }) {
   function logout() {
     setToken(null);
     setIsAdmin(false);
+    window.localStorage.setItem("token", null);
+    window.localStorage.setItem("cart_id", null);
   }
   async function mapItemDictToObjArray(item_dict) {
     const arr = []
@@ -175,6 +213,7 @@ export function AuthContextProvider({ children }) {
         getUser,
         mapItemDictToObjArray,
         AutoHeader,
+        clearCart
       }}
     >
       {children}
