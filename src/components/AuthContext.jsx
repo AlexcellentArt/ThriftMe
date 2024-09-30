@@ -157,6 +157,46 @@ export function AuthContextProvider({ children }) {
       return undefined
     }
   }
+  async function addToBrowsingHistory(tags) {
+    // const local_token = overrideToken ? overrideToken:token
+    try {
+      if (!token){throw Error("User Not Logged In")}
+      console.log("getting user with token "+token)
+      const user = await getUser()
+      const history = user.browsing_history
+      if(!history){throw Error("No History")}
+      history.looked_at_tags = [...history.looked_at_tags,...tags]
+      // only returning l for now, assuming everyone is using it to test login
+      const res = await fetch(API_URL + "browsing_history/",{headers:{"token":token},body:{looked_at_tags:history}});
+      if (res.ok) {
+        const json = await res.json();
+        console.log(json);
+        return json;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function addToBrowsingHistory(tags) {
+    // const local_token = overrideToken ? overrideToken:token
+    try {
+      if (!token){throw Error("User Not Logged In")}
+      console.log("getting user with token "+token)
+      const user = await getUser()
+      const history = user.browsing_history
+      if(!history){throw Error("No History")}
+      history.looked_at_tags = [...history.looked_at_tags,...tags]
+      // only returning l for now, assuming everyone is using it to test login
+      const res = await fetch(API_URL + "browsing_history/",{headers:{"token":token},body:{looked_at_tags:history}});
+      if (res.ok) {
+        const json = await res.json();
+        console.log(json);
+        return json;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
  async function login(obj) {
     console.log("setting token:" + obj.token);
     // add in verification of user
@@ -213,6 +253,7 @@ export function AuthContextProvider({ children }) {
         getUser,
         mapItemDictToObjArray,
         AutoHeader,
+        addToBrowsingHistory,
         clearCart
       }}
     >

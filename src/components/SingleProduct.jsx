@@ -7,12 +7,14 @@ import { SearchContext } from "./SearchContext";
 import { useNavigate, createSearchParams } from "react-router-dom";
 function SingleProduct() {
     const nav = useNavigate()
-  const { token, addToCart } = useContext(AuthContext);
+  const { token, addToCart,addToBrowsingHistory } = useContext(AuthContext);
+  const {setSearchParams} = useContext(SearchContext)
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);
   const [mainPhoto, setMainPhoto] = useState("");
   function navToProducts(tag){
+    setSearchParams({tags:tag})
     nav({
       pathname: "/products/",
       search: createSearchParams({
@@ -25,8 +27,7 @@ function SingleProduct() {
     return (
       <div className="tag">
         {/* Need to figure out how to update search bar tags too... maybe through SearchContext? */}
-        {/* <button onClick={()=>{navToProducts(obj.text)}}><p>#{obj.text}</p></button> */}
-        <p>#{obj.text}</p>
+        <button onClick={()=>{navToProducts(obj.text)}} className="transparent  big-text"><p className="large-text merriweather-light">#{obj.text}</p></button>
       </div>
     );
   }
@@ -90,18 +91,24 @@ function SingleProduct() {
           factory={createPhoto}
           additionalClasses={"flex-v flex-start scroll-y"}
         />}
-        {product.default_photo && <img src={mainPhoto} alt={product.name} />}
-        <div className="flex-v small-big-medium-height">
-          <div className="flex-h small-big-medium-width">
+        {product.default_photo && <img className="rounded-corners square" src={mainPhoto} alt={product.name} />}
+        <div className="flex-v small-big-medium-height align-items-center">
+          <div className="flex-h small-big-medium-width align-items-center">
             <h2 className="merriweather-black">${product.price}</h2>
             <span></span>
             <Favorite/>
           </div>
+          <div className="flex-v">
           <h1>{product.name}</h1>
+          <button className="transparent dark-text" onClick={()=>{    nav("/shop/Seller",{
+      state:{id:product.seller_id}
+    })}}><p className="big-text merriweather-regular">Go To Seller Shop</p></button>
+          </div>
           <button
             className="three-d-button"
             onClick={() => {
               addToCart(product.id);
+              addToBrowsingHistory(product.tags)
             }}
           >
             Add To Cart
