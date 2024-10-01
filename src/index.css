@@ -568,13 +568,6 @@ button:focus-visible {
     flex: 2 1;
   }
   .tag {
-  :nth-child(1) {
-    flex: 1 2;
-  }
-  :nth-child(2) {
-    flex: 2 1;
-  }
-  .tag {
     /* align-self: baseline; */
     padding: 2px;
     flex: 1;
@@ -584,7 +577,6 @@ button:focus-visible {
       align-self: center;
     } */
   }
-}
 }
 
 .small-big-medium-height {
@@ -863,17 +855,6 @@ button:focus-visible {
   padding: 1% 0.25%;
     input{flex:1};
   }
-  input{
-    flex:1
-  }
-  textarea{
-    flex:3;
-  }
-  label>input,label>text-area{
-    display: flex;
-    width: -webkit-fill-available;
-    background-color: var(--white);
-  }
   button{
     margin-top: 2%;
     align-self: center;
@@ -889,7 +870,6 @@ button:focus-visible {
   label {
     flex: 1;
   }
-  input {
   label {
     flex: 1;
   }
@@ -902,7 +882,6 @@ button:focus-visible {
     height: 3em;
     color: var(--black);
   }
-}
 }
 .display-many {
   flex-wrap: wrap;
@@ -932,16 +911,6 @@ button:focus-visible {
   flex-wrap: nowrap;
   justify-content: space-around;
   align-items: center;
-  h1,
-  h2,
-  h3,
-  h4,
-  h5 {
-    flex: 2;
-  }
-  button {
-    flex: 3;
-  }
   h1,
   h2,
   h3,
