@@ -290,7 +290,7 @@ router.post("/", async (req, res, next) => {
 //   // }
 // });
 // Updates user
-router.put("/:id", isLoggedIn, async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
@@ -337,7 +337,7 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
 
 // ### DELETE ###
 // deletes user matching id
-router.delete("/:id", isLoggedIn, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const user = await prisma.user.findUnique({ where: { id } });
