@@ -3,6 +3,7 @@ import SearchBar from "./SearchBar";
 import { AuthContext } from "./AuthContext";
 import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
+import AddItem from "./AddItem";
 function Shop() {
   // const {AutoHeader} = useContext(AuthContext);
   const { state } = useLocation();
@@ -17,10 +18,6 @@ function Shop() {
   const [shopID, setShopId] = useState(1);
 
   useEffect(() => {
-    // using use location to hide shop id from path
-    // console.log("ID IS "+id)
-    // setShopId(id)
-    // setSearch({seller_id:id})
     setSearch({ seller_id: id });
     setShopId(id);
     async function getContent() {
@@ -36,6 +33,7 @@ function Shop() {
   }, [id]);
   return (
     <div className="shop centered gradient-bg">
+      <AddItem/>
       <div className="flex-v">
         <div><h2>Search {shopData.shop_name}</h2></div>
         <SearchBar
