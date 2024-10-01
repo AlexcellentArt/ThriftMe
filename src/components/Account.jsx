@@ -8,6 +8,9 @@ import FormGenerator from "./FormGenerator";
 // import { past_Transactions, shopping_Cart } from "../../prisma";
 import Dropdown from "./Dropdown";
 import Cart from "./Cart";
+import UserDashboard from "./UserDashboard";
+import Products from "./Products";
+
 /**
  * I need to have multiple buttons that will lead to the:
  * Summary,
@@ -28,7 +31,7 @@ import Cart from "./Cart";
  * I want to click a button and have the information for that page show up.
  */
 function Account() {
-  const { token, getUser,mapItemDictToObjArray } = useContext(AuthContext);
+  const { token, getUser, mapItemDictToObjArray } = useContext(AuthContext);
   const [pastTransactions, setPastTransactions] = useState();
   const [creditCard, setCreditCard] = useState();
   const [address, setAddress] = useState();
@@ -41,31 +44,19 @@ function Account() {
     const getMe = async () => {
       try {
         const user = await getUser();
-        console.log(user);
-        const addressFields = [
-          { key: "zip", type: "number" },
-          { key: "street", type: "text" },
-          { key: "apartment", type: "text" },
-          { key: "hi ", type: "text", default: "aaggggggggggggg" },
-          { key: "sujoy", type: "text", default: "aaaa" },
-          { key: "hiii alexis", type: "text", default: "uwuwuuwuwuuw" },
-        ];
-        const creditCardFields = [
-          { key: "pin", type: "number" },
-          { key: "exp_date", type: "month" },
-          { key: "cvc", type: "number" },
-        ];
         setAddress(user.addresses);
         setEmail(user.email);
         setCreditCard(user.creditCard);
-        const compiled =  [ 
+        const compiled = [
           ...user.past_transactions_seller,
           ...user.past_transactions_buyer,
-        ]
+        ];
+        console.log(compiled);
         // compiled
-        for (let index = 0; index < array.length; index++) {
-          const element = array[index];
-          const mapped = await mapItemDictToObjArray()
+        for (let index = 0; index < compiled.length; index++) {
+          const element = compiled[index];
+          const mapped = await mapItemDictToObjArray(element.item_dict);
+          compiled[index]["mapped"] = mapped;
         }
         const user_credit_card = user.creditCard;
         setPastTransactions(compiled);
@@ -80,12 +71,19 @@ function Account() {
     getMe();
   }, []);
   console.log(address);
-  function stylePastTransactions(obj){
-    <p>{obj.seller_id}</p>,
-    <p>{obj.buyer_id}</p>,
-    <p>{obj.shipping_address}</p>,
-    <p>{obj.paying_card}</p>,
-    <p>{obj.item_dict}</p>
+  function stylePastTransactions(obj) {
+    return (
+      <div className="desc-box rounded-corners  flex-v  flex">
+        <div className="flex dark-bg rounded-corners">
+          <div className="white-bg rounded-corners">
+          <p className="merriweather-regular left-text"><span className="merriweather-bold left-text">Seller:</span>{obj.seller_id}</p>
+        <p className="merriweather-regular left-text"><span className="merriweather-bold">Shipping Address:</span>{obj.shipping_address}</p>
+        <p className="merriweather-regular left-text"><span className="merriweather-bold">Paying Card:</span>{obj.paying_card}</p>
+          </div>
+        </div>
+        <div className="scroll-x"><Products data={obj.mapped} /></div>
+      </div>
+    );
   }
   return (
     <div className="">
@@ -109,10 +107,14 @@ function Account() {
         </Dropdown>
 
         <Dropdown label="Past Transactions">
-          {console.log("pastTransactions")};
-          {/* add in to display many's props this when your factory is ready: factory ={stylePastTransactions} */}
-          <DisplayMany data={pastTransactions}/>
-
+          <DisplayMany
+            data={pastTransactions}
+            factory={stylePastTransactions}
+            additionalClasses={"scroll-y"}
+          />
+        </Dropdown>
+        <Dropdown label="Edit Shop">
+          <UserDashboard />
         </Dropdown>
       </div>
     </div>
