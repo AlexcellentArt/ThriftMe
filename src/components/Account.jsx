@@ -28,7 +28,7 @@ import Cart from "./Cart";
  * I want to click a button and have the information for that page show up.
  */
 function Account() {
-  const { token, getUser } = useContext(AuthContext);
+  const { token, getUser,mapItemDictToObjArray } = useContext(AuthContext);
   const [pastTransactions, setPastTransactions] = useState();
   const [creditCard, setCreditCard] = useState();
   const [address, setAddress] = useState();
@@ -58,15 +58,17 @@ function Account() {
         setAddress(user.addresses);
         setEmail(user.email);
         setCreditCard(user.creditCard);
-        setPastTransactions([ 
-          user.past_transactions_seller,
-          user.past_transactions_buyer,
-        ]);
+        const compiled =  [ 
+          ...user.past_transactions_seller,
+          ...user.past_transactions_buyer,
+        ]
+        // compiled
+        for (let index = 0; index < array.length; index++) {
+          const element = array[index];
+          const mapped = await mapItemDictToObjArray()
+        }
         const user_credit_card = user.creditCard;
-        const past_transactions = [
-          user.past_transactions_seller,
-          user.past_transactions_buyer,
-        ];
+        setPastTransactions(compiled);
       } catch (error) {
         console.log(
           "Did not render on screen, something wrong with accounts page",
@@ -79,23 +81,11 @@ function Account() {
   }, []);
   console.log(address);
   function stylePastTransactions(obj){
-    pastTransactions.map(obj)=>({
-
-    
-    // example of the data structure you will get in
-    // 0 : {"id":15,"seller_id":25,"buyer_id":12,"shipping_address":"Domino Gully null Pelican Hamlet 24754","paying_card":"$2b$13$dNHp8Kj2BwQXlWlImWd7TOW4OEPujr8CDoorMoRIbN6oPq6lpAhqS 05/08","item_dict":{"65":7,"66":8},"total_cost":2178,"tags":["skirt","green","cotton","small","refined","dress shirt","ivory","velvet","sleek"]}
-    
-    return (
-    
-        <p>{seller_id}</p>,
-        <p>{buyer_id}</p>,
-        <p>{shipping_address}</p>,
-        <p>{paying_card}</p>,
-        <p>{item_dict}</p>
-      
-      /* Insert your p's here and stuff */
-      );
-  )
+    <p>{obj.seller_id}</p>,
+    <p>{obj.buyer_id}</p>,
+    <p>{obj.shipping_address}</p>,
+    <p>{obj.paying_card}</p>,
+    <p>{obj.item_dict}</p>
   }
   return (
     <div className="">
