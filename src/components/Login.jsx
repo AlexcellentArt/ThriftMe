@@ -9,7 +9,7 @@ function Login({stayOnPage=false}) {
   const nav = useNavigate()
   const fields = [
     { key: "email", type: "email" },
-    { key: "password", type: "text" },
+    { key: "password", type: "password" },
   ];
   function goToProducts(obj) {
     console.log("TOKEN:" + obj.token);
@@ -21,7 +21,7 @@ function Login({stayOnPage=false}) {
     console.log(obj)
     if(stayOnPage == true){return}
     if (obj.is_admin === true){nav("/admin")}
-    else{navigate("/account");}
+    else{nav("/account");}
   }
   const { login } = useContext(AuthContext);
   return (
