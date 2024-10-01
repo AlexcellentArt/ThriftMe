@@ -8,6 +8,8 @@ import FormGenerator from "./FormGenerator";
 // import { past_Transactions, shopping_Cart } from "../../prisma";
 import Dropdown from "./Dropdown";
 import Cart from "./Cart";
+import UserDashboard from "./UserDashboard";
+
 /**
  * I need to have multiple buttons that will lead to the:
  * Summary,
@@ -75,6 +77,8 @@ function Account() {
   console.log(address);
   return (
     <div className="">
+      <UserDashboard />
+
       <div className="">
         <Dropdown label="Credit Card"></Dropdown>
         <div>{creditCard}</div>
@@ -96,7 +100,7 @@ function Account() {
 
         <Dropdown label="Past Transactions">
           <div>
-          {pastTransactions?.map((past_Transactions) => {
+            {pastTransactions?.map((past_Transactions) => {
               return (
                 <div>
                   {pastTransactions.seller}, {pastTransactions.buyer},
@@ -104,7 +108,6 @@ function Account() {
               );
             })}
           </div>
-
         </Dropdown>
       </div>
     </div>
