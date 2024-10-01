@@ -9,6 +9,8 @@ import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 import Cart from "./Cart";
 import UserDashboard from "./UserDashboard";
+import Products from "./Products";
+
 
 /**
  * I need to have multiple buttons that will lead to the:
@@ -30,40 +32,35 @@ import UserDashboard from "./UserDashboard";
  * I want to click a button and have the information for that page show up.
  */
 function Account() {
-  const { token, getUser } = useContext(AuthContext);
+  const { token, getUser, mapItemDictToObjArray } = useContext(AuthContext);
   const [pastTransactions, setPastTransactions] = useState();
   const [creditCard, setCreditCard] = useState();
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [user, setUser] = useState(false);
+  console.log(pastTransactions);
+  console.log(user);
 
   useEffect(() => {
     const getMe = async () => {
       try {
         const user = await getUser();
-        console.log(user);
-        const addressFields = [
-          { key: "zip", type: "number" },
-          { key: "street", type: "text" },
-          { key: "apartment", type: "text" },
-          { key: "hi ", type: "text", default: "aaggggggggggggg" },
-          { key: "sujoy", type: "text", default: "aaaa" },
-          { key: "hiii alexis", type: "text", default: "uwuwuuwuwuuw" },
-        ];
-        const creditCardFields = [
-          { key: "pin", type: "number" },
-          { key: "exp_date", type: "month" },
-          { key: "cvc", type: "number" },
-        ];
         setAddress(user.addresses);
         setEmail(user.email);
         setCreditCard(user.creditCard);
-        setPastTransactions(user.pastTransactions);
-        const user_credit_card = user.creditCard;
-        const past_transactions = [
-          user.past_transactions_seller,
-          user.past_transactions_buyer,
+        const compiled = [
+          ...user.past_transactions_seller,
+          ...user.past_transactions_buyer,
         ];
+        console.log(compiled);
+        // compiled
+        for (let index = 0; index < compiled.length; index++) {
+          const element = compiled[index];
+          const mapped = await mapItemDictToObjArray(element.item_dict);
+          compiled[index]["mapped"] = mapped;
+        }
+        const user_credit_card = user.creditCard;
+        setPastTransactions(compiled);
       } catch (error) {
         console.log(
           "Did not render on screen, something wrong with accounts page",
@@ -75,6 +72,20 @@ function Account() {
     getMe();
   }, []);
   console.log(address);
+  function stylePastTransactions(obj) {
+    return (
+      <div className="desc-box rounded-corners  flex-v  flex">
+        <div className="flex dark-bg rounded-corners">
+          <div className="white-bg rounded-corners">
+          <p className="merriweather-regular left-text"><span className="merriweather-bold left-text">Seller:</span>{obj.seller_id}</p>
+        <p className="merriweather-regular left-text"><span className="merriweather-bold">Shipping Address:</span>{obj.shipping_address}</p>
+        <p className="merriweather-regular left-text"><span className="merriweather-bold">Paying Card:</span>{obj.paying_card}</p>
+          </div>
+        </div>
+        <div className="scroll-x"><Products data={obj.mapped} /></div>
+      </div>
+    );
+  }
   return (
     <div className="">
       <div className="">
@@ -97,15 +108,11 @@ function Account() {
         </Dropdown>
 
         <Dropdown label="Past Transactions">
-          <div>
-            {pastTransactions?.map((past_Transactions) => {
-              return (
-                <div>
-                  {pastTransactions.seller}, {pastTransactions.buyer},
-                </div>
-              );
-            })}
-          </div>
+          <DisplayMany
+            data={pastTransactions}
+            factory={stylePastTransactions}
+            additionalClasses={"scroll-y"}
+          />
         </Dropdown>
         <Dropdown label="Edit Shop">
           <UserDashboard />
