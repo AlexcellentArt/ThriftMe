@@ -34,6 +34,8 @@ function Account() {
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [user, setUser] = useState(false);
+  console.log(pastTransactions);
+  console.log(user);
 
   useEffect(() => {
     const getMe = async () => {
@@ -56,7 +58,10 @@ function Account() {
         setAddress(user.addresses);
         setEmail(user.email);
         setCreditCard(user.creditCard);
-        setPastTransactions(user.pastTransactions);
+        setPastTransactions([ 
+          user.past_transactions_seller,
+          user.past_transactions_buyer,
+        ]);
         const user_credit_card = user.creditCard;
         const past_transactions = [
           user.past_transactions_seller,
@@ -95,11 +100,12 @@ function Account() {
         </Dropdown>
 
         <Dropdown label="Past Transactions">
+          {console.log("pastTransactions")};
           <div>
-          {pastTransactions?.map((past_Transactions) => {
+          {pastTransactions?.map((pastTransaction) => {
               return (
                 <div>
-                  {pastTransactions.seller}, {pastTransactions.buyer},
+                  {pastTransaction.seller}, {pastTransaction.buyer},
                 </div>
               );
             })}
