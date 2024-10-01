@@ -196,6 +196,7 @@ router.delete("/:id", async (req, res, next) => {
         return next(gen_errors.genericNotFoundError("item","id",id));
       }
       await prisma.item.delete({ where: { id } });
+      console.log("IS DELETING")
       res.sendStatus(204);
     } catch(error) {
     next(error);
