@@ -1,9 +1,8 @@
 import React, { useState, useReducer, useEffect } from "react";
 import SelectionGenerator from "./SelectionGenerator";
+
 function FormGenerator({
   fields,
-  // canAutoFill = false,
-  // autofill = [],
   autofillOptions,
   autoFillOptionFormatter,
   fetchFunctionOverride,
@@ -32,7 +31,6 @@ function FormGenerator({
       emptyForm[key] = "";
     });
     return emptyForm});
-  // const [autofillOptions, setAutofillOptions] = useState(undefined);
 
   const [autoFillData, autoFillDispatch] = useReducer(
     autoFillDataReducer,
@@ -57,6 +55,7 @@ function FormGenerator({
       }
     }
   }
+
   function createAutoFillOptions() {
     if (!autofillOptions) {
       return {};
@@ -81,16 +80,13 @@ function FormGenerator({
     } catch (error) {
       console.error("ERROR PROCESSING AUTOFILL DATA: ", error);
     }
-    // options.push({value:"New"})
     return {};
   }
   // ### FORM DATA SETUP ###
 
   function createInitialValues(initialValue = "") {
     const obj = {};
-    // console.log(fields);
     fields.forEach((field) => {
-      // console.log(field.key + " default is " + field.default);
       obj[field.key] = {
         type: field.type,
         value: initialValue,
@@ -104,12 +100,10 @@ function FormGenerator({
       if ("options" in field) {
         obj["options"] = field.options;
       }
-      // if ("default" in field) {
-      //   obj["default"] = field.default;
-      // }
     });
     return obj;
   }
+
   function formDataReducer(data, action) {
     switch (action.type) {
       case "update": {
@@ -141,6 +135,7 @@ function FormGenerator({
       }
     }
   }
+
   // ### FORM DATA HANDLERS ###
   async function handleUpdateFormData(type, key, value = "") {
     // if input type is one that works with strings, trim the value
@@ -172,10 +167,6 @@ function FormGenerator({
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    // const allValid = await validateForm();
-    // if (!allValid) {
-    //   return;
-    // }
     let res;
     const compiled = compileFormData();
     console.log("Compiled Data")
@@ -294,7 +285,6 @@ function FormGenerator({
   // ### FORM ASSEMBLY FUNCTIONS ###
   function createInputClassName(base = "", key) {
     let label = `${base} ${labelAdditionalClasses !== undefined?labelAdditionalClasses:""} ${formData[key].classes?formData[key].classes:""}`
-    // if(formData[key].classes !== undefined){label = formData[key].classes}
     if (!isFirstTry && formData[key].isValid === false) {
       label += " error";
     }
@@ -317,7 +307,6 @@ function FormGenerator({
     );
   }
   function makeInput(key) {
-    // console.log(formData[key])
     return (
       <input
         className="merriweather-regular"
@@ -366,17 +355,9 @@ function FormGenerator({
   function buildInputs(inputKey) {
     //DOCUMENTATION: based on type, content is generated and setup according to what's at the key in formData. Label is setup the same way, with content being placed inside it.
     let content;
-    // if (formData[inputKey].type === "select") {
-    //   return makeSelect(inputKey);
-    // } else {
-    //   content = makeInput(inputKey);
-    // }
 
     // specialized types get their own cases, while all non specialized get made by make input
     switch (formData[inputKey].type) {
-      // case "select":
-      //   content =  makeSelect(inputKey);
-      //   break
       case "textarea":
         content =  (
           <textarea
@@ -416,7 +397,6 @@ function FormGenerator({
   }
   return (
     <>
-      {/* {console.log(autoFillData)} */}
       {autofillOptions && (
         <SelectionGenerator
           label="Use: "

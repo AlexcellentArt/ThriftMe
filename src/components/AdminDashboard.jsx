@@ -328,7 +328,6 @@ function AdminDashboard() {
     console.log("UPDATING ATTEMPT");
     console.log(value);
     if (!value) return; // if no values are provided, exit the menu
-    // const updatedData = { [field]: value };
     obj[field] = value;
     const res = await fetch(`http://localhost:3000/api/item/${obj.id}`, {
       method: "PUT",

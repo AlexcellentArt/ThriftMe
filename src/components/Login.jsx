@@ -2,15 +2,16 @@ import { AuthContext } from "./AuthContext";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import FormGenerator from "./FormGenerator";
-function Login({stayOnPage=false}) {
-  // Login form as seen on page 2 of our mockflow
+
+function Login({ stayOnPage = false }) {
   // make get call to user with inputs from the form
   // if error is not gotten back, run login with what's received back then navigate to account
-  const nav = useNavigate()
+  const nav = useNavigate();
   const fields = [
     { key: "email", type: "email" },
     { key: "password", type: "password" },
   ];
+
   function goToProducts(obj) {
     console.log("TOKEN:" + obj.token);
     if (!obj.token) {
@@ -18,24 +19,21 @@ function Login({stayOnPage=false}) {
       return;
     }
     login(obj);
-    console.log(obj)
-    if(stayOnPage == true){return}
-    if (obj.is_admin === true){nav("/admin")}
-    else{nav("/account");}
+    console.log(obj);
+    if (stayOnPage == true) {
+      return;
+    }
+    if (obj.is_admin === true) {
+      nav("/admin");
+    } else {
+      nav("/account");
+    }
   }
+
   const { login } = useContext(AuthContext);
+
   return (
     <div className="light-bg flex-v width-scale centered">
-      {/* <nav className="move-up">
-        <ul className="flex-h">
-          <li className="navLinks nav-tabs">
-            <Link to="/login">Login</Link>
-          </li>
-          <li className="navLinks nav-tabs">
-            <Link to="/register">Register</Link>
-          </li>
-        </ul>
-      </nav> */}
       <h1 className="merriweather-bold little-margin">Login</h1>
       <FormGenerator
         labelAdditionalClasses=""
@@ -45,7 +43,7 @@ function Login({stayOnPage=false}) {
           console.log("token " + obj.token);
           console.log(obj);
           login(obj);
-          goToProducts(obj)
+          goToProducts(obj);
         }}
       />
     </div>

@@ -120,53 +120,30 @@ function UserDashboard() {
     setShowContextMenu(true);
   };
 
-  // const renderItems = () => {
-  //   return (
-  //     <div className="item-list">
-  //       {items.length > 0 ? (
-  //         items.map((item) => (
-  //           <div
-  //             key={item.id}
-  //             className="item-card"
-  //             onContextMenu={(event) => handleContextMenu(event, item)} // Open context menu on right-click
-  //           >
-  //             <img
-  //               src={item.default_photo}
-  //               alt="Default Item Card Photo"
-  //               className="square"
-  //             />
-  //             <p>{item.name}</p>
-  //             <p>${item.price}</p>
-  //           </div>
-  //         ))
-  //       ) : (
-  //         <p>No products found.</p>
-  //       )}
-  //     </div>
-  //   );
-  // };
   function generateCard(data) {
-    return (<div className="item-card">
-      <div>
-        <img
-          src={data.default_photo}
-          alt="Default Item Card Photo"
-          className="square"
-        />
-        <p>{data.name}</p>
-        <p>${data.price}</p>
-      </div>
+    return (
+      <div className="item-card">
+        <div>
+          <img
+            src={data.default_photo}
+            alt="Default Item Card Photo"
+            className="square"
+          />
+          <p>{data.name}</p>
+          <p>${data.price}</p>
+        </div>
 
-      {/* Edit Item Button */}
-      <div className="flex-v">
-        <button
-          className="three-d-button"
-          onClick={(event) => handleEditClick(event, data)}
+        {/* Edit Item Button */}
+        <div className="flex-v">
+          <button
+            className="three-d-button"
+            onClick={(event) => handleEditClick(event, data)}
           >
-          Edit Item
-        </button>
+            Edit Item
+          </button>
+        </div>
       </div>
-    </div>)
+    );
   }
 
   return (
@@ -177,17 +154,34 @@ function UserDashboard() {
           className="context-menu flex-h fit-to-parent"
           style={{ top: contextMenuPosition.y, left: contextMenuPosition.x }}
         >
-          <button className="big-text merriweather-light " onClick={() => handleContextMenuAction("view")}>View</button>
-          <button className="big-text"  onClick={() => handleContextMenuAction("editName")}>
+          <button
+            className="big-text merriweather-light "
+            onClick={() => handleContextMenuAction("view")}
+          >
+            View
+          </button>
+          <button
+            className="big-text"
+            onClick={() => handleContextMenuAction("editName")}
+          >
             Edit Name
           </button>
-          <button className="big-text"  onClick={() => handleContextMenuAction("editPrice")}>
+          <button
+            className="big-text"
+            onClick={() => handleContextMenuAction("editPrice")}
+          >
             Edit Price
           </button>
-          <button className="big-text"  onClick={() => handleContextMenuAction("delete")}>
+          <button
+            className="big-text"
+            onClick={() => handleContextMenuAction("delete")}
+          >
             Delete
           </button>
-          <button className="big-text"  onClick={() => handleContextMenuAction("cancel")}>
+          <button
+            className="big-text"
+            onClick={() => handleContextMenuAction("cancel")}
+          >
             Cancel
           </button>
         </div>

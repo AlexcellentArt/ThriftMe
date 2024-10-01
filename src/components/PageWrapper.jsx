@@ -29,18 +29,7 @@ function PageWrapper({ children }) {
       <main>{children}</main>
 
       <footer>
-        {/* <div class="scrolling-container">
-          <p class="scrolling-ticker">
-            <span>Today's Deals: 50% off all winter coats!</span>
-            <span>Buy one, get one free on shoes! </span>
-            <span>Free shipping on orders over $30! </span>
-            <span>
-              Check out our Instagram for our morning catches of the day
-              @ThriftMe!
-            </span>
-          </p>
-        </div> */}
-
+        {/* marquee creates a scrolling ticker at the foot of the page */}
         <marquee class="scrolling-container">
           <p class="scrolling-ticker">
             <span>Today's Deals: 50% off all winter coats!</span>
