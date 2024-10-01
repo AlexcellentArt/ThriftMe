@@ -9,7 +9,7 @@ export function AuthContextProvider({ children }) {
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
   const local_cart={}
-  function AutoHeader(){return {'Content-Type':'application/json','authorization':token}}
+  function AutoHeader(){return {'Content-Type':'application/json',Authorization:"Bearer "+token,}}
   async function NotLoggedIn(){
     if (!token) {
       console.error("Not logged in");

@@ -12,17 +12,9 @@ function FormGenerator({
   labelAdditionalClasses = "",
   fetch_method = "POST",
   additionalDataToSend,
+  preprocessPost
 }) {
   useEffect(() => {
-    console.log("Form Generator Reloading Fields");
-    // make dispatch here to autofill
-    // autoFill(autofill);
-    // createAutoFillOptions()
-    // const emptyForm = {};
-    // Object.keys(fields).forEach((key) => {
-    //   emptyForm[key] = "";
-    // });
-    // setNewFormData(emptyForm);
   }, [fields]);
   // version is used to force rereneder of form
   const [version, setVersion] = useState(0);
@@ -66,23 +58,14 @@ function FormGenerator({
     }
   }
   function createAutoFillOptions() {
-    console.log("REMAKING");
     if (!autofillOptions) {
-      console.log("NO AUTOFILL OPTIONS");
       return {};
     }
     // New will always be 0 by default
     try {
       const options = [];
       if (newFormData !== undefined) {
-        console.log("NOT UNDEFINED");
         options.push({ value: newFormData, text: "New" });
-        // const emptyForm = {};
-        // Object.keys(fields).forEach((key) => {
-        //   emptyForm[key] = "";
-        // });
-        // setNewFormData(emptyForm);
-        // options.push({ value: emptyForm, text: "New" });
       }
 
       // if autoFillOptionFormatter, then use it.
@@ -246,6 +229,9 @@ function FormGenerator({
       if (additionalDataToSend) {
         obj = { obj, ...additionalDataToSend };
       }
+      if(preprocessPost){
+        obj = preprocessPost(obj)
+      }
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -307,17 +293,19 @@ function FormGenerator({
   }
   // ### FORM ASSEMBLY FUNCTIONS ###
   function createInputClassName(base = "", key) {
-    if (isFirstTry || !formData[key].isValid === true) {
-      return `${base} ${labelAdditionalClasses}`;
-    } else {
-      return `${base} ${labelAdditionalClasses} invalid`;
+    let label = `${base} ${labelAdditionalClasses !== undefined?labelAdditionalClasses:""} ${formData[key].classes?formData[key].classes:""}`
+    // if(formData[key].classes !== undefined){label = formData[key].classes}
+    if (!isFirstTry && formData[key].isValid === false) {
+      label += " error";
     }
+    return label
   }
   function makeLabel(key, content) {
+    const additonal = createInputClassName(formData[key].type, key)
     return (
       <label
         className={
-          "merriweather-bold " + createInputClassName(formData[key].type, key)
+          "merriweather-bold " + additonal 
         }
         key={key}
         id={key}
@@ -393,21 +381,34 @@ function FormGenerator({
         content =  (
           <textarea
             className="merriweather-regular"
-            name={key}
-            id={key}
+            name={inputKey}
+            id={inputKey}
+            htmlFor={inputKey}
             onChange={(e) =>
-              handleUpdateFormData(e.target.type, key, e.target.value)
+              handleUpdateFormData(e.target.type, inputKey, e.target.value)
             }
-            defaultValue={formData[key].default}
+            defaultValue={formData[inputKey].default}
+            rows={formData[inputKey].rows?formData[inputKey].rows:3}
+            cols={formData[inputKey].cols?formData[inputKey].cols:55}
           />
         );
         break
       case "multiple files":
-        return <input className="merriweather-regular" type="file"             name={key}
-        id={key}
-        onChange={(e) =>
-          handleUpdateFormData(e.target.type, key, e.target.value)
-        } multiple></input>
+        content = <input className="merriweather-regular" type="file"             name={inputKey}
+        id={inputKey}
+        htmlFor={inputKey}
+        onChange={(e) =>{
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaa") 
+          console.log(e.target.files)
+          // revoke current urls
+          e.target.files.map((obj)=>URL.revokeObjectURL(obj))
+          // convert to urls
+          const converted = e.target.files.map((obj)=>URL.createObjectURL(obj))
+          handleUpdateFormData(e.target.type, inputKey, converted)}
+        }
+        accept={formData[inputKey].accept?formData[inputKey].accept:"*"} 
+        multiple></input>
+        break
       default:
         content = makeInput(inputKey);
     }

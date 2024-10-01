@@ -5,6 +5,7 @@ import DisplayMany from "./DisplayMany";
 import Dropdown from "./Dropdown";
 import AddItem from "./AddItem";
 import { HeaderContext } from "./HeaderContext";
+
 function AdminDashboard() {
   const { token, isAdmin } = useContext(AuthContext);
   const { setAdditonalContent } = useContext(HeaderContext);
@@ -33,94 +34,96 @@ function AdminDashboard() {
       console.log("DATA FETCHED");
     };
     fetchData();
-    setAdditonalContent(
-      
-    );
+    setAdditonalContent();
   }, [isAdmin, navigate]);
-  const makeContextMenu = () =>{
-    return(
+
+  const makeContextMenu = () => {
+    return (
       <div className="flex-v force-fill-width">
-      <div><h1 className="merriweather-regular">ADMIN DASHBOARD</h1></div>
-      <div className="force-tab-shape button-box dropdown">
-        <button
-          className="big-text merriweather-black"
-          onClick={() => handleDisplayToggle("users")}
-        >
-          Users
-        </button>
-        <button
-          className="big-text merriweather-black"
-          onClick={() => handleDisplayToggle("products")}
-        >
-          Products
-        </button>
-        {
-          <Dropdown label={"Add Item"} labelClasses={"merriweather-black"}>
-            <AddItem />
-          </Dropdown>
-        }
-      </div>
-      {showContextMenu && (
-        <div className="context-menu">
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("view")}
-          >
-            View Product
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("delete")}
-          >
-            Delete Listing
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editName")}
-          >
-            Edit Name
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editPrice")}
-          >
-            Edit Price
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changePhoto")}
-          >
-            Change Photo
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
-          >
-            Change Additional Photos
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editDescription")}
-          >
-            Edit Description
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("editTags")}
-          >
-            Edit Tags
-          </button>
-          <button
-            className="big-text"
-            onClick={() => handleEditMenuAction("cancel")}
-          >
-            Cancel Edit
-          </button>
+        <div>
+          <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
         </div>
-      )}
-    </div>
-    )
-  }
+        <div className="force-tab-shape button-box dropdown">
+          <button
+            className="big-text merriweather-black"
+            onClick={() => handleDisplayToggle("users")}
+          >
+            Users
+          </button>
+          <button
+            className="big-text merriweather-black"
+            onClick={() => handleDisplayToggle("products")}
+          >
+            Products
+          </button>
+          {
+            <Dropdown label={"Add Item"} labelClasses={"merriweather-black"}>
+              <AddItem />
+            </Dropdown>
+          }
+        </div>
+        {showContextMenu && (
+          <div className="context-menu">
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("view")}
+            >
+              View Product
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("delete")}
+            >
+              Delete Listing
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("editName")}
+            >
+              Edit Name
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("editPrice")}
+            >
+              Edit Price
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("changePhoto")}
+            >
+              Change Photo
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("changeAdditionalPhoto")}
+            >
+              Change Additional Photos
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("editDescription")}
+            >
+              Edit Description
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("editTags")}
+            >
+              Edit Tags
+            </button>
+            <button
+              className="big-text"
+              onClick={() => handleEditMenuAction("cancel")}
+            >
+              Cancel Edit
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const handleDisplayToggle = (type) => {
     setDisplayType(type);
     // Fetch users or items based on the display type
@@ -131,9 +134,9 @@ function AdminDashboard() {
     try {
       console.log("trying for response");
       const response = await fetch(`http://localhost:3000/api/user`, {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log("got response");
       if (!response.ok) throw new Error(`Error: ${response.status}`);
@@ -236,10 +239,9 @@ function AdminDashboard() {
   }, []);
 
   // update the header whenever the context menu's state changes
-  useEffect(()=>{
-    setAdditonalContent(makeContextMenu())
-  },[showContextMenu]
-)
+  useEffect(() => {
+    setAdditonalContent(makeContextMenu());
+  }, [showContextMenu]);
   const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {
