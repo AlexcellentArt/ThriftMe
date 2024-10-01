@@ -131,9 +131,9 @@ function AdminDashboard() {
     try {
       console.log("trying for response");
       const response = await fetch(`http://localhost:3000/api/user`, {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log("got response");
       if (!response.ok) throw new Error(`Error: ${response.status}`);
