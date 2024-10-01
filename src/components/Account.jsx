@@ -77,8 +77,6 @@ function Account() {
   console.log(address);
   return (
     <div className="">
-      <UserDashboard />
-
       <div className="">
         <Dropdown label="Credit Card"></Dropdown>
         <div>{creditCard}</div>
@@ -108,6 +106,9 @@ function Account() {
               );
             })}
           </div>
+        </Dropdown>
+        <Dropdown label="Edit Shop">
+          <UserDashboard />
         </Dropdown>
       </div>
     </div>
