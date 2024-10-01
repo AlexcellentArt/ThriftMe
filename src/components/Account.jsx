@@ -55,6 +55,8 @@ function Account() {
         ];
         setAddress(user.addresses);
         setEmail(user.email);
+        setCreditCard(user.creditCard);
+        setPastTransactions(user.pastTransactions);
         const user_credit_card = user.creditCard;
         const past_transactions = [
           user.past_transactions_seller,
@@ -75,6 +77,7 @@ function Account() {
     <div className="">
       <div className="">
         <Dropdown label="Credit Card"></Dropdown>
+        <div>{creditCard}</div>
         <Dropdown label="Email">
           <div>{email}</div>
         </Dropdown>
@@ -91,7 +94,18 @@ function Account() {
           </div>
         </Dropdown>
 
-        <Dropdown label="Summary"></Dropdown>
+        <Dropdown label="Past Transactions">
+          <div>
+          {pastTransactions?.map((past_Transactions) => {
+              return (
+                <div>
+                  {pastTransactions.seller}, {pastTransactions.buyer},
+                </div>
+              );
+            })}
+          </div>
+
+        </Dropdown>
       </div>
     </div>
   );
