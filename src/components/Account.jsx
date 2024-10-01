@@ -78,6 +78,25 @@ function Account() {
     getMe();
   }, []);
   console.log(address);
+  function stylePastTransactions(obj){
+    pastTransactions.map(obj)=>({
+
+    
+    // example of the data structure you will get in
+    // 0 : {"id":15,"seller_id":25,"buyer_id":12,"shipping_address":"Domino Gully null Pelican Hamlet 24754","paying_card":"$2b$13$dNHp8Kj2BwQXlWlImWd7TOW4OEPujr8CDoorMoRIbN6oPq6lpAhqS 05/08","item_dict":{"65":7,"66":8},"total_cost":2178,"tags":["skirt","green","cotton","small","refined","dress shirt","ivory","velvet","sleek"]}
+    
+    return (
+    
+        <p>{seller_id}</p>,
+        <p>{buyer_id}</p>,
+        <p>{shipping_address}</p>,
+        <p>{paying_card}</p>,
+        <p>{item_dict}</p>
+      
+      /* Insert your p's here and stuff */
+      );
+  )
+  }
   return (
     <div className="">
       <div className="">
@@ -101,15 +120,8 @@ function Account() {
 
         <Dropdown label="Past Transactions">
           {console.log("pastTransactions")};
-          <div>
-          {pastTransactions?.map((pastTransaction) => {
-              return (
-                <div>
-                  {pastTransaction.seller}, {pastTransaction.buyer},
-                </div>
-              );
-            })}
-          </div>
+          {/* add in to display many's props this when your factory is ready: factory ={stylePastTransactions} */}
+          <DisplayMany data={pastTransactions}/>
 
         </Dropdown>
       </div>
