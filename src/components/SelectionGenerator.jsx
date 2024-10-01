@@ -1,3 +1,4 @@
+import { fa } from "@faker-js/faker";
 import React, { useEffect,useState } from "react";
 function SelectionGenerator({ label, options, handleChange }) {
   useEffect(() => {}, [label, options, handleChange]);
@@ -47,7 +48,19 @@ function SelectionGenerator({ label, options, handleChange }) {
       console.error(
         "Could not process object. Probably was not converted to {value:,text:} first. Forcibly converting to JSON and if that doesn't work, printing in a template string"
       );
+      console.log(obj)
+      if (obj.is_default === true)
+      {
+        console.log("TTTTTUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU")
+        return (
+          <option value={idx} selected>
+          {typeof obj[key] === "object" ? JSON.stringify(obj) : `${obj}`}
+        </option>
+        )
+      }
+      console.log("AANANNANANNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
       return (
+        
         <option value={idx}>
           {typeof obj[key] === "object" ? JSON.stringify(obj) : `${obj}`}
         </option>

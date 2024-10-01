@@ -56,10 +56,7 @@ router.post("/", async (req, res, next) => {
     }
     const address = await prisma.address.create({ data: inputs });
     res.json(address);
-  } catch (error) {
-    next(error);
-  }
-});
+  });
 // ### PUT ###
 
 // Updates address

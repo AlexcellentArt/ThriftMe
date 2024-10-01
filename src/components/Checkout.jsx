@@ -67,6 +67,8 @@ function Checkout({ props }) {
         }
       } else {
         setUser(user);
+        // set defaults
+        
         setIsGuest(false);
       }
     };
@@ -136,7 +138,7 @@ function Checkout({ props }) {
           console.log("TRANSACTION MADE")
           const json = await res.json()
           // add the mapped item info onto it
-          made["items"] = assembled[i].mapped_items
+          json["items"] = assembled[i].mapped_items
           made.push(json)
         }
         else{
@@ -148,6 +150,7 @@ function Checkout({ props }) {
     }
     // clear cart
     // await clearCart()
+    console.log(made)
     GoToOrderConfirmation(made)
   }
   function assembleTransaction(id,array){
@@ -169,12 +172,13 @@ function Checkout({ props }) {
     // insert logic here navigating/passing data to order confirmation
     // that's the stage then where a new past transaction would be made.
     // I've assembled here everything I think might be needed to make a past transaction, which we can have created at the OrderConfirmation page with this data funneled into it somehow.
-    const OrderInfo = {name:user.name,address:address,credit:creditCard,orders:transactions,total:total}
+    const OrderInfo = {"state":{name:user.name,address:formatAddress(address),credit:formatCreditCard(creditCard),orders:transactions,total:total}}
+    console.log(OrderInfo)
     // since we don't have a stripe backend, we could probably get away with just going visually 'charge made, shipping to x, but not actually saving the address and card.
     // OR, we can add shipping address and charged card to the schema. Maybe a receiving card for the money to be transferred to for the seller too.
     // If alive, talk to team about it tomorrow.
     // lets work with this data to compile it for order info.
-    nav("/order",{state:{info:OrderInfo}});
+    // nav("/order",OrderInfo);
   }
   return (
     <div className="flex-v scroll-y">
@@ -205,16 +209,13 @@ function Checkout({ props }) {
               ) : (
                 <FormGenerator
                   fields={creditCardFields}
-                  autofillOptions={user ? user.credit_cards : undefined}
                   postSuccessFunction={(obj) => {
                     setCreditCard(obj);
                   }}
                   autoFillOptionFormatter={(obj) => {
-                    return {
-                      value: obj,
-                      text: `${obj.pin} ${obj.exp_date}`.trim(),
-                    };
+                    return { value: obj, text: formatCreditCard(obj) };
                   }}
+                  autofillOptions={user ? user.credit_cards : undefined}
                 />
               )}
             </Dropdown>

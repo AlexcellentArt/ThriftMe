@@ -115,7 +115,7 @@ router.put("/:id", async (req, res, next) => {
       return next(gen_errors.genericNotFoundError("past_transaction", "id", id));
     }
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
-    const past_transaction = await prisma.past_Transactions.update({
+    const past_transaction = await prisma.chpast_Transactions.update({
       where: { id },
       data: body,
     });

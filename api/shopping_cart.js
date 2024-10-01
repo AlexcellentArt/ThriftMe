@@ -30,28 +30,29 @@ router.get("/:id", async (req, res, next) => {
     // check if shopping cart has user_id, if so does authorization match
     if (shopping_cart.user_id)
     {
-try {
-        const {authorization} = await req.headers
-        if(!authorization)
-        {
-          throw "you have no authorization"
-        }
-        const decode = await decodeToken(authorization)
-        if(decode.message){return next(decode)}
-        "if is admin, then bypass these next checks"
-        if (!decode.isAdmin)
-        {
-          if (!decode.userId){return "you have no token"}
-          const id = decode.userId
-          if (shopping_cart.user_id !== id){throw "you are not the cart owner"}
-        }
-} catch (error) {
-  next({
-    status: 403,
-    message: `There is an error that suggests this shopping cart does not belong to you. Specifically, ${error}.`,
-  });
-}
+// try {
+//         const {Authorization} = await req.headers
+//         if(!Authorization)
+//         {
+//           throw "you have no authorization"
+//         }
+//         const decode = await decodeToken(Authorization)
+//         if(decode.message){return next(decode)}
+//         "if is admin, then bypass these next checks"
+//         if (!decode.isAdmin)
+//         {
+//           if (!decode.userId){return "you have no token"}
+//           const id = decode.userId
+//           if (shopping_cart.user_id !== id){throw "you are not the cart owner"}
+//         }
+// } catch (error) {
+//   next({
+//     status: 403,
+//     message: `There is an error that suggests this shopping cart does not belong to you. Specifically, ${error}.`,
+//   });
+// }
     }
+    console.log(shopping_cart)
     res.json(shopping_cart);
   } catch (error) {
     next(error);

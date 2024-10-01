@@ -446,14 +446,22 @@ will-change: box-shadow,transform;
   bottom: auto; */
   /* transform: translate(8vw); */
 }
-
+.fit-content-h{
+  height: fit-content;
+}
 .icon{
   width: 10vh;
-  height: 10vh;
+  /* height: 10vh;
+  max-height: 10vh; */
+  max-width: 10vh;
+  flex:2;
   svg{
     width: 100%;
     height: 100%;
   }
+  /* icon{
+
+  } */
 }
 .favorite{
   fill: var(--fairy-tale);

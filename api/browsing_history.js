@@ -130,10 +130,8 @@ router.post("/", async (req, res, next) => {
       data: body,
     });
     res.json(browsing_History);
-  } catch (error) {
-    next(error);
-  }
-});
+}
+);
 
 // ### DELETE ###
 // deletes browsing_History matching id

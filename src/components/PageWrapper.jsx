@@ -3,9 +3,14 @@ import Navigations from "./Navigations";
 import {HeaderContext} from "./HeaderContext"
 import {useContext,useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
+import { AuthContext } from "./AuthContext";
 function PageWrapper({children}) {
   const {additonalContent,setAdditonalContent} = useContext(HeaderContext)
+  const {token,isAdmin,autoLogin} = useContext(AuthContext);
+  // check if user has token on first load
+  // useEffect(() => {
+  //   checkForLocalToken()
+  // }, []);
   let location = useLocation()
   // effect cleans up additonal context from previous page
   useEffect(() => {
