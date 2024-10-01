@@ -178,7 +178,7 @@ function Checkout({ props }) {
     // OR, we can add shipping address and charged card to the schema. Maybe a receiving card for the money to be transferred to for the seller too.
     // If alive, talk to team about it tomorrow.
     // lets work with this data to compile it for order info.
-    // nav("/order",OrderInfo);
+    nav("/order",OrderInfo);
   }
   return (
     <div className="flex-v scroll-y">

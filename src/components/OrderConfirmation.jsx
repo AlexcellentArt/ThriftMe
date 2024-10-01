@@ -69,7 +69,7 @@ function OrderConfirmation() {
   };
   const summarizeItem = (item) => {
     return (
-      <li key={item.id}>
+      <li key={item.id} className="merriweather-regular">
         {item.name} x({item.quantity}) - ${item.quantity * item.price}
       </li>
     );
@@ -77,9 +77,9 @@ function OrderConfirmation() {
   const makeOrderUI = (order) => {
     return (
       <div className="light-bg rounded-corners flex-v">
-        {/* <h3>Seller: {order.seller_name?order.seller_name:"Seller"}</h3> */}
-        <p>Transaction Amount: ${order.total_cost}</p>
-        <h4>Items Purchased:</h4>
+        <h3 className="merriweather-regular"><span className="merriweather-bold">Seller:</span>{order.seller_name?order.seller_name:"Seller"}</h3>
+        <p className="merriweather-regular"><span className="merriweather-bold">Transaction Amount:</span> ${order.total_cost}</p>
+        <h4 className="merriweather-bold">Items Purchased:</h4>
         <ul>{order.items.map((item) => summarizeItem(item))}</ul>
       </div>
     );
@@ -95,7 +95,7 @@ function OrderConfirmation() {
           <p className="flex">Overall Amount: ${currentOrder.total}</p>
 
           <h3 className="flex">Shipping Address:</h3>
-          {/* <p>{currentOrder.address}</p> */}
+          <p>{currentOrder.address}</p>
         </div>
           <div className="flex-h stretch flex">
           {currentOrder.orders.map((order) => {

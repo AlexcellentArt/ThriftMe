@@ -96,8 +96,9 @@ router.post("/checkout", async (req, res, next) => {
     }
     const past_transaction = await prisma.past_Transactions.create({ data: body });
     // get seller name
-    const seller = prisma.user.findUnique({where:{id:body.seller_id}})
+    const seller = await prisma.user.findUnique({where:{id:body.seller_id}})
     // remove sensitive info and replace with names. tags not relevant to return.
+    console.log(seller)
     const censored = {seller_name:seller.name,item_dict:past_transaction.item_dict,total_cost:past_transaction.total_cost}
     res.json(censored);
   } catch (error) {
