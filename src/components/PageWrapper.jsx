@@ -7,14 +7,16 @@ import { AuthContext } from "./AuthContext";
 
 function PageWrapper({children}) {
   const {additonalContent,setAdditonalContent} = useContext(HeaderContext)
-  const {token,isAdmin,autoLogin} = useContext(AuthContext);
+  const {token,isAdmin,checkForLocalToken} = useContext(AuthContext);
   // check if user has token on first load
   let location = useLocation()
   // effect cleans up additonal context from previous page
   useEffect(() => {
     setAdditonalContent(undefined);
   }, [location]);
-
+useEffect(() => {
+  checkForLocalToken()
+}, [token,isAdmin]);
   return (
     <body>
       <header className="force-fill-width flex-v">

@@ -57,10 +57,6 @@ function SingleProduct() {
 
   // in useEffect, make a fetch get call to items/:id
   useEffect(() => {
-    console.log("TOKEN: " + token);
-    if (token === null) {
-      checkForLocalToken();
-    }
     async function getItem() {
       try {
         const response = await fetch(`http://localhost:3000/api/item/${id}`);
