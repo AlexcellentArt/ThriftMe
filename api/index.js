@@ -15,7 +15,6 @@ const api_list = [
   "shopping_cart",
   "past_transactions",
   "browsing_history",
-  "stripe",
   "addresses",
   "credit_cards",
 ];
