@@ -36,7 +36,9 @@ app.use((error,req,res,next)=>{
 // Distribution Path Setup
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'dist')));
-app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')))
+
+app.get('/', (req, res, next)=> {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'))});
 
 // Init And Invocation
 const init = async () => {
