@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
-import { useContext } from "react";
+import { useContext,useEffect } from "react";
 import SearchBar from "./SearchBar";
 
 function Navigations() {
@@ -11,6 +11,11 @@ function Navigations() {
     logout()
     navigate("/home");
   };
+  useEffect(() => {
+    console.log("ADMIN STATUS:",isAdmin)
+    console.log("TOKEN STATUS:",token)
+
+  }, [isAdmin,token]);
 
   return (
     <nav id="navBar">
