@@ -26,7 +26,6 @@ function UserDashboard() {
 
   const fetchItems = async () => {
     const user = await getUser();
-    console.log("user items", user.items);
     setItems(user.items);
     return user.items;
   };
@@ -72,9 +71,7 @@ function UserDashboard() {
         },
       });
       fetchItems(); // Refresh item list
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
+    } catch (error) {}
   };
 
   const updateItemField = async (field, value) => {
@@ -89,9 +86,7 @@ function UserDashboard() {
         body: JSON.stringify(updatedItem),
       });
       fetchItems(); // Refresh item list
-    } catch (error) {
-      console.error("Error updating item:", error);
-    }
+    } catch (error) {}
   };
 
   const handleContextMenu = (event, item) => {

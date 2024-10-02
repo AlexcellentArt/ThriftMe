@@ -5,7 +5,6 @@ import DisplayMany from "./DisplayMany";
 import { useEffect } from "react";
 import React from "react";
 import FormGenerator from "./FormGenerator";
-// import { past_Transactions, shopping_Cart } from "../../prisma";
 import Dropdown from "./Dropdown";
 import Cart from "./Cart";
 import UserDashboard from "./UserDashboard";
@@ -37,8 +36,6 @@ function Account() {
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [user, setUser] = useState(false);
-  console.log(pastTransactions);
-  console.log(user);
 
   useEffect(() => {
     const getMe = async () => {
@@ -51,8 +48,6 @@ function Account() {
           ...user.past_transactions_seller,
           ...user.past_transactions_buyer,
         ];
-        console.log(user.credit_cards);
-        console.log(compiled);
         // compiled
         for (let index = 0; index < compiled.length; index++) {
           const element = compiled[index];
@@ -61,17 +56,12 @@ function Account() {
         }
         setPastTransactions(compiled);
         setUser(user);
-      } catch (error) {
-        console.log(
-          "Did not render on screen, something wrong with accounts page",
-          error
-        );
-      }
+      } catch (error) {}
     };
 
     getMe();
   }, [token]);
-  console.log(address);
+
   function stylePastTransactions(obj) {
     return (
       <div className="desc-box rounded-corners  flex-v  flex">

@@ -8,7 +8,6 @@ import AddItem from "./AddItem";
 function Shop() {
   // const {AutoHeader} = useContext(AuthContext);
   const { state } = useLocation();
-  console.log(state);
   const { id } = state;
   const [search, setSearch] = useState({ seller_id: 1 });
   const [shopData, setShopData] = useState({
@@ -31,7 +30,6 @@ function Shop() {
       );
       const shop = await response_shop.json();
       setShopData(shop);
-      console.log(shop);
     }
     getContent();
   }, [id]);

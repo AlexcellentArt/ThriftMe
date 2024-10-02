@@ -17,7 +17,6 @@ function AddItem({
       obj.seller_id = id;
     }
     // l is 12
-    console.log(obj);
     obj.default_photo = obj.photos.shift();
     obj.additional_photos = obj.photos;
     delete obj.photos;

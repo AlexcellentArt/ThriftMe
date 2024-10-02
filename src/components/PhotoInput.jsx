@@ -8,7 +8,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   const [photos, setPhotos] = useState([]);
 
   function createPhoto(url, i) {
-    console.log(url);
     return (
       <div className="dark-bg icon-file-upload  icon">
         <img className="img" key={i + "_img"} src={url}></img>
@@ -36,7 +35,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   const [version, setVersion] = useState(0);
   const [b64, setB64] = useState([]);
   useEffect(() => {
-    console.log(b64);
     setVersion(version + 1);
   }, [b64]);
   // takes an array of files from file input, assumes you already extracted them from the input with .target.files
@@ -48,7 +46,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
       arr.push(base64);
     }
     // arr is now full of b64 strings
-    console.log(arr);
     setB64(arr);
     return arr;
   };
@@ -94,7 +91,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   // put this uncommented in your react where you want the images to show up to confirm they work
 
   const updateData = async (obj) => {
-    console.log(obj);
     const value = Object.values(obj);
     // revoke current urls
     value.map((obj) => URL.revokeObjectURL(obj));
@@ -114,7 +110,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
           id={inputKey}
           htmlFor={inputKey}
           onChange={(e) => {
-            console.log(e.target.value);
             updateData(e.target.files);
             setValue(e.target.value);
           }}
