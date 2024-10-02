@@ -72,7 +72,7 @@ const findUserWithToken = async (token) => {
 };
 const decodeToken = async(token)=>{
   if (!token){return next(genericMissingDataError("Authorization"),"header")}
-  const payload = await jwt.verify(token, JWT);
+  const payload = await jwt.verify(token.split(" ").pop(), JWT);
   return payload;
 }
 // const decodeGeneral = async(string)=>{return jwt.verify(string, JWT)}

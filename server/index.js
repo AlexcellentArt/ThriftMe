@@ -9,9 +9,13 @@ require('dotenv').config()
 const client = new pg.Client(process.env.DATABASE_URL)
 // App Routes
 const app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 // Body Parsing Middleware
 app.use(express.json());
 app.use(require("morgan")("dev"))
+
 // Add Access Control Allow Origin headers
 app.all('*',(req, res, next)=>{
     res.header('Access-Control-Allow-Origin','*');

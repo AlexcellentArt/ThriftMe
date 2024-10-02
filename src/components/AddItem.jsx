@@ -8,11 +8,16 @@ function AddItem(id) {
   const { token } = useContext(AuthContext);
   function processData(obj) {
     obj.tags = obj.tags.split(",");
+    obj.seller_id = id
+    // l is 12
     console.log(obj);
-    // obj.default_photo = obj.photos.shift()
-    // obj.additional_photos = obj.photos
+    obj.default_photo = obj.photos.shift()
+    obj.additional_photos = obj.photos
+    delete obj.photos
+    console.
     // then make a fetch post to items
     // postItem(obj)
+    obj.price = Number(obj.price)
     return obj
   }
   // async function postItem(obj) {
@@ -39,7 +44,7 @@ function AddItem(id) {
       fields.unshift({ key: "user_id", type: "number" });
     }
     return (
-      <div>
+      <div className="dark-bg rounded-corners">
         Add Item{" "}
         <FormGenerator
           fields={fields}
@@ -49,7 +54,6 @@ function AddItem(id) {
           preprocessPost={processData}
           apiPath={"item"}
         />
-        <PhotoInput inputKey="a" handleUpdateFormData={(e) => console.log(e)} />
       </div>
     );
   }
