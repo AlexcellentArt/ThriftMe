@@ -89,12 +89,13 @@ function SearchBar({ setLocalSearch, forcedParams }) {
   return (
     <div className="search-bar">
       <input
+      className="merriweather-regular"
         type="search"
         onChange={(e) => {
           setSearchText(e.target.value);
         }}
       />
-      <div className="flex-h"><DisplayMany data={tags} factory={createTag}/></div>
+      <DisplayMany data={tags} factory={createTag} additionalClasses={"flex"}/>
       {addingTag && (
         <form
           onSubmit={(e) => {
@@ -107,6 +108,7 @@ function SearchBar({ setLocalSearch, forcedParams }) {
         </form>
       )}
             <button
+            className="search-button"
         type="submit"
         onClick={() => {
           handleSearch();
