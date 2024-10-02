@@ -94,7 +94,7 @@ function SingleProduct() {
     photos.unshift({ photo: product.default_photo });
   }
   return (
-    <div className="flex-v single-product">
+    <div className="flex-v single-product scroll-y">
       <div className="flex-h small-big-medium-width">
         {/* muliple photos are now displayed */}
         {photos.length && (
