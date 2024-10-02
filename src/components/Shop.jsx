@@ -36,8 +36,8 @@ function Shop() {
     getContent();
   }, [id]);
   return (
-    <div className="shop gradient-bg scroll-y">
-      <div className="flex-v">
+    <div className="gradient-bg scroll-y">
+      <div className="flex-v shop">
         <div>
           <h2>Search {shopData.shop_name}</h2>
         </div>

@@ -9,7 +9,7 @@ function SearchBar({ setLocalSearch, forcedParams }) {
   const { setSearchParams } = useContext(SearchContext);
   const [tags, setTags] = useState([]);
   const [addingTag, setAddingTag] = useState(false);
-  const [searchText, setSearchText] = useState("shirt");
+  const [searchText, setSearchText] = useState("");
 
   async function handleSearch() {
     console.log(searchText, tags);
@@ -94,7 +94,7 @@ function SearchBar({ setLocalSearch, forcedParams }) {
           setSearchText(e.target.value);
         }}
       />
-      <DisplayMany data={tags} factory={createTag} />
+      <div className="flex-h"><DisplayMany data={tags} factory={createTag}/></div>
       {addingTag && (
         <form
           onSubmit={(e) => {
@@ -106,6 +106,12 @@ function SearchBar({ setLocalSearch, forcedParams }) {
           <input type="submit"></input>
         </form>
       )}
+            <button
+        type="submit"
+        onClick={() => {
+          handleSearch();
+        }}
+      ></button>
       <button
         onClick={() => {
           setAddingTag(!addingTag);
@@ -113,12 +119,6 @@ function SearchBar({ setLocalSearch, forcedParams }) {
       >
         #
       </button>
-      <button
-        type="submit"
-        onClick={() => {
-          handleSearch();
-        }}
-      ></button>
     </div>
   );
 }

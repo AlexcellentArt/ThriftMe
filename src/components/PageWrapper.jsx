@@ -18,13 +18,11 @@ function PageWrapper({children}) {
   return (
     <body>
       <header className="force-fill-width flex-v">
-        <div className="flex-h force-fill-width">
+        <div className="flex-h force-fill-width align-items-center">
           <img src={thriftmeLogo} className="logo hover" alt="ThriftMe logo" />
           <Navigations />
         </div>
-        <div className="flex-h align-items-center stretch center-text">
-          {additonalContent !== undefined && additonalContent}
-        </div>
+        {additonalContent !== undefined && additonalContent}
       </header>
 
       <main>{children}</main>

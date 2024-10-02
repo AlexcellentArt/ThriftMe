@@ -75,7 +75,6 @@ function Checkout({ props }) {
       }
     };
     getMe();
-    setAdditonalContent(<h1 className="merriweather-regular">CHECKOUT</h1>);
   }, [token]);
 
   function updateCheckout(cart) {

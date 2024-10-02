@@ -60,8 +60,8 @@ function AddItem({
     }
   }
   return (
-    <div className="dark-bg rounded-corners">
-      Add Item{" "}
+    <div className="dark-bg  scroll-y">
+      <h1>Add Item</h1>
       <FormGenerator
         fields={makeFields()}
         postSuccessFunction={(obj) => {

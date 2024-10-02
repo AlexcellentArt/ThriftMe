@@ -92,10 +92,15 @@ header {
   flex: 2;
   height: var(--nav-height);
   position: fixed !important;
+  div{
+    align-self: center;
+    width: 100%;
+    flex:1
+  }
 }
 header {
   flex: 2;
-  height: var(--nav-height);
+  height:auto;
   position: fixed !important;
 }
 footer {
@@ -144,10 +149,6 @@ textarea{
   font-size: large;
 }
 #navBar {
-  /* display: inherit;
-  flex-direction: inherit;
-  place-items: inherit;
-  width: 100%; */
   width: 100%;
   display: flex;
   ul {
@@ -160,7 +161,9 @@ textarea{
     margin: 0;
     padding: 0%;
     flex: 1;
-    flex: 1;
+    li{
+      flex:1
+    }
   }
 }
 
@@ -185,10 +188,10 @@ textarea{
   display: flex;
   flex-direction: row;
   flex: 5;
-  flex: 5;
   background-color: var(--white);
   border-radius: var(--pill-shape);
   min-width: 50vw;
+  clip-path: fill-box;
   input {
     width: 90%;
     background-color: transparent;
@@ -207,6 +210,7 @@ textarea{
 
   button {
     width: 10%;
+    border-radius: 0%;
     background-color: var(--periwinkle);
     color: var(--yinmn-blue);
     font-size: larger;
@@ -214,21 +218,18 @@ textarea{
   }
 
   button {
-    height: 3em;
+    height: auto;
   }
 
-  button:nth-of-type(1) {
-    border-radius: 50% 100% 100% 50%;
+  button:nth-of-type(2) {
     padding: 0.2em 0.01em;
   }
 
-  button:nth-of-type(2)::before {
+  button:nth-of-type(1)::before {
     content: "\1F50E";
   }
-
-  div {
-    display: flex;
-    flex-direction: row;
+  button:nth-of-type(1){
+    border-radius: 0%;
   }
 }
 .admin-tab {
@@ -692,6 +693,8 @@ textarea{
 .checkout {
   display: flex;
   flex-direction: column;
+  max-width: 100%;
+  min-width: 59%;
   /* place-content:calc(100vh - 60vw); */
   .dropdown {
   .dropdown {
@@ -797,11 +800,13 @@ textarea{
 .cart {
   display: flex;
   flex: 1;
-  flex: 1;
+  max-width: 100%;
+  height: auto;
 }
 .cart-card {
-  width: 30vw;
-  height: 15vh;
+  flex:1;
+  max-height: 20vh;
+  height: auto;
   background-color: var(--fairy-tale);
   border-radius: 5%;
 }
@@ -951,6 +956,10 @@ textarea{
   flex: 1;
 }
 
+.shop{
+  padding-top: 25vh;
+  padding-inline: 2.5%;
+}
 .shop-now {
   text-transform: capitalize;
   display: flex;
@@ -1109,6 +1118,11 @@ textarea{
 .files{
   display: flex;
   flex-direction: column;
+  max-height: 10vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  clip-path: fill-box;
+  scroll-behavior: auto;
 }
 .icon-file-upload {  display: grid;
   grid-template-columns: 0.5fr 2fr 0.5fr;
