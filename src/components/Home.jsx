@@ -19,7 +19,6 @@ function Home() {
       try {
         const user = await getUser();
         if (!user) {
-          console.error("Not Logged In");
           throw new Error("Not Logged In. Showing Generic Instead.");
         }
         const browsing_history = user.browsing_history;
@@ -29,7 +28,6 @@ function Home() {
           body: { tags: browsing_history.looked_at_tags },
         });
         const data = await response.json();
-        console.log(data);
         // view will be all at first
         setProductData(data);
 
@@ -46,7 +44,6 @@ function Home() {
         // create shop me data
         await makeShopMeData(tagData);
       } catch (error) {
-        console.error(error);
         const genData = await getGenericProducts();
         return genData;
       }
@@ -68,9 +65,7 @@ function Home() {
         await setProductData(genericData);
         await makeShopMeData(tagData);
         return genericData;
-      } catch (error) {
-        console.error("Error fetching generic products", error);
-      }
+      } catch (error) {}
     }
 
     async function makeTagData(input_data) {
@@ -85,9 +80,7 @@ function Home() {
           );
           const data = await response.json();
           tagData.push({ name: tag, data: data });
-        } catch (error) {
-          console.error(error);
-        }
+        } catch (error) {}
       }
       return tagData;
     }

@@ -29,9 +29,7 @@ function AdminDashboard() {
     const fetchData = async () => {
       //fetch data once first thing so that the display many below loads something first
       await fetchItems();
-      console.log("TRYING TO FETCH");
       fetchUsers();
-      console.log("DATA FETCHED");
     };
     fetchData();
     setAdditonalContent();
@@ -40,7 +38,7 @@ function AdminDashboard() {
   const makeContextMenu = () => {
     return (
       <>
-              <div>
+        <div>
           <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
         </div>
         <div className="force-tab-shape button-box dropdown">
@@ -132,21 +130,16 @@ function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      console.log("trying for response");
       const response = await fetch(`http://localhost:3000/api/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("got response");
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
-      console.log("Users got", data);
       setUsers(data); // Set fetched users to the items state
       // return data
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
+    } catch (error) {}
   };
 
   const fetchItems = async () => {
@@ -175,15 +168,11 @@ function AdminDashboard() {
         },
       });
       fetchUsers();
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
+    } catch (error) {}
   };
 
   // function to update a user field
   const updateUserField = async (id, field, value) => {
-    console.log(`Updating user ${id}: Setting ${field} to ${value}`);
-
     // create a new object to update the user
     const userUpdate = {
       [field]: value,
@@ -207,10 +196,7 @@ function AdminDashboard() {
 
       await res.json();
       fetchUsers();
-      console.log(`User ${id} has been updated`);
-    } catch (error) {
-      console.error(`Error updating user ${id}:`, error);
-    }
+    } catch (error) {}
   };
 
   // Function to promote a user to admin
@@ -319,14 +305,10 @@ function AdminDashboard() {
         },
       });
       fetchItems(displayType);
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
+    } catch (error) {}
   };
 
   const updateItemField = async (field, value, obj) => {
-    console.log("UPDATING ATTEMPT");
-    console.log(value);
     if (!value) return; // if no values are provided, exit the menu
     // const updatedData = { [field]: value };
     obj[field] = value;
@@ -339,12 +321,10 @@ function AdminDashboard() {
       body: JSON.stringify(obj),
     });
     const json = await res.json();
-    console.log(json);
     fetchItems(displayType);
   };
 
   function generateCard(data) {
-    console.log("THIS IS DATA", data);
     if (displayType === "users") {
       return (
         <div className="small-text item-card">

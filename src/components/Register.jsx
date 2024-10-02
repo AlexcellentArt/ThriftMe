@@ -17,7 +17,6 @@ function Register({ stayOnPage = false }) {
   function goToAccount(obj) {
     console.log("TOKEN:" + obj.token);
     if (!obj.token) {
-      console.error("NO TOKEN");
       return;
     }
     login(obj);

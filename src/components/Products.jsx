@@ -36,15 +36,8 @@ function Products({ data, search, headerText = "Products" }) {
           }
         );
         const data = await response.json();
-        console.log(data);
         setProduct(data);
-        console.log(products);
-      } catch (error) {
-        console.log(
-          "Looks like I can't display your page. When I fetched from API, it did not work"
-        );
-        console.error(error);
-      }
+      } catch (error) {}
     }
     // if just displaying data, do just that instead of searching
     if (!data) {
@@ -53,7 +46,6 @@ function Products({ data, search, headerText = "Products" }) {
         <h1 className="merriweather-regular">{headerText}</h1>
       );
     } else {
-      console.log(data);
       setProduct(data);
     }
   }, [search ? search : searchParams, data && data, headerText]);

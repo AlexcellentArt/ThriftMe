@@ -33,7 +33,7 @@ function ShopNow({
   }
   function navToProducts(tag) {
     setSearchParams({ tags: tag });
-    nav("/products/",{
+    nav("/products/", {
       search: createSearchParams({
         text_search: tag,
         tags: [tag],
@@ -50,7 +50,6 @@ function ShopNow({
       if (state) {
         options["state"] = state;
       }
-      console.log(state);
       nav("/" + path, options);
     }
   }
