@@ -1,20 +1,21 @@
-import React,{ useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { SearchContext } from "./SearchContext";
+
 function ShopNow({
   headerMsg = "Shop Now",
   headerSize = 2,
-  subheader="Trending Now",
+  subheader = "Trending Now",
   bgClasses,
   img,
   alt,
   path = "products",
-  state={},
+  state = {},
   params = undefined,
 }) {
   const { setSearchParams } = useContext(SearchContext);
   const nav = useNavigate();
-  function makeHeader(size,msg) {
+  function makeHeader(size, msg) {
     switch (size) {
       case 1:
         return <h1>{msg}</h1>;
@@ -30,36 +31,36 @@ function ShopNow({
         break;
     }
   }
-  function navToProducts(tag){
-    setSearchParams({tags:tag})
+  function navToProducts(tag) {
+    setSearchParams({ tags: tag });
     nav({
       pathname: "/products/",
       search: createSearchParams({
-        text_search:tag,
-        tags:[tag]
+        text_search: tag,
+        tags: [tag],
       }).toString(),
     });
   }
+
   function navigateToPath() {
-    setSearchParams(params)
-    const options = {}
-    if (params != undefined){
-      navToProducts(params.tags)
-      // options["search"]=createSearchParams(params).toString()
-      // console.log(params)
-      // console.log("searhc "+options["search"])
-    }
-    else{
-      if (state){options["state"] = state}
-      console.log(state)
-      nav("/"+path,options);
+    setSearchParams(params);
+    const options = {};
+    if (params != undefined) {
+      navToProducts(params.tags);
+    } else {
+      if (state) {
+        options["state"] = state;
+      }
+      console.log(state);
+      nav("/" + path, options);
     }
   }
+
   return (
     <div className={`flex-h shop-now ${bgClasses}`}>
       <div className="flex-v">
-        {makeHeader(headerSize,headerMsg)}
-        {makeHeader(headerSize+1,subheader)}
+        {makeHeader(headerSize, headerMsg)}
+        {makeHeader(headerSize + 1, subheader)}
         <button
           className="merriweather-bold white-button large-text"
           onClick={() => {
@@ -75,5 +76,6 @@ function ShopNow({
     </div>
   );
 }
+
 export default ShopNow;
-export {ShopNow}
+export { ShopNow };
