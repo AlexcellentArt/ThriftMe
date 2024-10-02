@@ -70,7 +70,7 @@ function Account() {
     };
 
     getMe();
-  }, []);
+  }, [token]);
   console.log(address);
   function stylePastTransactions(obj) {
     return (
