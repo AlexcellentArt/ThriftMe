@@ -39,8 +39,8 @@ function AdminDashboard() {
 
   const makeContextMenu = () => {
     return (
-      <div className="flex-v force-fill-width">
-        <div>
+      <>
+              <div>
           <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
         </div>
         <div className="force-tab-shape button-box dropdown">
@@ -120,7 +120,7 @@ function AdminDashboard() {
             </button>
           </div>
         )}
-      </div>
+      </>
     );
   };
 

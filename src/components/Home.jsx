@@ -1,7 +1,6 @@
-import DisplayMany from "./DisplayMany";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Products from "./Products";
 import { HeaderContext } from "./HeaderContext";
 import { ShopNow } from "./ShopNow";
@@ -11,7 +10,6 @@ function Home() {
   const { setAdditonalContent } = useContext(HeaderContext);
   const { token, getUser } = useContext(AuthContext);
   const [productData, setProductData] = useState([{}]);
-  const [normal, updated_normal_page] = useState();
   const [trendingShop, setTrendingShop] = useState(undefined);
   const [shopMeData, setShopMeData] = useState([{ tag: "", img: "" }]);
   const [trendData, setTrendData] = useState([{}]);
@@ -21,7 +19,6 @@ function Home() {
     async function getTrendyProducts() {
       try {
         const user = await getUser();
-        console.log(user);
         if (!user) {
           console.error("Not Logged In");
           throw new Error("Not Logged In. Showing Generic Instead.");
@@ -83,13 +80,11 @@ function Home() {
       for (let index = 0; index < loopLength; index++) {
         try {
           const tag = input_data[index];
-          console.log(tag);
           const response = await fetch(
             "http://localhost:3000/api/item/search",
             { method: "POST", body: { tags: [tag] } }
           );
           const data = await response.json();
-          console.log(data);
           tagData.push({ name: tag, data: data });
         } catch (error) {
           console.error(error);
@@ -98,10 +93,7 @@ function Home() {
       return tagData;
     }
     async function makeShopMeData(tag_data) {
-      console.log("MAKING SHOP");
-      console.log(tag_data[0].data[0].seller_id);
       const seller_id = tag_data.shift().data[0].seller_id;
-      console.log("SELLER_ID " + seller_id);
       // first seller in data for first in trendData is made a trending shop and popped off...
       const response_shop = await fetch(
         `http://localhost:3000/api/user/shop/${seller_id}`,
@@ -112,10 +104,7 @@ function Home() {
       );
       const shop = await response_shop.json();
       shop["default_photo"] = shop.items[0].default_photo;
-      console.log(shop);
       setTrendingShop(shop);
-      console.log("MAKING TAGS");
-      console.log(tag_data);
       // next 4 are made into the smaller shop me
       const shopMeTags = tag_data.map((trend) => {
         return {
@@ -125,10 +114,7 @@ function Home() {
         };
       });
       setShopMeData(shopMeTags);
-      console.log("SHOP ME DATA MADE");
-      console.log(shopMeTags);
     }
-    setAdditonalContent(<div>Home</div>);
     // if the user is logged in or not can be determined by if the token is null or not
     // fetch generic products when not logged in
     token ? getTrendyProducts() : getGenericProducts();
@@ -136,9 +122,6 @@ function Home() {
 
   const makeButtons = () => {
     const buttons = [];
-    console.log("TRRR");
-    console.log(trendData.length);
-    console.log(trendData);
     // will set the data being shown in display many accordingly when pressed on
     trendData.forEach((obj) => {
       buttons.push(
