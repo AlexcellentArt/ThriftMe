@@ -12,7 +12,6 @@ const auth = require("./helpers/auth");
 const api_list = [
   "user",
   "item",
-  "checkout",
   "shopping_cart",
   "past_transactions",
   "browsing_history",
