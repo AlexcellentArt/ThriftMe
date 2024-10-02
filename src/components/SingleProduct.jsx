@@ -38,7 +38,6 @@ function SingleProduct() {
     );
   }
   function createPhoto(obj) {
-    console.log(obj);
     return (
       <button
         className="fit-to-parent"
@@ -63,9 +62,7 @@ function SingleProduct() {
         const result = await response.json();
         setProduct(result);
         setMainPhoto(result.default_photo);
-        console.log(result);
       } catch (error) {
-        console.error(error);
       }
     }
     getItem();

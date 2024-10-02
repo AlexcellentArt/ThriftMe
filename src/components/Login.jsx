@@ -12,13 +12,10 @@ function Login({ stayOnPage = false }) {
     { key: "password", type: "password" },
   ];
   function goToProducts(obj) {
-    console.log("TOKEN:" + obj.token);
     if (!obj.token) {
-      console.error("NO TOKEN");
       return;
     }
     login(obj);
-    console.log(obj);
     if (stayOnPage == true) {
       return;
     }
@@ -37,8 +34,6 @@ function Login({ stayOnPage = false }) {
         fields={fields}
         apiPath="user/login"
         postSuccessFunction={(obj) => {
-          console.log("token " + obj.token);
-          console.log(obj);
           login(obj);
           goToProducts(obj);
         }}

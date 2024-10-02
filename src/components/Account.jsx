@@ -5,7 +5,6 @@ import DisplayMany from "./DisplayMany";
 import { useEffect } from "react";
 import React from "react";
 import FormGenerator from "./FormGenerator";
-// import { past_Transactions, shopping_Cart } from "../../prisma";
 import Dropdown from "./Dropdown";
 import Cart from "./Cart";
 import UserDashboard from "./UserDashboard";
@@ -37,8 +36,6 @@ function Account() {
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [user, setUser] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   useEffect(() => {
     const getMe = async () => {
       try {
@@ -50,8 +47,6 @@ function Account() {
           ...user.past_transactions_seller,
           ...user.past_transactions_buyer,
         ];
-        console.log(user.credit_cards);
-        console.log(compiled);
         // compiled
         for (let index = 0; index < compiled.length; index++) {
           const element = compiled[index];
@@ -60,21 +55,12 @@ function Account() {
         }
         setPastTransactions(compiled);
         setUser(user);
-        setLoading(false);
       } catch (error) {
-        console.log(
-          "Did not render on screen, something wrong with accounts page",
-          error
-        );
-        setLoading(false);
       }
     };
 
     getMe();
   }, [token]);
-  console.log(address);
-  if (loading) return <h1 className="dark-bg  merriweather-black-italic large-text">Loading your Account details...</h1>;
-  if (error) return <h1>Error: {error}</h1>;
   function stylePastTransactions(obj) {
     return (
       <div className="desc-box rounded-corners  flex-v  flex">

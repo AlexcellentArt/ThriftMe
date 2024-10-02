@@ -12,7 +12,6 @@ function SearchBar({ setLocalSearch, forcedParams }) {
   const [searchText, setSearchText] = useState("");
 
   async function handleSearch() {
-    console.log(searchText, tags);
     if (searchText || tags.length) {
       const params = {
         text_search: searchText,
@@ -52,12 +51,9 @@ function SearchBar({ setLocalSearch, forcedParams }) {
     if (currentTags.find((obj) => obj.text === text) === undefined) {
       currentTags.push({ text: text });
       setTags(currentTags);
-      console.log("added to tags " + text);
-      console.log(tags);
     }
   }
   function handleTagSubmit(value) {
-    console.log(value);
     if (value !== "") {
       addTag(value);
     }
@@ -68,7 +64,6 @@ function SearchBar({ setLocalSearch, forcedParams }) {
     // removeSelf gets the index of tags, removes 1 item (the tag) at the index, and setsTags to be the new array it was removed from
     function removeSelf() {
       const idx = tags.findIndex((o) => o.text === obj.text);
-      console.log(tags[idx]);
       const newTags = tags.toSpliced(idx, 1);
       setTags(newTags);
     }
@@ -89,13 +84,13 @@ function SearchBar({ setLocalSearch, forcedParams }) {
   return (
     <div className="search-bar">
       <input
-      className="merriweather-regular"
+        className="merriweather-regular"
         type="search"
         onChange={(e) => {
           setSearchText(e.target.value);
         }}
       />
-      <DisplayMany data={tags} factory={createTag} additionalClasses={"flex"}/>
+      <DisplayMany data={tags} factory={createTag} additionalClasses={"flex"} />
       {addingTag && (
         <form
           onSubmit={(e) => {
@@ -107,8 +102,8 @@ function SearchBar({ setLocalSearch, forcedParams }) {
           <input type="submit"></input>
         </form>
       )}
-            <button
-            className="search-button"
+      <button
+        className="search-button"
         type="submit"
         onClick={() => {
           handleSearch();

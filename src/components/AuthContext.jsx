@@ -19,21 +19,17 @@ export function AuthContextProvider({ children }) {
   }
   async function NotLoggedIn() {
     if (!token) {
-      console.error("Not logged in");
       return true;
     }
   }
 
   async function autoLogin() {
-    console.log("SETTING TOKEN");
     const localToken = window.localStorage.getItem("token");
-    console.log(localToken);
     if (localToken !== undefined || null) {
       setToken(localToken);
-      const info = await getUser(localToken)
-      setIsAdmin(info.is_admin)
+      const info = await getUser(localToken);
+      setIsAdmin(info.is_admin);
     } else {
-      console.log("No token in local storage");
     }
     return localToken;
   }
@@ -62,22 +58,17 @@ export function AuthContextProvider({ children }) {
         // multiplying price times the amount
         price += item.price * item_dict[id];
       }
-    } catch (error) {
-      console.error(error);
-    }
-    console.log("Price of cart is now " + price);
+    } catch (error) {}
     return price;
   }
   // if you modify cart directly, for removing numbers, use negatives!
   async function modifyCart(item_id, by) {
     // get cart
     try {
-      console.log("AAAAAAaaa");
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
       // try to get from local first
-      console.log("laaa");
       const local = window.localStorage.getItem("token");
       let localCartToken = window.localStorage.getItem("cart_id");
       // if (!local && !localCartToken){setCartToken(localCartToken)}
@@ -90,16 +81,12 @@ export function AuthContextProvider({ children }) {
         (null && localCartToken !== undefined) ||
         null
       ) {
-        console.log("CART");
         if (!localCartToken) {
-          console.log("MAKING NEW CART");
           const res = await fetch(
             `http://localhost:3000/api/shopping_cart/guest`,
             { headers: header, body: {}, method: "POST" }
           );
-          console.log(res);
           const newCart = await res.json();
-          console.log(newCart);
           setCartToken(newCart.id);
           window.localStorage.setItem("cart_id", newCart.id);
           localCartToken = newCart.id;
@@ -110,7 +97,6 @@ export function AuthContextProvider({ children }) {
         { headers: header }
       );
       cart = await res.json();
-      console.log(cart);
       // modify  gotten cart
       if (res.ok) {
         // if not in dict,
@@ -131,7 +117,6 @@ export function AuthContextProvider({ children }) {
         }
         // calc new price
         cart.total_cost = await calculatePrice(cart.item_dict);
-        console.log(cart);
         try {
           const response = await fetch(
             `http://localhost:3000/api/shopping_cart/${localCartToken}`,
@@ -143,13 +128,9 @@ export function AuthContextProvider({ children }) {
           );
           const res = await response.json();
           return res;
-        } catch (error) {
-          console.error(error);
-        }
+        } catch (error) {}
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }
   async function clearCart() {
     // get cart
@@ -165,7 +146,6 @@ export function AuthContextProvider({ children }) {
       if (!window.localStorage.token) {
         if (localCartToken) {
           // guest carts are deleted.
-          console.log("MAKING NEW CART");
           const res = await fetch(
             `http://localhost:3000/api/shopping_cart/${localCartToken}`,
             { headers: { Authorization: `Bearer ${token}` }, method: "DELETE" }
@@ -177,7 +157,6 @@ export function AuthContextProvider({ children }) {
           return;
         }
       }
-      console.log("CART ID", localCartToken);
       // user carts are cleared
       const response = await fetch(
         `http://localhost:3000/api/shopping_cart/${localCartToken}`,
@@ -195,28 +174,23 @@ export function AuthContextProvider({ children }) {
         throw new Error("FAIL");
       }
       return;
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }
   async function getUser(overrideToken) {
-    let usedToken = overrideToken?overrideToken:token
+    let usedToken = overrideToken ? overrideToken : token;
     try {
       if (!usedToken) {
         throw Error("User Not Logged In");
       }
-      console.log("getting user with token " + usedToken);
       // only returning l for now, assuming everyone is using it to test login
       const res = await fetch(API_URL + "user/me", {
         headers: { token: usedToken },
       });
       if (res.ok) {
         const json = await res.json();
-        console.log(json);
         return json;
       }
     } catch (error) {
-      console.error(error);
       return undefined;
     }
   }
@@ -225,7 +199,6 @@ export function AuthContextProvider({ children }) {
       if (!token) {
         throw Error("User Not Logged In");
       }
-      console.log("getting user with token " + token);
       const user = await getUser();
       const history = user.browsing_history;
       if (!history) {
@@ -240,19 +213,15 @@ export function AuthContextProvider({ children }) {
       });
       if (res.ok) {
         const json = await res.json();
-        console.log(json);
         return json;
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }
   async function addToBrowsingHistory(tags) {
     try {
       if (!token) {
         throw Error("User Not Logged In");
       }
-      console.log("getting user with token " + token);
       const user = await getUser();
       const history = user.browsing_history;
       if (!history) {
@@ -266,19 +235,13 @@ export function AuthContextProvider({ children }) {
       });
       if (res.ok) {
         const json = await res.json();
-        console.log(json);
         return json;
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }
   async function login(obj) {
-    console.log("setting token:" + obj.token);
     // add in verification of user
     setToken(obj.token);
-    console.log("USER IS: " + obj.user);
-    console.log(obj.user);
     window.localStorage.setItem("token", obj.token);
     window.localStorage.setItem("cart_id", obj.shopping_cart.id);
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
@@ -286,7 +249,6 @@ export function AuthContextProvider({ children }) {
     setCartToken(obj.shopping_cart.id);
   }
   function logout() {
-    console.log("LOGGING OUT");
     setToken(null);
     setIsAdmin(false);
     window.localStorage.removeItem("token");
@@ -297,7 +259,6 @@ export function AuthContextProvider({ children }) {
     try {
       for (const id in item_dict) {
         //get item by id
-        console.log(id);
         const res = await fetch(`http://localhost:3000/api/item/${id}`);
         // throw if missing
         if (!res.ok) {
@@ -308,10 +269,7 @@ export function AuthContextProvider({ children }) {
         item["quantity"] = item_dict[id];
         arr.push(item);
       }
-    } catch (error) {
-      console.error(error);
-    }
-    console.log(arr);
+    } catch (error) {}
     return arr;
   }
   return (

@@ -10,7 +10,6 @@ import { SearchContext } from "./SearchContext";
 
 function OrderConfirmation() {
   const { state } = useLocation();
-  console.log("STATE", state);
   const [currentOrder, setCurrentOrder] = useState(state || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,9 +23,7 @@ function OrderConfirmation() {
     const fetchOrderDetails = async () => {
       if (currentOrder === null) {
         try {
-          console.log("STATE", state);
           if (info) {
-            console.log(info);
             setCurrentOrder(info);
           }
           setLoading(false);

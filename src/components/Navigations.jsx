@@ -12,9 +12,6 @@ function Navigations() {
     navigate("/home");
   };
   useEffect(() => {
-    console.log("ADMIN STATUS:",isAdmin)
-    console.log("TOKEN STATUS:",token)
-
   }, [isAdmin,token]);
 
   return (
