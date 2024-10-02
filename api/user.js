@@ -6,6 +6,7 @@ const {
   isLoggedIn,
   decodeToken,
   findUserWithToken,
+  // decodeGeneral
 } = require("./helpers/auth.js");
 const gen_errors = require("./helpers/gen_errors.js");
 require("dotenv").config().env;
@@ -124,13 +125,18 @@ router.get("/me", async (req, res, next) => {
       if(decode.message){return next(decode)}
       if (!decode.userId){return gen_errors.genericMissingDataError("userId","token")}
     const id = decode.userId
-    const user = await prisma.user.findUnique({ where: { id:id },include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,browsing_history:true,shopping_cart:true} });
+    const user = await prisma.user.findUnique({ where: { id:id },include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,credit_cards:true,browsing_history:true,shopping_cart:true} });
     //redit_cards:true --- need to replace BigInt with something else
     console.log("user:",user)
     // const user = await prisma.user.findUnique({ where: { id: id } });
     if (!user) {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
+    // decode credit cards pin first
+    // user.credit_cards = user.credit_cards.map((card)=>{
+    //   card.pin = decodeGeneral(card.pin)
+    //   return card
+    // })
     res.json(user);
   } catch (error) {
     next(error);

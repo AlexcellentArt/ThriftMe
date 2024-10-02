@@ -15,7 +15,20 @@ export function AuthContextProvider({ children }) {
       console.error("Not logged in");
       return true;
     }
+    // const localToken = autoLogin()
+    // if(localToken !== null){
+    //   console.log("SETTING TOKEN")
+    //   setToken(localToken)
+    // }
   };
+  function autoLogin(){
+    console.log("SETTING TOKEN")
+    const token = window.localStorage.getItem("token")
+    console.log(token)
+    if (token !== undefined||null){setToken(token)}
+    else {console.log("No token in local storage")}
+    return token
+  }
   async function addToCart(item_id) {
     {
       // if (NotLoggedIn()) {
@@ -55,26 +68,32 @@ export function AuthContextProvider({ children }) {
   async function modifyCart(item_id, by) {
     // get cart
     try {
+      console.log("AAAAAAaaa")
       let cart;
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
       // try to get from local first
-      const local = window.localStorage.getItem("cart_id")
-      if (local && local !== null){setCartToken(local)}
-      if (NotLoggedIn()){
-        if (!cartToken){
+      console.log("laaa")
+      const local = window.localStorage.getItem("token")
+      let localCartToken = window.localStorage.getItem("cart_id")
+      // if (!local && !localCartToken){setCartToken(localCartToken)}
+      const header = {'Content-Type':'application/json',Authorization:"Bearer "+token}
+      if (token === undefined||null && localCartToken !== undefined||null){
+        console.log("CART")
+        if (!localCartToken){
           console.log("MAKING NEW CART")
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/guest`,{headers:AutoHeader(),body:{},method:"POST"});
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/guest`,{headers:header,body:{},method:"POST"});
           console.log(res)
           const newCart = await res.json()
           console.log(newCart)
           setCartToken(newCart.id)
           window.localStorage.setItem("cart_id",newCart.id);
-
+          localCartToken = newCart.id
         }
       }
-      const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:{authorization:token}});
+      const res = await fetch(`http://localhost:3000/api/shopping_cart/${localCartToken}`,{headers:header});
       cart= await res.json();
+      console.log(cart)
       // modify  gotten cart
       if (res.ok) {
         // if not in dict,
@@ -93,11 +112,9 @@ export function AuthContextProvider({ children }) {
         cart.total_cost = await calculatePrice(cart.item_dict)
         console.log(cart)
         try {
-          const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`, {
+          const response = await fetch(`http://localhost:3000/api/shopping_cart/${localCartToken}`, {
             method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: header,
             body: JSON.stringify(cart)
           });
           const res = await response.json();
@@ -119,20 +136,21 @@ export function AuthContextProvider({ children }) {
       // try to get from local first
       const local = window.localStorage.getItem("cart_id")
       if (local && local !== null){setCartToken(local)}
-      if (NotLoggedIn()){
-        if (cartToken){
+      if (!window.localStorage.token){
+        if (localCartToken){
           // guest carts are deleted.
           console.log("MAKING NEW CART")
-          const res = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`,{headers:AutoHeader(),method:"DELETE"});
+          const res = await fetch(`http://localhost:3000/api/shopping_cart/${localCartToken}`,{headers:{Authorization:`Bearer ${token}`},method:"DELETE"});
           window.localStorage.setItem("cart_id",null);
           return
         }
       }
       // user carts are cleared
-      const response = await fetch(`http://localhost:3000/api/shopping_cart/${cartToken}`, {
+      const response = await fetch(`http://localhost:3000/api/shopping_cart/${localCartToken}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization:`Bearer ${token}`
         },
         body: {item_dict:{},total_cost:0}
       });
@@ -167,7 +185,7 @@ export function AuthContextProvider({ children }) {
       if(!history){throw Error("No History")}
       history.looked_at_tags = [...history.looked_at_tags,...tags]
       // only returning l for now, assuming everyone is using it to test login
-      const res = await fetch(API_URL + "browsing_history/",{headers:{"token":token},body:{looked_at_tags:history}});
+      const res = await fetch(API_URL + "browsing_history/"+user.id,{headers:AutoHeader(),method:"PUT",body:{looked_at_tags:history}});
       if (res.ok) {
         const json = await res.json();
         console.log(json);
@@ -204,6 +222,7 @@ export function AuthContextProvider({ children }) {
     console.log("USER IS: " + obj.user);
     console.log(obj.user)
     window.localStorage.setItem("token", obj.token);
+    window.localStorage.setItem('cart_id',obj.shopping_cart.id)
     // for now, all users are admins, but this will be factored out later, as when fetching user here I can determine if they are an admin or not
     // const user = await getUser(obj.token)
     // console.log(user)
@@ -211,10 +230,11 @@ export function AuthContextProvider({ children }) {
     setCartToken(obj.shopping_cart.id)
   }
   function logout() {
+    console.log("LOGGING OUT")
     setToken(null);
     setIsAdmin(false);
-    window.localStorage.setItem("token", null);
-    window.localStorage.setItem("cart_id", null);
+    window.localStorage.removeItem('token')
+    window.localStorage.removeItem('cart_id')
   }
   async function mapItemDictToObjArray(item_dict) {
     const arr = []
@@ -254,7 +274,8 @@ export function AuthContextProvider({ children }) {
         mapItemDictToObjArray,
         AutoHeader,
         addToBrowsingHistory,
-        clearCart
+        clearCart,
+        checkForLocalToken: autoLogin
       }}
     >
       {children}

@@ -1,5 +1,6 @@
 import React, { useState, useReducer, useEffect } from "react";
 import SelectionGenerator from "./SelectionGenerator";
+import PhotoInput from "./PhotoInput"
 function FormGenerator({
   fields,
   // canAutoFill = false,
@@ -394,20 +395,22 @@ function FormGenerator({
         );
         break
       case "multiple files":
-        content = <input className="merriweather-regular" type="file"             name={inputKey}
-        id={inputKey}
-        htmlFor={inputKey}
-        onChange={(e) =>{
-          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaa") 
-          console.log(e.target.files)
-          // revoke current urls
-          e.target.files.map((obj)=>URL.revokeObjectURL(obj))
-          // convert to urls
-          const converted = e.target.files.map((obj)=>URL.createObjectURL(obj))
-          handleUpdateFormData(e.target.type, inputKey, converted)}
-        }
-        accept={formData[inputKey].accept?formData[inputKey].accept:"*"} 
-        multiple></input>
+        content =
+        <PhotoInput inputKey={inputKey} onChange={(converted)=>{ hhandleUpdateFormData(e.target.type, inputKey, converted)}}/>
+        // <input className="merriweather-regular" type="file"             name={inputKey}
+        // id={inputKey}
+        // htmlFor={inputKey}
+        // onChange={(e) =>{
+        //   console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaa")
+        //   console.log(e.target.files)
+        //   // revoke current urls
+        //   e.target.files.map((obj)=>URL.revokeObjectURL(obj))
+        //   // convert to urls
+        //   const converted = e.target.files.map((obj)=>URL.createObjectURL(obj))
+        //   handleUpdateFormData(e.target.type, inputKey, converted)}
+        // }
+        // accept={formData[inputKey].accept?formData[inputKey].accept:"*"} 
+        // multiple></input>
         break
       default:
         content = makeInput(inputKey);

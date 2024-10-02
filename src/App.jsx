@@ -22,9 +22,9 @@ import {HeaderContext,HeaderContextProvider} from "./components/HeaderContext"
 // import {loadStripe} from '@stripe/stripe-js';
 // const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 function App() {
-  const {token,isAdmin} = useContext(AuthContext);
-  const {setAdditonalContent} = useContext(HeaderContext);
-
+  // const {token,isAdmin,checkForLocalToken} = useContext(AuthContext);
+  // checkForLocalToken()
+  // const {setAdditonalContent} = useContext(HeaderContext);
   return (
     <AuthContextProvider>
       <HeaderContextProvider>

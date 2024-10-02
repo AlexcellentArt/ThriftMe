@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation,createSearchParams } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
+import { SearchContext } from "./SearchContext";
 
 function OrderConfirmation() {
   // const { id } = useParams();
   const { state } = useLocation();
+  console.log("STATE",state)
   // const { name, orders, address, total } = state;
   // const [buyerInfo, setBuyerInfo] = useState();
   const [currentOrder, setCurrentOrder] = useState(state || null);
@@ -13,6 +15,7 @@ function OrderConfirmation() {
   const navigate = useNavigate();
   const { info } = state;
   const {token} = useContext(AuthContext)
+  const {reset} = useContext(SearchContext)
   // fetch the order details using the order ID after checkout.
 
   //Alex here, there is no singular order id. It's broken up by seller on the backend. We could make an order schema holding the transactions in an order, but we do not have time to add that on the backend.
@@ -62,11 +65,11 @@ function OrderConfirmation() {
 
   // Continue Shopping function with button
   const handleContinueShopping = () => {
-    navigate("/products");
+    navigate("/products",{state:{},search:createSearchParams(reset()).toString()});
   };
   const summarizeItem = (item) => {
     return (
-      <li key={item.id}>
+      <li key={item.id} className="merriweather-regular">
         {item.name} x({item.quantity}) - ${item.quantity * item.price}
       </li>
     );
@@ -74,28 +77,32 @@ function OrderConfirmation() {
   const makeOrderUI = (order) => {
     return (
       <div className="light-bg rounded-corners flex-v">
-        <h3>Seller: {order.seller_name}</h3>
-        <p>Transaction Amount: ${order.total_cost}</p>
-        <h4>Items Purchased:</h4>
+        <h3 className="merriweather-regular"><span className="merriweather-bold">Seller:</span>{order.seller_name?order.seller_name:"Seller"}</h3>
+        <p className="merriweather-regular"><span className="merriweather-bold">Transaction Amount:</span> ${order.total_cost}</p>
+        <h4 className="merriweather-bold">Items Purchased:</h4>
         <ul>{order.items.map((item) => summarizeItem(item))}</ul>
       </div>
     );
   };
   return (
-    <div className="orderConfirmation centered flex-v align-items-center">
+    <div className="orderConfirmation flex-v align-items-center stretch">
       <h2>Order Confirmation</h2>
       {currentOrder !== undefined||null ? (
         <>
-        {/* <p>Thank you for your purchase, {currentOrder.name}!</p> */}
-          <h1>Thank you for your purchase!</h1>
-          {/* <p>Overall Amount: ${currentOrder.total}</p>
+        <div className="flex-v align-items-center stretch">
+        <p>Thank you for your purchase, {currentOrder.name}!</p>
+          <h1 className="flex">Thank you for your purchase!</h1>
+          <p className="flex">Overall Amount: ${currentOrder.total}</p>
 
-          <h3>Shipping Address:</h3>
-          <p>{currentOrder.address}</p> */}
-          {/* {currentOrder.orders.map((order) => {
+          <h3 className="flex">Shipping Address:</h3>
+          <p>{currentOrder.address}</p>
+        </div>
+          <div className="flex-h stretch flex">
+          {currentOrder.orders.map((order) => {
             return makeOrderUI(order);
-          })} */}
-          <button onClick={handleContinueShopping} className="three-d-button flex">
+          })}
+          </div>
+          <button onClick={handleContinueShopping} className="three-d-button">
             Continue Shopping
           </button>
         </>

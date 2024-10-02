@@ -75,10 +75,12 @@ const decodeToken = async(token)=>{
   const payload = await jwt.verify(token, JWT);
   return payload;
 }
+// const decodeGeneral = async(string)=>{return jwt.verify(string, JWT)}
 module.exports = {
   authenticate,
   findUserWithToken,
   isLoggedIn,
   isAdmin,
-  decodeToken
+  decodeToken,
+  // decodeGeneral
 };
