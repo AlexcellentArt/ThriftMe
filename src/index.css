@@ -198,6 +198,9 @@ textarea{
     border-color: transparent;
     color: var(--black);
   }
+  div>.display-many{
+    flex-direction: column;
+  }
   form {
     input:nth-of-type(1) {
       background-color: var(--fairy-tale);

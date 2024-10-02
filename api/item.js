@@ -62,6 +62,8 @@ router.post("/", async (req, res, next) => {
       next(error)
     }
   });
+
+
   // post search,and get returned filtered or otherwise
   router.post("/search", async (req, res, next) => {
     try {
@@ -78,13 +80,14 @@ router.post("/", async (req, res, next) => {
       if (Object.keys(query).length !== 0)
       {console.log("has query content")
         try {
-          if (query.text_search){text_search =query.text_search;}
-          if (query.tags){tags = JSON.parse(query.tags);}
+          if (query.text_search){text_search = query.text_search;}
+          if (query.tags){tags = query.tags;}
           if(query.seller_id){seller_id = await query.seller_id;}
         } catch (error) {
           // return next(error)
         }
       }
+      console.log("EXTREACTED",tags,text_search)
       // try to get keys off body if they exist && text_search and tags are not already filled. For safety reasons, seller will always be in the body
       if (Object.keys(body).length !== 0)
       {
@@ -95,7 +98,12 @@ router.post("/", async (req, res, next) => {
       }
       console.log("Building Search settings....")
       const search = {}
+      console.log("EXTREACTED",tags,text_search)
       if(tags !== undefined){
+        if (!Array.isArray(tags))
+          {
+            tags = [tags]
+          }
         search["tags"]={
             hasSome: tags,
           }}
