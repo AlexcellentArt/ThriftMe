@@ -121,7 +121,7 @@ function Account() {
   return (
     <div className="account scroll-y flex-v">
       {user ? (
-        <>
+        <div className="centered">
           <Dropdown label="Credit Cards">
             <DisplayMany data={creditCard} factory={creditCardFactory} />
           </Dropdown>
@@ -130,7 +130,7 @@ function Account() {
               <div className="info">
                 <hr />
 
-                <h3 className="">Login</h3>
+                <h3 className=" ">Login</h3>
                 <hr />
 
                 <p>
@@ -189,7 +189,7 @@ function Account() {
           <Dropdown label="Edit Shop">
             <UserDashboard />
           </Dropdown>
-        </>
+        </div>
       ) : (
         <div>
           <p className="merriweather-black-italic">
