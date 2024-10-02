@@ -24,16 +24,18 @@ export function AuthContextProvider({ children }) {
     }
   }
 
-  function autoLogin() {
+  async function autoLogin() {
     console.log("SETTING TOKEN");
-    const token = window.localStorage.getItem("token");
-    console.log(token);
-    if (token !== undefined || null) {
-      setToken(token);
+    const localToken = window.localStorage.getItem("token");
+    console.log(localToken);
+    if (localToken !== undefined || null) {
+      setToken(localToken);
+      const info = await getUser(localToken)
+      setIsAdmin(info.is_admin)
     } else {
       console.log("No token in local storage");
     }
-    return token;
+    return localToken;
   }
   async function addToCart(item_id) {
     {
@@ -197,15 +199,16 @@ export function AuthContextProvider({ children }) {
       console.error(error);
     }
   }
-  async function getUser() {
+  async function getUser(overrideToken) {
+    let usedToken = overrideToken?overrideToken:token
     try {
-      if (!token) {
+      if (!usedToken) {
         throw Error("User Not Logged In");
       }
-      console.log("getting user with token " + token);
+      console.log("getting user with token " + usedToken);
       // only returning l for now, assuming everyone is using it to test login
       const res = await fetch(API_URL + "user/me", {
-        headers: { token: token },
+        headers: { token: usedToken },
       });
       if (res.ok) {
         const json = await res.json();

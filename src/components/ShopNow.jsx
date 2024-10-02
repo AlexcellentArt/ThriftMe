@@ -33,8 +33,7 @@ function ShopNow({
   }
   function navToProducts(tag) {
     setSearchParams({ tags: tag });
-    nav({
-      pathname: "/products/",
+    nav("/products/",{
       search: createSearchParams({
         text_search: tag,
         tags: [tag],

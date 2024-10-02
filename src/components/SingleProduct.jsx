@@ -73,7 +73,7 @@ function SingleProduct() {
       }
     }
     getItem();
-  }, [id, token]);
+  }, [id]);
 
   if (!product) {
     return <div>Product not found </div>;
