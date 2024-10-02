@@ -18,7 +18,7 @@ useEffect(() => {
   checkForLocalToken()
 }, [token,isAdmin]);
   return (
-    <body>
+    <div className="page">
       <header className="force-fill-width flex-v">
         <div className="flex-h force-fill-width align-items-center">
           <img src={thriftmeLogo} className="logo hover" alt="ThriftMe logo" />
@@ -30,8 +30,8 @@ useEffect(() => {
       <main>{children}</main>
 
       <footer>
-        <marquee class="scrolling-container">
-          <p class="scrolling-ticker">
+        <marquee className="scrolling-container">
+          <p className="scrolling-ticker">
             <span>Today's Deals: 50% off all winter coats!</span>
             <span>Buy one, get one free on shoes! </span>
             <span>Free shipping on orders over $30! </span>
@@ -42,7 +42,7 @@ useEffect(() => {
           </p>
         </marquee>
       </footer>
-    </body>
+    </div>
   );
 }
 
