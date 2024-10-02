@@ -9,6 +9,7 @@ import Register from "./Register";
 import FormGenerator from "./FormGenerator";
 import Dropdown from "./Dropdown";
 import DisplayMany from "./DisplayMany";
+
 function Checkout({ props }) {
   const { token, getUser, cartToken, AutoHeader, clearCart } =
     useContext(AuthContext);

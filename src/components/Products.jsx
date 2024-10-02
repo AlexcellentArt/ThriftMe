@@ -9,25 +9,23 @@ import React from "react";
 import { AuthContext } from "./AuthContext";
 import { SearchContext } from "./SearchContext";
 import { useEffect } from "react";
-import {HeaderContext} from "./HeaderContext"
+import { HeaderContext } from "./HeaderContext";
 
-function Products({ data, search, headerText="Products" }) {
+function Products({ data, search, headerText = "Products" }) {
   // data will override the ability to search and just display the given data. search will override the main search bar and it's params, letting a local search happen. headerText will override what the header says
   const nav = useNavigate();
   const { searchParams } = useContext(SearchContext);
   const [products, setProduct] = useState(data ? data : [{}]);
 
   const { addToCart, AutoHeader } = useContext(AuthContext);
-  const {setAdditonalContent} = useContext(HeaderContext)
+  const { setAdditonalContent } = useContext(HeaderContext);
   useEffect(() => {
     async function getProduct() {
       try {
-        const params = search?search:searchParams
+        const params = search ? search : searchParams;
         const head = AutoHeader();
         const response = await fetch(
-          `http://localhost:3000/api/item/search?${createSearchParams(
-            params
-          )}`,
+          `http://localhost:3000/api/item/search?${createSearchParams(params)}`,
           {
             header: head,
             method: "POST",
@@ -43,7 +41,7 @@ function Products({ data, search, headerText="Products" }) {
         console.log(products);
       } catch (error) {
         console.log(
-          "Looks like I can't display your page,when I fetched from API it did not work"
+          "Looks like I can't display your page. When I fetched from API, it did not work"
         );
         console.error(error);
       }
@@ -51,17 +49,19 @@ function Products({ data, search, headerText="Products" }) {
     // if just displaying data, do just that instead of searching
     if (!data) {
       getProduct();
-      setAdditonalContent(<h1 className="merriweather-regular">{headerText}</h1>
-      )
+      setAdditonalContent(
+        <h1 className="merriweather-regular">{headerText}</h1>
+      );
+    } else {
+      console.log(data);
+      setProduct(data);
     }
-    else{console.log(data);setProduct(data)}
-  }, [search ?search:searchParams,data&&data,headerText]);
+  }, [search ? search : searchParams, data && data, headerText]);
 
   function generateCard(obj) {
     return (
       <div className="item-card">
         <div>
-          {/* <Favorite id={obj.id} /> */}
           <img
             src={obj.default_photo}
             alt="Default Item Card Photo"
@@ -92,7 +92,11 @@ function Products({ data, search, headerText="Products" }) {
     );
   }
   return (
-    <div className={`flex-v ${!data&&!search?"centered scroll-y ":"products"}`}>
+    <div
+      className={`flex-v ${
+        !data && !search ? "centered scroll-y " : "products"
+      }`}
+    >
       <DisplayMany
         data={products}
         factory={generateCard}

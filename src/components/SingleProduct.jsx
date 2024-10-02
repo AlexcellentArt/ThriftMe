@@ -2,12 +2,13 @@ import { AuthContext } from "./AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DisplayMany from "./DisplayMany";
-// import Favorite from "./Favorite";
 import { SearchContext } from "./SearchContext";
 import { useNavigate, createSearchParams } from "react-router-dom";
+
 function SingleProduct() {
   const nav = useNavigate();
-  const { token, addToCart, addToBrowsingHistory ,checkForLocalToken} = useContext(AuthContext);
+  const { token, addToCart, addToBrowsingHistory, checkForLocalToken } =
+    useContext(AuthContext);
   const { setSearchParams } = useContext(SearchContext);
   const { id } = useParams();
 
@@ -23,10 +24,8 @@ function SingleProduct() {
     });
   }
   function createTag(obj) {
-    // console.log(obj);
     return (
       <div className="tag">
-        {/* Need to figure out how to update search bar tags too... maybe through SearchContext? */}
         <button
           onClick={() => {
             navToProducts(obj.text);
@@ -58,18 +57,19 @@ function SingleProduct() {
 
   // in useEffect, make a fetch get call to items/:id
   useEffect(() => {
-    console.log("TOKEN: " + token)
-    if (token === null){checkForLocalToken()}
+    console.log("TOKEN: " + token);
+    if (token === null) {
+      checkForLocalToken();
+    }
     async function getItem() {
       try {
         const response = await fetch(`http://localhost:3000/api/item/${id}`);
-        //              is the fetch call path above correct?
         const result = await response.json();
         setProduct(result);
         setMainPhoto(result.default_photo);
         console.log(result);
       } catch (error) {
-        // console.error(error);
+        console.error(error);
       }
     }
     getItem();
@@ -86,7 +86,6 @@ function SingleProduct() {
   // sets up data for photo bar. Never changes so doesn't need to be a state
   const photos = [];
   product.additional_photos.forEach((url) => {
-    // console.log(url);
     if (url != "") {
       photos.push({ photo: url });
     }
@@ -94,7 +93,6 @@ function SingleProduct() {
   if (photos.length > 0) {
     photos.unshift({ photo: product.default_photo });
   }
-  // console.log(photos);
   return (
     <div className="flex-v single-product">
       <div className="flex-h small-big-medium-width">

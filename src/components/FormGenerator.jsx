@@ -2,10 +2,9 @@ import React, { useState, useReducer, useEffect,useContext } from "react";
 import SelectionGenerator from "./SelectionGenerator";
 import PhotoInput from "./PhotoInput"
 import { AuthContext } from "./AuthContext";
+
 function FormGenerator({
   fields,
-  // canAutoFill = false,
-  // autofill = [],
   autofillOptions,
   autoFillOptionFormatter,
   fetchFunctionOverride,
@@ -35,7 +34,6 @@ function FormGenerator({
       emptyForm[key] = "";
     });
     return emptyForm});
-  // const [autofillOptions, setAutofillOptions] = useState(undefined);
 
   const [autoFillData, autoFillDispatch] = useReducer(
     autoFillDataReducer,
@@ -84,16 +82,13 @@ function FormGenerator({
     } catch (error) {
       console.error("ERROR PROCESSING AUTOFILL DATA: ", error);
     }
-    // options.push({value:"New"})
     return {};
   }
   // ### FORM DATA SETUP ###
 
   function createInitialValues(initialValue = "") {
     const obj = {};
-    // console.log(fields);
     fields.forEach((field) => {
-      // console.log(field.key + " default is " + field.default);
       obj[field.key] = {
         type: field.type,
         value: initialValue,
@@ -107,9 +102,6 @@ function FormGenerator({
       if ("options" in field) {
         obj["options"] = field.options;
       }
-      // if ("default" in field) {
-      //   obj["default"] = field.default;
-      // }
     });
     return obj;
   }
@@ -175,10 +167,6 @@ function FormGenerator({
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    // const allValid = await validateForm();
-    // if (!allValid) {
-    //   return;
-    // }
     let res;
     const compiled = compileFormData();
     console.log("Compiled Data")
@@ -321,7 +309,6 @@ function FormGenerator({
     );
   }
   function makeInput(key) {
-    // console.log(formData[key])
     return (
       <input
         className="merriweather-regular"
@@ -407,10 +394,9 @@ function FormGenerator({
       {autofillOptions && (
         <SelectionGenerator
           label="Use: "
-          // if there is a formatter, run the options through that as th
+          // if there is a formatter, run the options through that
           options={autoFillData}
           handleChange={(obj, idx, prev) => {
-            // console.log()
             console.log("CHANGED from " + prev + " to " + idx);
             console.log(formData)
             if (prev === 0) {

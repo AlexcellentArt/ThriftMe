@@ -1,6 +1,7 @@
 import React, { useContext, useState,useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import DisplayMany from "./DisplayMany";
+
 function Cart({shopping_cart, cart_id=12, passUpCart}) {
   const {addToCart,removeFromCart,modifyCart,mapItemDictToObjArray} = useContext(AuthContext);
   const [cart, setCart] = useState([{
