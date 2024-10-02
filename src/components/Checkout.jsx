@@ -34,7 +34,7 @@ function Checkout({ props }) {
 // Fields for generating the forms
   const [addressFields, setAddressFields] = useState([
     { key: "zip", type: "number" },
-    { key: "state", type: "text", default: "aaa" },
+    { key: "state", type: "text"},
     { key: "city", type: "text" },
     { key: "street", type: "text" },
     { key: "apartment", type: "number" },
@@ -149,7 +149,7 @@ function Checkout({ props }) {
       }
     }
     // clear cart
-    // await clearCart()
+    await clearCart()
     console.log(made)
     GoToOrderConfirmation(made)
   }
