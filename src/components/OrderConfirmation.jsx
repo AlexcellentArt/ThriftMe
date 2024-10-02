@@ -45,8 +45,8 @@ function OrderConfirmation() {
     }
   }, []);
 
-  if (loading) return <div>Loading your order details...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <h1 className="dark-bg merriweather-black-italic large-text">Loading your order details...</h1>;
+  if (error) return <h1>Error: {error}</h1>;
 
   // Continue Shopping function with button
   const handleContinueShopping = () => {

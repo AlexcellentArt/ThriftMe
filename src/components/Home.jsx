@@ -12,7 +12,8 @@ function Home() {
   const [trendingShop, setTrendingShop] = useState(undefined);
   const [shopMeData, setShopMeData] = useState([{ tag: "", img: "" }]);
   const [trendData, setTrendData] = useState([{}]);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   // effect to get products
   useEffect(() => {
     async function getTrendyProducts() {
@@ -69,7 +70,8 @@ function Home() {
         await makeShopMeData(tagData);
         return genericData;
       } catch (error) {
-        console.error("Error fetching generic products", error);
+        setError("Website server unable to be accessed. We apologize for the inconvenience.")
+        setLoading(false);
       }
     }
 
@@ -113,12 +115,14 @@ function Home() {
         };
       });
       setShopMeData(shopMeTags);
+      setLoading(false);
     }
     // if the user is logged in or not can be determined by if the token is null or not
     // fetch generic products when not logged in
     token ? getTrendyProducts() : getGenericProducts();
   }, []);
-
+  if (loading) return <h1 className="white-bg  merriweather-black-italic large-text text-dark">Loading the home page...</h1>;
+  if (error) return <h1>Error: {error}</h1>;
   const makeButtons = () => {
     const buttons = [];
     // will set the data being shown in display many accordingly when pressed on
