@@ -61,9 +61,7 @@ function Checkout({ props }) {
           `http://localhost:3000/api/shopping_cart/${cartToken}`
         );
         if (response.ok) {
-          console.log("CART FOUND AND NO USER");
           guest.shopping_cart = await response.json();
-          console.log(guest);
           setUser(guest);
           return;
         }
@@ -78,8 +76,6 @@ function Checkout({ props }) {
   }, [token]);
 
   function updateCheckout(cart) {
-    console.log("update checkout:");
-    console.log(cart);
     const quantity = Object.values(cart.item_dict).reduce(
       (acc, currentQty) => acc + currentQty,
       0
@@ -110,7 +106,6 @@ function Checkout({ props }) {
     // const base = {seller_id,buyer_id,item_dict,total_cost,tags}
     // first, break up the cart by seller
     const sellers = {};
-    console.log(cart.mapped);
     cart.mapped.forEach((item) => {
       if (sellers[item.seller_id]) {
         sellers[item.seller_id].push(item);
@@ -118,7 +113,6 @@ function Checkout({ props }) {
         sellers[item.seller_id] = [item];
       }
     });
-    console.log(sellers);
     // make transaction obj for each seller
     let assembled = [];
     const mappedBySeller = {};
@@ -128,8 +122,7 @@ function Checkout({ props }) {
         mapped_items: items,
       });
     }
-    console.log(assembled);
-    // clear cart (will impliment after confirming this works)
+    // clear cart)
     // make transactions
     // got to order confirmation
     const header = AutoHeader();
@@ -137,13 +130,11 @@ function Checkout({ props }) {
     for (let i = 0; i < assembled.length; i++) {
       try {
         const transaction = assembled[i].transaction;
-        console.log("trying to make transaction", transaction);
         const res = await fetch(
           `http://localhost:3000/api/past_transactions/checkout`,
           { headers: header, body: JSON.stringify(transaction), method: "POST" }
         );
         if (res.ok) {
-          console.log("TRANSACTION MADE");
           const json = await res.json();
           // add the mapped item info onto it
           json["items"] = assembled[i].mapped_items;
@@ -152,7 +143,6 @@ function Checkout({ props }) {
           throw new Error("POST FAIL");
         }
       } catch (error) {
-        console.error(error);
       }
     }
     await clearCart();
@@ -194,7 +184,6 @@ function Checkout({ props }) {
         total: total,
       },
     };
-    console.log(OrderInfo);
     nav("/order", OrderInfo);
   }
   return (

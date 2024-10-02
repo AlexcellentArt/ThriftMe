@@ -7,7 +7,6 @@ function DisplayMany({
   additionalClasses,
 }) {
   useEffect(() => {
-    console.log("Display Many Reload Triggered");
   }, [data]);
   // DOCUMENTATION: defaultFactory is what Display defaults to if no itemFactory is given
   function defaultFactory(obj) {
@@ -42,7 +41,6 @@ function DisplayMany({
       }
       return out;
     } catch (error) {
-      console.error(error);
       return defaultFactory(obj);
     }
   }

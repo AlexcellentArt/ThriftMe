@@ -48,9 +48,7 @@ function FormGenerator({
         return data;
       }
       case "updateNew": {
-        console.log("STORING NEW");
         data[0].value = action.newData;
-        console.log("New Form Data Stored: ", data[0]);
         return data;
       }
       default: {
@@ -80,7 +78,6 @@ function FormGenerator({
       });
       return options;
     } catch (error) {
-      console.error("ERROR PROCESSING AUTOFILL DATA: ", error);
     }
     return {};
   }
@@ -158,7 +155,6 @@ function FormGenerator({
     });
   }
   async function handleAutofillFormData(formData) {
-    console.log(formData);
     dispatch({
       type: "autofill",
       filled: formData,
@@ -169,7 +165,6 @@ function FormGenerator({
     e.preventDefault();
     let res;
     const compiled = compileFormData();
-    console.log("Compiled Data")
     // if not making a call to an api path, which is assumed by the lack of it, then the compiled data is set as the result and passed straight to the on success function if set
     if (apiPath) {
       try {
@@ -178,7 +173,6 @@ function FormGenerator({
           return;
         }
       } catch (error) {
-        console.error(error);
         setError(error);
       }
     } else {
@@ -188,8 +182,6 @@ function FormGenerator({
       setIsFirstTry(false);
     }
     if (postSuccessFunction !== null) {
-      console.log("PSF")
-      console.log(res)
       postSuccessFunction(res);
     }
     setIsFirstTry(true);
@@ -240,7 +232,6 @@ function FormGenerator({
       }
       return res;
     } catch (err) {
-      console.error(err);
       return null;
     }
   }
@@ -339,7 +330,6 @@ function FormGenerator({
   }
 
   function makeOptions(options) {
-    console.log(options);
     try {
       if (Array.isArray(options) === true) {
         return options.map((option) => {
@@ -351,7 +341,6 @@ function FormGenerator({
         });
       }
     } catch (error) {
-      console.error(error);
     }
   }
   function buildInputs(inputKey) {
@@ -397,8 +386,6 @@ function FormGenerator({
           // if there is a formatter, run the options through that
           options={autoFillData}
           handleChange={(obj, idx, prev) => {
-            console.log("CHANGED from " + prev + " to " + idx);
-            console.log(formData)
             if (prev === 0) {
               // previous selection was new, save the form's current state before updating
               setNewFormData(formData);
@@ -408,7 +395,6 @@ function FormGenerator({
               });
             }
             if (idx === 0) {
-              console.log("GETTING NEW");
               handleAutofillFormData(autoFillData[0]);
             } else {
               handleAutofillFormData(obj);

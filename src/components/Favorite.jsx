@@ -9,7 +9,6 @@ function Favorite(id) {
     if (NotLoggedIn()) {
       return;
     } else {
-      console.log(user);
       const res = await fetch(`http://localhost:3000/api/user/favorite`, {
         headers: { token: token },
         method: "PUT",
@@ -17,7 +16,6 @@ function Favorite(id) {
       });
       const json = await res.json();
       if (!res.ok) {
-        console.error(await res.text());
       } else {
         setFavorite(json.is_favorite);
       }

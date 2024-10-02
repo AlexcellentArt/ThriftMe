@@ -15,7 +15,6 @@ function Register({ stayOnPage = false }) {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   function goToAccount(obj) {
-    console.log("TOKEN:" + obj.token);
     if (!obj.token) {
       return;
     }
