@@ -11,7 +11,6 @@ import Cart from "./Cart";
 import UserDashboard from "./UserDashboard";
 import Products from "./Products";
 
-
 /**
  * I need to have multiple buttons that will lead to the:
  * Summary,
@@ -34,7 +33,7 @@ import Products from "./Products";
 function Account() {
   const { token, getUser, mapItemDictToObjArray } = useContext(AuthContext);
   const [pastTransactions, setPastTransactions] = useState();
-  const [creditCard, setCreditCard] = useState();
+  const [creditCard, setCreditCard] = useState([{}]);
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [user, setUser] = useState(false);
@@ -47,11 +46,12 @@ function Account() {
         const user = await getUser();
         setAddress(user.addresses);
         setEmail(user.email);
-        setCreditCard(user.creditCard);
+        setCreditCard(user.credit_cards);
         const compiled = [
           ...user.past_transactions_seller,
           ...user.past_transactions_buyer,
         ];
+        console.log(user.credit_cards);
         console.log(compiled);
         // compiled
         for (let index = 0; index < compiled.length; index++) {
@@ -59,7 +59,6 @@ function Account() {
           const mapped = await mapItemDictToObjArray(element.item_dict);
           compiled[index]["mapped"] = mapped;
         }
-        const user_credit_card = user.creditCard;
         setPastTransactions(compiled);
       } catch (error) {
         console.log(
@@ -77,20 +76,48 @@ function Account() {
       <div className="desc-box rounded-corners  flex-v  flex">
         <div className="flex dark-bg rounded-corners">
           <div className="white-bg rounded-corners">
-          <p className="merriweather-regular left-text"><span className="merriweather-bold left-text">Seller:</span>{obj.seller_id}</p>
-        <p className="merriweather-regular left-text"><span className="merriweather-bold">Shipping Address:</span>{obj.shipping_address}</p>
-        <p className="merriweather-regular left-text"><span className="merriweather-bold">Paying Card:</span>{obj.paying_card}</p>
+            <p className="merriweather-regular left-text">
+              <span className="merriweather-bold left-text">Seller:</span>
+              {obj.seller_id}
+            </p>
+            <p className="merriweather-regular left-text">
+              <span className="merriweather-bold">Shipping Address:</span>
+              {obj.shipping_address}
+            </p>
+            <p className="merriweather-regular left-text">
+              <span className="merriweather-bold">Paying Card:</span>
+              {obj.paying_card}
+            </p>
           </div>
         </div>
-        <div className="scroll-x"><Products data={obj.mapped} /></div>
+        <div className="scroll-x">
+          <Products data={obj.mapped} />
+        </div>
       </div>
+    );
+  }
+  function creditCardFactory(obj) {
+    return (
+      <div>
+        <span className="merriweather-bold">Pin:</span>
+        <p>{obj.pin}</p>
+        <p>
+          <span className="merriweather-bold">Expiration Date:</span>
+          {obj.exp_date}
+        </p>
+      </div>
+    );
+  }
+  function formatAddress(obj) {
+    return (
+      obj.street + ` ${obj.apartment !== null? obj.apartment:""} ` + obj.city + ` ${obj.zip}`
     );
   }
   return (
     <div className="">
       <div className="">
-        <Dropdown label="Credit Card"></Dropdown>
-        <div>{creditCard}</div>
+        <Dropdown label="Credit Cards"></Dropdown>
+        <DisplayMany data={creditCard} factory={creditCardFactory} />
         <Dropdown label="Email">
           <div>{email}</div>
         </Dropdown>
@@ -99,8 +126,9 @@ function Account() {
             {address?.map((address) => {
               return (
                 <div>
-                  {address.apartment}, {address.street}, {address.state},{" "}
-                  {address.city}, {address.zip},
+                  <p>
+                  {formatAddress(address)}
+                  </p>
                 </div>
               );
             })}

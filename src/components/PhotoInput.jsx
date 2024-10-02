@@ -1,82 +1,116 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DisplayMany from "./DisplayMany";
-function PhotoInput(
-  takeFiles = true,
-  inputKey = "photos",
-  onChange = (o) => {
-    console.log(o);
-  }
-) {
+import { ar } from "@faker-js/faker";
+function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   const [value, setValue] = useState("");
+
   const [photos, setPhotos] = useState([]);
-  function createPhoto(url) {
+
+  function createPhoto(url, i) {
     console.log(url);
     return (
-      <div className="dark-bg rounded-corners">
-        {/* <button
-          onClick={async () => {
-            const newCart = await removeFromCart(url.id);
-            processCartUpdate(newCart);
-          }}
-        >
-          -
-        </button> */}
-        <img
-            className="square fit-to-parent rounded-corners "
-            src={url}
-            alt={url}
-          />
-          <button>removeSelf</button>
-        {/* <button
-          onClick={async () => {
-            const newCart = await addToCart(url.id);
-            processCartUpdate(newCart);
-          }}
-        >
-          +
+      <div className="dark-bg icon-file-upload  icon">
+        <img className="img" key={i + "_img"} src={url}></img>
+        {/* <button className="move-up" onClick={()=>{changeIdx(i, 1)}}>
+          {"<="}
+        </button>
+        <button className="delete" onClick={()=>{removeSelf(i)}}>X</button>
+        <button className="move-down" onClick={()=>{changeIdx(i,-1)}}>
+          {"=>"}
         </button> */}
       </div>
     );
   }
-  const removeSelf = (obj) => {updateData(photos.toSpliced(photos.findIndex(obj),1))};
-  const changeIdx = (obj,by=1) => {
-    if (photos.length === 1){return}
-    const idx = photos.findIndex(obj)
-    if (idx >= 0 && idx < photos.length)
-    {
-        const newIdx = idx + by
-        const newPhotos = photos
-        const swapWith = newPhotos[newIdx]
-        newPhotos[idx] = swapWith
-        newPhotos[newIdx] = obj
-        updateData(newPhotos)
+  function removeSelf (idx){
+    updateData(photos.toSpliced(idx, 1));
+  };
+  function changeIdx (idx, by = 1) {
+    if (photos.length === 1) {
+      return;
+    }
+    if (idx >= 0 && idx < photos.length) {
+      const newIdx = idx + by;
+      const newPhotos = photos;
+      const swapWith = newPhotos[newIdx];
+      newPhotos[idx] = swapWith;
+      newPhotos[newIdx] = obj;
+      updateData(newPhotos);
     }
   };
 
-  const updateData = (obj) => {
-    console.log(obj)
-    const value = Object.values(obj)
+  // version is important to force a rerender
+  const [version, setVersion] = useState(0);
+  const [b64, setB64] = useState([]);
+  useEffect(() => {
+    console.log(b64);
+    setVersion(version + 1);
+  }, [b64]);
+  // takes an array of files from file input, assumes you already extracted them from the input with .target.files
+  const uploadImage = async (files) => {
+    const arr = [];
+    for (let index = 0; index < files.length; index++) {
+      const element = files[index];
+      const base64 = await convertBase64(element);
+      arr.push(base64);
+    }
+    // arr is now full of b64 strings
+    console.log(arr);
+    setB64(arr);
+    return arr;
+  };
+  // fill disclosure, from tutorial site, but they are made to be followed so it's good.
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  // what reads the data. b64 is the state
+  function loadAllData() {
+    if (!b64.length) {
+      return <p>Please add at least one photo. The first added will be your default.</p>;
+    }
+    return b64.map((str, i) => {
+      const styled = createPhoto(str, i);
+      if (styled !== undefined || null) {
+        return styled;
+      }
+      return (
+        <img
+          className="square quarter-size icon"
+          key={i + "_img"}
+          src={str}
+        ></img>
+      );
+    });
+  }
+  // put this uncommented in your react where you want the images to show up to confirm they work
+
+  //{version && loadAllData()}
+
+  const updateData = async (obj) => {
+    console.log(obj);
+    const value = Object.values(obj);
     // revoke current urls
     value.map((obj) => URL.revokeObjectURL(obj));
     // convert to urls
     const converted = value.map((obj) => URL.createObjectURL(obj));
-    setPhotos(converted)
-    onChange(converted);
-    // const idx = photos.indexOf(value);
-    // const newPhotos = [...photos]
-    // if(idx === -1){
-    //     newPhotos.push(value)
-    // }
-    // else{
-    //     newPhotos.splice(idx)
-    // }
-    // console.log(newPhotos)
-    // setPhotos(newPhotos)
-    // onChange(newPhotos)
+    // onChange(converted);
+    const b64s = await uploadImage(value);
+    setPhotos(b64s);
+    update(b64s, inputKey);
   };
-  //   function removeSelf(idx)
   return (
-    <div className="fit-to-parent">
+    <>
       {takeFiles ? (
         <input
           className="merriweather-regular"
@@ -100,13 +134,18 @@ function PhotoInput(
           id={inputKey}
           htmlFor={inputKey}
           onChange={(e) => {
-            updateData([...photos,e.target.value]);
+            updateData([...photos, e.target.value]);
             setValue(e.target.value);
           }}
         ></input>
       )}
-      <DisplayMany data={photos} factory={createPhoto}  additionalClasses={" icon"}/>
-    </div>
+      {/* <DisplayMany
+        data={photos}
+        factory={createPhoto}
+        additionalClasses={" icon"}
+      /> */}
+      <div className="flex-h wrap">{version && loadAllData()}</div>
+    </>
   );
 }
 

@@ -135,23 +135,14 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-    font-weight: bolder;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+label{
+  text-transform: capitalize;
 }
-
+textarea{
+  background-color: var(--white);
+  color:var(--black);
+  font-size: large;
+}
 #navBar {
   /* display: inherit;
   flex-direction: inherit;
@@ -289,6 +280,14 @@ button:focus-visible {
   object-position: 50% 50%;
   aspect-ratio: 1/1;
   padding: 2% 3%;
+}
+.half-size{
+  height: 50%;
+  width: 50%;
+}
+.quarter-size{
+  max-height: calc(100vh - 75%);
+  max-width:calc(100vh - 75%);
 }
 .flex-h {
   display: flex;
@@ -623,7 +622,7 @@ button:focus-visible {
   width: 10vh;
   /* height: 10vh;
   max-height: 10vh; */
-  max-width: 10vh;
+  max-width: 1vh;
   flex:2;
   svg{
     width: 100%;
@@ -842,7 +841,7 @@ button:focus-visible {
   textarea{
     flex:3;
   }
-  label>input,label>text-area{
+  label>input,label>text-area,label>div{
     display: flex;
     width: -webkit-fill-available;
     background-color: var(--white);
@@ -883,6 +882,7 @@ button:focus-visible {
     color: var(--black);
   }
 }
+
 .display-many {
   flex-wrap: wrap;
   flex: 1;
@@ -1059,7 +1059,38 @@ button:focus-visible {
   }
 }
 }
+.files{
+  display: flex;
+  flex-direction: column;
+}
+.icon-file-upload {  display: grid;
+  grid-template-columns: 0.5fr 2fr 0.5fr;
+  grid-template-rows: 0.5fr 1fr 0.5fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  max-width: 50%;
+  padding: 0.5%;
+  *{
+    flex: 0.2;
+    font-size:1em !important;
+  }
+  
+  .move-up { grid-area: 2 / 1 / 3 / 2; align-self: center; }
 
+.move-down { grid-area: 2 / 3 / 3 / 4; align-self: center;  }
+
+.delete { grid-area: 1 / 3 / 2 / 4; align-self: start}
+
+.img { grid-area: 1 / 1 / 4 / 4; width: 100%;  aspect-ratio: 1/1; align-self: center;}
+  .move-down,.move-up,.delete{
+    visibility: hidden;
+  }
+}
+.icon-file-upload:hover{
+  .move-down,.move-up,.delete{
+    visibility: visible;
+  }
+}
 .center-stretch {
   place-items: center stretch;
   text-align: center;

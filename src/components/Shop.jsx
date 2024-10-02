@@ -23,7 +23,7 @@ function Shop() {
     async function getContent() {
       const response_shop = await fetch("http://localhost:3000/api/user/shop/"+id, {
         method: "POST",
-        body: { id: id },
+        body: { id: search },
       });
       const shop = await response_shop.json();
       setShopData(shop);
@@ -32,8 +32,7 @@ function Shop() {
     getContent();
   }, [id]);
   return (
-    <div className="shop centered gradient-bg">
-      <AddItem/>
+    <div className="shop gradient-bg scroll-y">
       <div className="flex-v">
         <div><h2>Search {shopData.shop_name}</h2></div>
         <SearchBar

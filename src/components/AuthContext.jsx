@@ -1,3 +1,4 @@
+import { fa } from "@faker-js/faker";
 import React, { useState, createContext } from "react";
 const AuthContext = createContext("AuthContext");
 export function AuthContextProvider({ children }) {
@@ -134,26 +135,37 @@ export function AuthContextProvider({ children }) {
       // if not logged in, modify local cart
       // need to make cart take and give token, but this works for now
       // try to get from local first
-      const local = window.localStorage.getItem("cart_id")
-      if (local && local !== null){setCartToken(local)}
+      // const local = window.localStorage.getItem("cart_id")
+      const localCartToken = window.localStorage.getItem("cart_id")
+      if (localCartToken && localCartToken !== null){setCartToken(localCartToken)}
       if (!window.localStorage.token){
         if (localCartToken){
           // guest carts are deleted.
           console.log("MAKING NEW CART")
           const res = await fetch(`http://localhost:3000/api/shopping_cart/${localCartToken}`,{headers:{Authorization:`Bearer ${token}`},method:"DELETE"});
           window.localStorage.setItem("cart_id",null);
+          if (!res.ok)
+          {
+            throw new Error("FAIL")
+          }
           return
         }
       }
+      console.log("CART ID",localCartToken)
       // user carts are cleared
       const response = await fetch(`http://localhost:3000/api/shopping_cart/${localCartToken}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization:`Bearer ${token}`
+          Authorization:`Bearer ${token}`,
+          mode:"no-cors"
         },
-        body: {item_dict:{},total_cost:0}
+        body: JSON.stringify({item_dict:{},total_cost:0})
       });
+      if (!response.ok){
+        throw new Error("FAIL")
+      }
+      return
     } catch (error) {
       console.error(error);
     }

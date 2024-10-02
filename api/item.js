@@ -40,8 +40,12 @@ router.post("/", async (req, res, next) => {
     try {
       console.log("post")
       const inputs = {seller_id, name, price, description, default_photo, additional_photos, tags } = await req.body;
-      console.log(inputs)
-      const missing = gen_errors.hasMissingInputs(inputs,["name", "price", "description","default_photo", "additional_photos", "tags"],"item")
+      if (!inputs.seller_id)
+{      const token = await decodeToken(req.headers.authorization)
+      inputs.seller_id = token.userId
+      console.log("DECODED TOKEN",token.userId)
+    }
+      const missing = gen_errors.hasMissingInputs(inputs,["seller_id","name", "price", "description","default_photo", "additional_photos", "tags"],"item")
     if (missing){
       console.log("is missing")
       console.log(missing)
@@ -52,7 +56,6 @@ router.post("/", async (req, res, next) => {
     {
       return next(isPriceNumber)
     }
-    console.log(inputs)
       const item = await prisma.item.create({ data: inputs });
       res.json(item);
     } catch (error) {

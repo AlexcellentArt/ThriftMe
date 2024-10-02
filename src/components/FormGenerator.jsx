@@ -1,6 +1,7 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect,useContext } from "react";
 import SelectionGenerator from "./SelectionGenerator";
 import PhotoInput from "./PhotoInput"
+import { AuthContext } from "./AuthContext";
 function FormGenerator({
   fields,
   // canAutoFill = false,
@@ -17,6 +18,7 @@ function FormGenerator({
 }) {
   useEffect(() => {
   }, [fields]);
+  const {token} = useContext(AuthContext)
   // version is used to force rereneder of form
   const [version, setVersion] = useState(0);
   // states related to handling visualization of errors
@@ -145,8 +147,8 @@ function FormGenerator({
   // ### FORM DATA HANDLERS ###
   async function handleUpdateFormData(type, key, value = "") {
     // if input type is one that works with strings, trim the value
-    if ((type = "text" || "email")) {
-      value = value.trim();
+    if (type === "text" || "email") {
+      if (type !== "multiple files"){value = value.trim();}
     }
     const valid = await verifyInput(type, value);
     await dispatch({
@@ -237,6 +239,7 @@ function FormGenerator({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(obj),
       });
@@ -367,17 +370,8 @@ function FormGenerator({
   function buildInputs(inputKey) {
     //DOCUMENTATION: based on type, content is generated and setup according to what's at the key in formData. Label is setup the same way, with content being placed inside it.
     let content;
-    // if (formData[inputKey].type === "select") {
-    //   return makeSelect(inputKey);
-    // } else {
-    //   content = makeInput(inputKey);
-    // }
-
     // specialized types get their own cases, while all non specialized get made by make input
     switch (formData[inputKey].type) {
-      // case "select":
-      //   content =  makeSelect(inputKey);
-      //   break
       case "textarea":
         content =  (
           <textarea
@@ -395,22 +389,13 @@ function FormGenerator({
         );
         break
       case "multiple files":
+        function updateFiles(files,inputKey)
+        {
+          handleUpdateFormData("multiple files", inputKey, files)
+
+        }
         content =
-        <PhotoInput inputKey={inputKey} onChange={(converted)=>{ hhandleUpdateFormData(e.target.type, inputKey, converted)}}/>
-        // <input className="merriweather-regular" type="file"             name={inputKey}
-        // id={inputKey}
-        // htmlFor={inputKey}
-        // onChange={(e) =>{
-        //   console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaa")
-        //   console.log(e.target.files)
-        //   // revoke current urls
-        //   e.target.files.map((obj)=>URL.revokeObjectURL(obj))
-        //   // convert to urls
-        //   const converted = e.target.files.map((obj)=>URL.createObjectURL(obj))
-        //   handleUpdateFormData(e.target.type, inputKey, converted)}
-        // }
-        // accept={formData[inputKey].accept?formData[inputKey].accept:"*"} 
-        // multiple></input>
+        <PhotoInput inputKey={inputKey} update={updateFiles}/>
         break
       default:
         content = makeInput(inputKey);
@@ -419,7 +404,6 @@ function FormGenerator({
   }
   return (
     <>
-      {/* {console.log(autoFillData)} */}
       {autofillOptions && (
         <SelectionGenerator
           label="Use: "
