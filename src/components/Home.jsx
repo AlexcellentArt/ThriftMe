@@ -6,7 +6,6 @@ import { HeaderContext } from "./HeaderContext";
 import { ShopNow } from "./ShopNow";
 
 function Home() {
-  const navigate = useNavigate();
   const { setAdditonalContent } = useContext(HeaderContext);
   const { token, getUser } = useContext(AuthContext);
   const [productData, setProductData] = useState([{}]);
