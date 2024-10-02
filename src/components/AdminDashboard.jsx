@@ -58,7 +58,7 @@ function AdminDashboard() {
           </button>
           {
             <Dropdown label={"Add Item"} labelClasses={"merriweather-black"}>
-              <AddItem />
+              <AddItem adminMode={true} notifyReload={fetchItems} />
             </Dropdown>
           }
         </div>

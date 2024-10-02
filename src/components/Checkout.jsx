@@ -97,7 +97,7 @@ function Checkout({ props }) {
   }
   function formatAddress(obj) {
     return (
-      obj.street + ` ${obj.apartment && obj.apartment} ` + obj.city + ` ${obj.zip}`
+      obj.street + ` ${obj.apartment !== null? obj.apartment:""} ` + obj.city + ` ${obj.zip}`
     );
   }
   function formatCreditCard(obj) {

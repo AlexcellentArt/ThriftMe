@@ -7,6 +7,7 @@ import DisplayMany from "./DisplayMany";
 function UserDashboard() {
   const { getUser, token } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [version, setVersion] = useState(0);
   const [items, setItems] = useState([{ id: 1, name: "sss" }]);
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({
@@ -20,7 +21,7 @@ function UserDashboard() {
       await fetchItems();
     };
     fetchData();
-  }, []);
+  }, [version]);
 
   const fetchItems = async () => {
     const user = await getUser();
@@ -195,7 +196,7 @@ function UserDashboard() {
 
       {/* Add Item Dropdown */}
       <Dropdown label={"Add Item"} labelClasses={"merriweather-black"}>
-        <AddItem />
+        <AddItem notifyReload={fetchItems} />
       </Dropdown>
       <div className="scroll-y fit-to-parent">
         <DisplayMany
