@@ -324,6 +324,7 @@ textarea{
 .left-text {
   text-align: left;
   text-indent: 2%;
+  text-wrap:wrap;
 }
 .white-bg {
   background-color: var(--white);
@@ -500,8 +501,45 @@ textarea{
   border-width: 1.75px 2.5px 3px;
   padding: 2%;
   margin: 1% 1%;
+  word-wrap:break-word;
 }
-
+.line-breaks{
+  border-bottom: 0.1em solid var(--black);
+  margin: 2%;
+}
+.line-breaks:last-of-type{
+  border-bottom: unset
+}
+.account{
+  align-items: stretch center;
+  justify-items: center;
+  background-color: var(--delft-blue);
+  
+  display: flex;
+  flex-direction: column;
+  button{
+    padding: 0.5em;
+  }
+  .dropdown{
+    margin-top: 1%;
+    max-width: 100%;
+    height: auto;
+    *{
+      max-width: 100%;
+      height: auto;
+    }
+    span{
+      align-self: center;
+      
+    background-color: var(--white);
+    width: 99.5%;
+    height: 100%;
+    }
+    .info{
+      text-decoration: dashed;
+    }
+  }
+}
 .home {
   overflow: visible scroll;
   display: flex;

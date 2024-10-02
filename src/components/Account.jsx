@@ -60,6 +60,7 @@ function Account() {
           compiled[index]["mapped"] = mapped;
         }
         setPastTransactions(compiled);
+        setUser(user);
       } catch (error) {
         console.log(
           "Did not render on screen, something wrong with accounts page",
@@ -75,7 +76,7 @@ function Account() {
     return (
       <div className="desc-box rounded-corners  flex-v  flex">
         <div className="flex dark-bg rounded-corners">
-          <div className="white-bg rounded-corners">
+          <div className="white-bg rounded-corners flex-v">
             <p className="merriweather-regular left-text">
               <span className="merriweather-bold left-text">Seller:</span>
               {obj.seller_id}
@@ -98,9 +99,10 @@ function Account() {
   }
   function creditCardFactory(obj) {
     return (
-      <div>
-        <span className="merriweather-bold">Pin:</span>
-        <p>{obj.pin}</p>
+      <div className="info">
+        <p className="line-breaks">
+          <span className="merriweather-bold ">Pin:</span> {obj.pin}
+        </p>
         <p>
           <span className="merriweather-bold">Expiration Date:</span>
           {obj.exp_date}
@@ -110,42 +112,91 @@ function Account() {
   }
   function formatAddress(obj) {
     return (
-      obj.street + ` ${obj.apartment !== null? obj.apartment:""} ` + obj.city + ` ${obj.zip}`
+      obj.street +
+      ` ${obj.apartment !== null ? obj.apartment : ""} ` +
+      obj.city +
+      ` ${obj.zip}`
     );
   }
   return (
-    <div className="">
-      <div className="">
-        <Dropdown label="Credit Cards"></Dropdown>
-        <DisplayMany data={creditCard} factory={creditCardFactory} />
-        <Dropdown label="Email">
-          <div>{email}</div>
-        </Dropdown>
-        <Dropdown label="Address">
-          <div>
-            {address?.map((address) => {
-              return (
-                <div>
-                  <p>
-                  {formatAddress(address)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </Dropdown>
+    <div className="account scroll-y flex-v">
+      {user ? (
+        <>
+          <Dropdown label="Credit Cards">
+            <DisplayMany data={creditCard} factory={creditCardFactory} />
+          </Dropdown>
+          <Dropdown label="General Information">
+            {user && (
+              <div className="info">
+                <hr />
 
-        <Dropdown label="Past Transactions">
-          <DisplayMany
-            data={pastTransactions}
-            factory={stylePastTransactions}
-            additionalClasses={"scroll-y"}
-          />
-        </Dropdown>
-        <Dropdown label="Edit Shop">
-          <UserDashboard />
-        </Dropdown>
-      </div>
+                <h3 className="">Login</h3>
+                <hr />
+
+                <p>
+                  <span className="merriweather-bold">Name:</span>
+                  {user.name}
+                </p>
+                <p>
+                  <span className="merriweather-bold">Email:</span>
+                  {email}
+                </p>
+                <hr />
+
+                <h3 className="line-breaks">Stats</h3>
+                <hr />
+                <p>
+                  <span className="merriweather-bold">
+                    Total Items In Shop:
+                  </span>
+                  {user.items.length}
+                </p>
+                <p>
+                  <span className="merriweather-bold">
+                    Total Past Transactions:
+                  </span>
+                  {pastTransactions.length}
+                </p>
+                <p>
+                  <span className="merriweather-bold">Total Addresses:</span>
+                  {address.length}
+                </p>
+                <p>
+                  <span className="merriweather-bold">Total Credit Cards:</span>
+                  {creditCard.length}
+                </p>
+              </div>
+            )}
+          </Dropdown>
+          <Dropdown label="Addresses">
+            <div className="info">
+              {address?.map((address) => {
+                return (
+                  <div className="line-breaks">
+                    <p>{formatAddress(address)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </Dropdown>
+          <Dropdown label="Past Transactions">
+            <DisplayMany
+              data={pastTransactions}
+              factory={stylePastTransactions}
+              additionalClasses={"info"}
+            />
+          </Dropdown>
+          <Dropdown label="Edit Shop">
+            <UserDashboard />
+          </Dropdown>
+        </>
+      ) : (
+        <div>
+          <p className="merriweather-black-italic">
+            Loading User Information...
+          </p>
+        </div>
+      )}
     </div>
   );
 }
