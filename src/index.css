@@ -688,7 +688,6 @@ textarea{
   /* If something happens you and need to center manually, use this class */
   position: relative;
   padding-top: calc(20vh + 5%);
-  padding-inline: 5vw;
 }
 .allow-overflow-y {
   overflow: visible !important;
