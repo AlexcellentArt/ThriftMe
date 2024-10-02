@@ -515,7 +515,6 @@ textarea{
   align-items: stretch center;
   justify-items: center;
   background-color: var(--delft-blue);
-  
   display: flex;
   flex-direction: column;
   button{
@@ -539,6 +538,9 @@ textarea{
     .info{
       text-decoration: dashed;
     }
+  }
+  .dropdown:first-of-type{
+    /* margin-top: 50%; */
   }
 }
 .home {
