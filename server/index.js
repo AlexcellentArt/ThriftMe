@@ -1,19 +1,22 @@
 // imports
-
-const pg = require('pg')
-const express = require('express');
 require('dotenv').config()
+
+
+const express = require('express');
 // const auth = require("../api/helpers/auth")
 // import { authenticate,findUserWithToken } from './auth';
 // Static Routes
-const client = new pg.Client(process.env.DATABASE_URL)
+const client = require('../client/client.js');
+client.connect();
 // App Routes
+const path = require('path');
 const app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 // Body Parsing Middleware
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use(require("morgan")("dev"))
 
 // Add Access Control Allow Origin headers
@@ -34,17 +37,12 @@ app.use((error,req,res,next)=>{
 })
 
 // Distribution Path Setup
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'dist')));
+
 
 app.get('/', (req, res, next)=> {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'))});
 
 // Init And Invocation
-const init = async () => {
-    await client.connect()
-    console.log("CLIENT Connected")
-    const port = process.env.PORT || 3000
-    app.listen(port, () => console.log("listening on "+port));
-}
-init()
+
+const PORT = process.env.PORT || 3000
+const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
