@@ -3,10 +3,8 @@ require('dotenv').config()
 
 
 const express = require('express');
-// const auth = require("../api/helpers/auth")
-// import { authenticate,findUserWithToken } from './auth';
 // Static Routes
-const client = require('../client/client.js');
+const client = require('./client/client.js');
 client.connect();
 // App Routes
 const path = require('path');
@@ -27,7 +25,7 @@ app.all('*',(req, res, next)=>{
     next();
   });
 // Api Routes
-app.use("/api",require("../api"));
+app.use("/api",require("./api/index.js"));
 
 // Error Handling Middleware
 app.use((error,req,res,next)=>{
