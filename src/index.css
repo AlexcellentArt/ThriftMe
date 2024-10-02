@@ -699,7 +699,6 @@ textarea{
   min-width: 59%;
   /* place-content:calc(100vh - 60vw); */
   .dropdown {
-  .dropdown {
     margin-bottom: -0.5%;
   }
   .dropdown > span > p:last-of-type {
@@ -708,7 +707,24 @@ textarea{
   .display-many {
     place-content: center;
   }
-}
+  .dropdown>span{
+    /* background-color: var(--periwinkle); */
+    border-radius: 0% 0% 5% 5%;
+    width: 100%;
+    height: auto;
+    padding-bottom: 2%;
+    flex-direction: row;
+    align-items: center;
+    .flex-h{
+      justify-content: center;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    button{
+      max-width: 92%;
+      height: auto;
+    }
+  }
 }
 .fixed {
   position: fixed !important;
@@ -1188,7 +1204,16 @@ textarea{
     height: inherit;
   }
 }
-
+select{
+  flex:1;
+  width: 92%;
+  background-color: var(--delft-blue);
+  font-family: "Merriweather", serif;
+  font-weight: 400;
+  font-style: normal;
+  border-radius: var(--rounded-corners);
+  height: auto;
+}
 span:nth-of-type(even) {
   .tag {
     background-color: var(--fairy-tale);

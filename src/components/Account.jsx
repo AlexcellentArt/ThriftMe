@@ -130,7 +130,7 @@ function Account() {
               <div className="info">
                 <hr />
 
-                <h3 className="">Login</h3>
+                <h3 className=" ">Login</h3>
                 <hr />
 
                 <p>

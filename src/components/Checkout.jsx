@@ -203,7 +203,7 @@ function Checkout({ props }) {
         <div className="checkout">
           {isGuest === true ? (
             <Dropdown label="Login Or Register To Continue Checkout">
-              <div className="flex-h">
+              <div className="flex-h light-bg">
                 <Login stayOnPage={true} />
                 <Register stayOnPage={true} />
               </div>
@@ -215,7 +215,7 @@ function Checkout({ props }) {
                   <>
                     <p>Selected Credit Card: {formatCreditCard(creditCard)}</p>
                     <button
-                      className="medium-text"
+                      className="medium-text merriweather-bold three-d-button"
                       onClick={() => {
                         setCreditCard({});
                       }}
@@ -242,7 +242,7 @@ function Checkout({ props }) {
                   <>
                     <p>Selected Address: {formatAddress(address)}</p>
                     <button
-                      className="medium-text"
+                      className="medium-text medium-text merriweather-bold three-d-button"
                       onClick={() => {
                         setAddress({});
                       }}
