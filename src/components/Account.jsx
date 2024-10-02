@@ -36,7 +36,6 @@ function Account() {
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
   const [user, setUser] = useState(false);
-
   useEffect(() => {
     const getMe = async () => {
       try {
@@ -56,12 +55,12 @@ function Account() {
         }
         setPastTransactions(compiled);
         setUser(user);
-      } catch (error) {}
+      } catch (error) {
+      }
     };
 
     getMe();
   }, [token]);
-
   function stylePastTransactions(obj) {
     return (
       <div className="desc-box rounded-corners  flex-v  flex">

@@ -23,15 +23,6 @@ app.all('*',(req, res, next)=>{
     res.header('Access-Control-Allow-Headers', '*');
     next();
   });
-// app.use("/",(req, res, next) => {
-//     console.log("adding access")
-//     res.appendHeader("Access-Control-Allow-Headers", "http://localhost:5173");
-//     // res.header(
-//     //   "Access-Control-Allow-Headers",
-//     //   "Origin, X-Requested-With, Content-Type, Accept"
-//     // );
-//     next();
-//   });
 // Api Routes
 app.use("/api",require("../api"));
 
