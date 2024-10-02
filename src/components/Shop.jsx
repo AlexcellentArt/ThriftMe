@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthContext";
 import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import AddItem from "./AddItem";
+
 function Shop() {
   // const {AutoHeader} = useContext(AuthContext);
   const { state } = useLocation();
@@ -21,10 +22,13 @@ function Shop() {
     setSearch({ seller_id: id });
     setShopId(id);
     async function getContent() {
-      const response_shop = await fetch("http://localhost:3000/api/user/shop/"+id, {
-        method: "POST",
-        body: { id: search },
-      });
+      const response_shop = await fetch(
+        "http://localhost:3000/api/user/shop/" + id,
+        {
+          method: "POST",
+          body: { id: search },
+        }
+      );
       const shop = await response_shop.json();
       setShopData(shop);
       console.log(shop);
@@ -34,7 +38,9 @@ function Shop() {
   return (
     <div className="shop gradient-bg scroll-y">
       <div className="flex-v">
-        <div><h2>Search {shopData.shop_name}</h2></div>
+        <div>
+          <h2>Search {shopData.shop_name}</h2>
+        </div>
         <SearchBar
           setLocalSearch={setSearch}
           forcedParams={{ seller_id: shopID ? shopID : 0 }}

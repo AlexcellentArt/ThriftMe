@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import DisplayMany from "./DisplayMany";
 import { ar } from "@faker-js/faker";
+
 function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   const [value, setValue] = useState("");
 
@@ -11,20 +12,13 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
     return (
       <div className="dark-bg icon-file-upload  icon">
         <img className="img" key={i + "_img"} src={url}></img>
-        {/* <button className="move-up" onClick={()=>{changeIdx(i, 1)}}>
-          {"<="}
-        </button>
-        <button className="delete" onClick={()=>{removeSelf(i)}}>X</button>
-        <button className="move-down" onClick={()=>{changeIdx(i,-1)}}>
-          {"=>"}
-        </button> */}
       </div>
     );
   }
-  function removeSelf (idx){
+  function removeSelf(idx) {
     updateData(photos.toSpliced(idx, 1));
-  };
-  function changeIdx (idx, by = 1) {
+  }
+  function changeIdx(idx, by = 1) {
     if (photos.length === 1) {
       return;
     }
@@ -36,7 +30,7 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
       newPhotos[newIdx] = obj;
       updateData(newPhotos);
     }
-  };
+  }
 
   // version is important to force a rerender
   const [version, setVersion] = useState(0);
@@ -77,7 +71,11 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   // what reads the data. b64 is the state
   function loadAllData() {
     if (!b64.length) {
-      return <p>Please add at least one photo. The first added will be your default.</p>;
+      return (
+        <p>
+          Please add at least one photo. The first added will be your default.
+        </p>
+      );
     }
     return b64.map((str, i) => {
       const styled = createPhoto(str, i);
@@ -95,8 +93,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
   }
   // put this uncommented in your react where you want the images to show up to confirm they work
 
-  //{version && loadAllData()}
-
   const updateData = async (obj) => {
     console.log(obj);
     const value = Object.values(obj);
@@ -104,7 +100,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
     value.map((obj) => URL.revokeObjectURL(obj));
     // convert to urls
     const converted = value.map((obj) => URL.createObjectURL(obj));
-    // onChange(converted);
     const b64s = await uploadImage(value);
     setPhotos(b64s);
     update(b64s, inputKey);
@@ -139,11 +134,6 @@ function PhotoInput({ takeFiles = true, inputKey = "photos", update }) {
           }}
         ></input>
       )}
-      {/* <DisplayMany
-        data={photos}
-        factory={createPhoto}
-        additionalClasses={" icon"}
-      /> */}
       <div className="flex-h wrap">{version && loadAllData()}</div>
     </>
   );

@@ -2,7 +2,8 @@ import { AuthContext } from "./AuthContext";
 import { useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import FormGenerator from "./FormGenerator";
-function Register({stayOnPage=false}) {
+
+function Register({ stayOnPage = false }) {
   // Register form as seen on page 2 of our mockflow
   // make post call to user with inputs from the form
   // if error is not gotten back, run login with what's received back then navigate to account
@@ -20,21 +21,14 @@ function Register({stayOnPage=false}) {
       return;
     }
     login(obj);
-    if(stayOnPage == true){return}
-    else{navigate("/account")}
+    if (stayOnPage == true) {
+      return;
+    } else {
+      navigate("/account");
+    }
   }
   return (
     <div className="light-bg flex-v centered">
-      {/* <nav className="move-up">
-        <ul className="flex-h">
-          <li className="navLinks nav-tabs">
-            <Link to="/login">Login</Link>
-          </li>
-          <li className="navLinks nav-tabs">
-            <Link to="/register">Register</Link>
-          </li>
-        </ul>
-      </nav> */}
       <h1 className="merriweather-bold little-margin">Register</h1>
       <FormGenerator
         labelAdditionalClasses="formLabel"
