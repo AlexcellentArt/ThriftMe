@@ -28,7 +28,7 @@ export function AuthContextProvider({ children }) {
     if (localToken !== undefined || null) {
       setToken(localToken);
       const info = await getUser(localToken);
-      setIsAdmin(info.is_admin);
+      if(info){setIsAdmin(info.is_admin)};
     } else {
     }
     return localToken;
