@@ -33,10 +33,10 @@ import {
 
 function App() {
   return (
-    <AuthContextProvider>
-      <HeaderContextProvider>
-        <SearchContextProvider>
-          <BrowserRouter>
+    <BrowserRouter>
+      <AuthContextProvider>
+        <HeaderContextProvider>
+          <SearchContextProvider>
             <PageWrapper>
               <Routes>
                 <Route path="/" element={<Navigate to="/home" />} />
@@ -61,12 +61,12 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
               </Routes>
             </PageWrapper>
-          </BrowserRouter>
 
-          {/* </Elements> */}
-        </SearchContextProvider>
-      </HeaderContextProvider>
-    </AuthContextProvider>
+            {/* </Elements> */}
+          </SearchContextProvider>
+        </HeaderContextProvider>
+      </AuthContextProvider>
+    </BrowserRouter>
   );
 }
 

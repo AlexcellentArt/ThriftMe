@@ -14,7 +14,7 @@ export function AuthContextProvider({ children }) {
   function AutoHeader() {
     return {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
+      "Authorization": "Bearer " + token,
     };
   }
   async function NotLoggedIn() {
