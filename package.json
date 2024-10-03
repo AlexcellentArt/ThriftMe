@@ -7,7 +7,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server/index.cjs",
+    "start": "node index.cjs",
     "start:dev": "nodemon server"
   },
   "dependencies": {

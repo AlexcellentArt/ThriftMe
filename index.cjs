@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const express = require('express');
 // Static Routes
-const client = require('../client/client.cjs');
+const client = require('./client/client.cjs');
 client.connect();
 // App Routes
 const path = require('path');
@@ -14,7 +14,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 // Body Parsing Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, 'dist')));
 // app.use(require("morgan")("dev"))
 
 // Add Access Control Allow Origin headers
@@ -38,7 +38,7 @@ app.use((error,req,res,next)=>{
 
 
 app.get('*', (req, res, next)=> {
-    res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
 // Init And Invocation
