@@ -8,13 +8,13 @@ export function AuthContextProvider({ children }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [cartToken, setCartToken] = useState(null);
-  const API_URL = "http://localhost:3000/api/";
+  const API_URL = "api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
   const local_cart = {};
   function AutoHeader() {
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + token,
+      Authorization: "Bearer " + token,
     };
   }
   async function NotLoggedIn() {
@@ -28,7 +28,9 @@ export function AuthContextProvider({ children }) {
     if (localToken !== undefined || null) {
       setToken(localToken);
       const info = await getUser(localToken);
-      setIsAdmin(info.is_admin);
+      if (info) {
+        setIsAdmin(info.is_admin);
+      }
     } else {
     }
     return localToken;
@@ -49,7 +51,7 @@ export function AuthContextProvider({ children }) {
     try {
       for (const id in item_dict) {
         //get item by id
-        const res = await fetch(`http://localhost:3000/api/item/${id}`);
+        const res = await fetch(`api/item/${id}`);
         // throw if missing
         if (!res.ok) {
           throw Error("ITEM MISSING");
@@ -83,7 +85,7 @@ export function AuthContextProvider({ children }) {
       ) {
         if (!localCartToken) {
           const res = await fetch(
-            `http://localhost:3000/api/shopping_cart/guest`,
+            `api/shopping_cart/guest`,
             { headers: header, body: {}, method: "POST" }
           );
           const newCart = await res.json();
@@ -93,7 +95,7 @@ export function AuthContextProvider({ children }) {
         }
       }
       const res = await fetch(
-        `http://localhost:3000/api/shopping_cart/${localCartToken}`,
+        `
         { headers: header }
       );
       cart = await res.json();
@@ -119,7 +121,7 @@ export function AuthContextProvider({ children }) {
         cart.total_cost = await calculatePrice(cart.item_dict);
         try {
           const response = await fetch(
-            `http://localhost:3000/api/shopping_cart/${localCartToken}`,
+            `api/shopping_cart/${localCartToken}`,
             {
               method: "PUT",
               headers: header,
@@ -147,7 +149,7 @@ export function AuthContextProvider({ children }) {
         if (localCartToken) {
           // guest carts are deleted.
           const res = await fetch(
-            `http://localhost:3000/api/shopping_cart/${localCartToken}`,
+            `api/shopping_cart/${localCartToken}`,
             { headers: { Authorization: `Bearer ${token}` }, method: "DELETE" }
           );
           window.localStorage.setItem("cart_id", null);
@@ -159,7 +161,7 @@ export function AuthContextProvider({ children }) {
       }
       // user carts are cleared
       const response = await fetch(
-        `http://localhost:3000/api/shopping_cart/${localCartToken}`,
+        `api/shopping_cart/${localCartToken}`,
         {
           method: "PUT",
           headers: {
@@ -259,7 +261,7 @@ export function AuthContextProvider({ children }) {
     try {
       for (const id in item_dict) {
         //get item by id
-        const res = await fetch(`http://localhost:3000/api/item/${id}`);
+        const res = await fetch(`api/item/${id}`);
         // throw if missing
         if (!res.ok) {
           throw Error("ITEM MISSING");
