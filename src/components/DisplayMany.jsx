@@ -36,7 +36,7 @@ function DisplayMany({
         );
       }
       const out = factory ? factory(obj) : defaultFactory(obj);
-      if (obj === null) {
+      if (out === null) {
         throw new Error("Factory returned null");
       }
       return out;
