@@ -1,13 +1,13 @@
 {
   "name": "thriftme",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node index.js",
+    "start": "node server/index.js",
     "start:dev": "nodemon server"
   },
   "dependencies": {
