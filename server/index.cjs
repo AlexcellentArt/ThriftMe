@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const express = require('express');
 // Static Routes
-const client = require('../client/client.js');
+const client = require('../client/client.cjs');
 client.connect();
 // App Routes
 const path = require('path');
