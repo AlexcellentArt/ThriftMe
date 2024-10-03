@@ -25,7 +25,7 @@ app.all('*',(req, res, next)=>{
     next();
   });
 // Api Routes
-app.use("/api",require("../api/index.js"));
+// app.use("/api",require("../api/index.js"));
 
 // Error Handling Middleware
 app.use((error,req,res,next)=>{
