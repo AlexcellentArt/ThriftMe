@@ -38,7 +38,7 @@ app.use((error,req,res,next)=>{
 
 
 app.get('/', (req, res, next)=> {
-    res.sendFile(path.join(__dirname, 'dist', 'server/index.html'))});
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))});
 
 // Init And Invocation
 
