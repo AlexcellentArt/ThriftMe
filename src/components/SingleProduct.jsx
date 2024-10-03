@@ -58,7 +58,7 @@ function SingleProduct() {
   useEffect(() => {
     async function getItem() {
       try {
-        const response = await fetch(`http://localhost:3000/api/item/${id}`);
+        const response = await fetch(`/api/item/${id}`);
         const result = await response.json();
         setProduct(result);
         setMainPhoto(result.default_photo);

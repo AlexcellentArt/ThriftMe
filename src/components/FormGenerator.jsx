@@ -207,7 +207,7 @@ function FormGenerator({
     return newStr + ", and " + last;
   }
   async function defaultFetch(url, obj, setError = null) {
-    const API_URL = `http://localhost:3000/api/${url}`;
+    const API_URL = `/api/${url}`;
     try {
       if (additionalDataToSend) {
         obj = { obj, ...additionalDataToSend };

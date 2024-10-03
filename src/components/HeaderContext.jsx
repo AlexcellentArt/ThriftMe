@@ -4,7 +4,7 @@ const HeaderContext = createContext("HeaderContext");
 
 export function HeaderContextProvider({ children }) {
   const [additonalContent, setAdditonalContent] = useState(undefined);
-  const API_URL = "http://localhost:3000/api/";
+  const API_URL = "/api/"
   return (
     <HeaderContext.Provider
       value={{

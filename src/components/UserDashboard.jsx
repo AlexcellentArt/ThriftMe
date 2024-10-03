@@ -64,7 +64,7 @@ function UserDashboard() {
 
   const deleteItem = async (id) => {
     try {
-      await fetch(`http://localhost:3000/api/item/${id}`, {
+      await fetch(`/api/item/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ function UserDashboard() {
   const updateItemField = async (field, value) => {
     const updatedItem = { ...selectedItem, [field]: value };
     try {
-      await fetch(`http://localhost:3000/api/item/${selectedItem.id}`, {
+      await fetch(`/api/item/${selectedItem.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

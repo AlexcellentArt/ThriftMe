@@ -30,7 +30,7 @@ function Cart({ shopping_cart, cart_id = 12, passUpCart }) {
       try {
         // will need to add check to see if admin and if so let get happen regardless
         const res = await fetch(
-          `http://localhost:3000/api/shopping_cart/${cart_id}`
+          `/api/shopping_cart/${cart_id}`
         );
         const fetched_cart = await res.json();
         // modify gotten cart

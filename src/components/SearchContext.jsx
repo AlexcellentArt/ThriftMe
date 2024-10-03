@@ -8,7 +8,7 @@ export function SearchContextProvider({ children }) {
     tags: [],
     seller_id: undefined,
   });
-  const API_URL = "http://localhost:3000/api/";
+  const API_URL = "/api/"
   function reset() {
     setSearchParams({ search_text: undefined, tags: [], seller_id: undefined });
     return { search_text: undefined, tags: [], seller_id: undefined };

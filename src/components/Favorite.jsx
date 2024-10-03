@@ -9,7 +9,7 @@ function Favorite(id) {
     if (NotLoggedIn()) {
       return;
     } else {
-      const res = await fetch(`http://localhost:3000/api/user/favorite`, {
+      const res = await fetch(`/api/user/favorite`, {
         headers: { token: token },
         method: "PUT",
         body: { item_id: id },

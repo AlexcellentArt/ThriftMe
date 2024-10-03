@@ -24,7 +24,7 @@ function Home() {
         }
         const browsing_history = user.browsing_history;
         // make call to get all data that has one of the tags for the all view
-        const response = await fetch("http://localhost:3000/api/item/search", {
+        const response = await fetch("/api/item/search", {
           method: "POST",
           body: { tags: browsing_history.looked_at_tags },
         });
@@ -52,7 +52,7 @@ function Home() {
 
     async function getGenericProducts() {
       try {
-        const response = await fetch("http://localhost:3000/api/item");
+        const response = await fetch("/api/item");
         const genericData = await response.json();
         // create trend data, getting at max 5 tags and data from 5 items
         const tagData = await makeTagData(
@@ -79,7 +79,7 @@ function Home() {
         try {
           const tag = input_data[index];
           const response = await fetch(
-            "http://localhost:3000/api/item/search",
+            "/api/item/search",
             { method: "POST", body: { tags: [tag] } }
           );
           const data = await response.json();
@@ -92,7 +92,7 @@ function Home() {
       const seller_id = tag_data.shift().data[0].seller_id;
       // first seller in data for first in trendData is made a trending shop and popped off...
       const response_shop = await fetch(
-        `http://localhost:3000/api/user/shop/${seller_id}`,
+        `er_id}`,
         {
           method: "POST",
           body: { id: seller_id },

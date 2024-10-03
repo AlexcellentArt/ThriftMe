@@ -130,7 +130,7 @@ function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user`, {
+      const response = await fetch(`/api/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,7 +143,7 @@ function AdminDashboard() {
   };
 
   const fetchItems = async () => {
-    const response = await fetch(`http://localhost:3000/api/item`);
+    const response = await fetch(`/api/item`);
     const data = await response.json();
     setItems(data);
     return data;
@@ -161,7 +161,7 @@ function AdminDashboard() {
   // function to delete a user
   const deleteUser = async (id) => {
     try {
-      await fetch(`http://localhost:3000/api/user/${id}`, {
+      await fetch(`/api/user/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -179,7 +179,7 @@ function AdminDashboard() {
     };
 
     try {
-      const res = await fetch(`http://localhost:3000/api/user/${id}`, {
+      const res = await fetch(`/api/user/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -298,7 +298,7 @@ function AdminDashboard() {
 
   const deleteItem = async (id) => {
     try {
-      await fetch(`http://localhost:3000/api/item/${id}`, {
+      await fetch(`/api/item/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -312,7 +312,7 @@ function AdminDashboard() {
     if (!value) return; // if no values are provided, exit the menu
     // const updatedData = { [field]: value };
     obj[field] = value;
-    const res = await fetch(`http://localhost:3000/api/item/${obj.id}`, {
+    const res = await fetch(`/api/item/${obj.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

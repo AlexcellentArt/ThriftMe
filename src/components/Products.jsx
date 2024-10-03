@@ -25,7 +25,7 @@ function Products({ data, search, headerText = "Products" }) {
         const params = search ? search : searchParams;
         const head = AutoHeader();
         const response = await fetch(
-          `http://localhost:3000/api/item/search?${createSearchParams(params)}`,
+          `/api/item/search?${createSearchParams(params)}`,
           {
             header: head,
             method: "POST",

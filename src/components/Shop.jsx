@@ -22,7 +22,7 @@ function Shop() {
     setShopId(id);
     async function getContent() {
       const response_shop = await fetch(
-        "http://localhost:3000/api/user/shop/" + id,
+        "/api/user/shop/" + id,
         {
           method: "POST",
           body: { id: search },

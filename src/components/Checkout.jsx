@@ -58,7 +58,7 @@ function Checkout({ props }) {
           shopping_cart: { item_dict: {} },
         };
         const response = await fetch(
-          `http://localhost:3000/api/shopping_cart/${cartToken}`
+          `/api/shopping_cart/${cartToken}`
         );
         if (response.ok) {
           guest.shopping_cart = await response.json();
@@ -131,7 +131,7 @@ function Checkout({ props }) {
       try {
         const transaction = assembled[i].transaction;
         const res = await fetch(
-          `http://localhost:3000/api/past_transactions/checkout`,
+          `/api/past_transactions/checkout`,
           { headers: header, body: JSON.stringify(transaction), method: "POST" }
         );
         if (res.ok) {
