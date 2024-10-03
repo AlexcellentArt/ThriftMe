@@ -37,10 +37,12 @@ app.use((error,req,res,next)=>{
 // Distribution Path Setup
 
 
-app.get('/', (req, res, next)=> {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))});
+app.get('*', (req, res, next)=> {
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 // Init And Invocation
 
 const PORT = process.env.PORT || 3000
-const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+app.listen(PORT, () => {console.log(`We are listening on port ${PORT}`);
+});
