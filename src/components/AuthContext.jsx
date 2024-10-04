@@ -1,4 +1,3 @@
-import { fa } from "@faker-js/faker";
 import React, { useState, createContext } from "react";
 
 const AuthContext = createContext("AuthContext");
@@ -10,7 +9,6 @@ export function AuthContextProvider({ children }) {
   const [cartToken, setCartToken] = useState(null);
   const API_URL = "http://localhost:3000/api/";
   const FRONT_END_URL = "http://localhost:5173/api/";
-  const local_cart = {};
   function AutoHeader() {
     return {
       "Content-Type": "application/json",
@@ -209,28 +207,6 @@ export function AuthContextProvider({ children }) {
       const res = await fetch(API_URL + "browsing_history/" + user.id, {
         headers: AutoHeader(),
         method: "PUT",
-        body: { looked_at_tags: history },
-      });
-      if (res.ok) {
-        const json = await res.json();
-        return json;
-      }
-    } catch (error) {}
-  }
-  async function addToBrowsingHistory(tags) {
-    try {
-      if (!token) {
-        throw Error("User Not Logged In");
-      }
-      const user = await getUser();
-      const history = user.browsing_history;
-      if (!history) {
-        throw Error("No History");
-      }
-      history.looked_at_tags = [...history.looked_at_tags, ...tags];
-      // only returning l for now, assuming everyone is using it to test login
-      const res = await fetch(API_URL + "browsing_history/", {
-        headers: { token: token },
         body: { looked_at_tags: history },
       });
       if (res.ok) {
