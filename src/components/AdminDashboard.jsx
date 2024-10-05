@@ -25,6 +25,7 @@ function AdminDashboard() {
   useEffect(() => {
     if (!isAdmin) {
       navigate("/");
+      setAdditonalContent();
     }
     const fetchData = async () => {
       //fetch data once first thing so that the display many below loads something first
@@ -32,7 +33,6 @@ function AdminDashboard() {
       fetchUsers();
     };
     fetchData();
-    setAdditonalContent();
   }, [isAdmin, navigate]);
 
   const makeAdminHeader = () => {
