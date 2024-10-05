@@ -166,7 +166,7 @@ function FormGenerator({
     // if not making a call to an api path, which is assumed by the lack of it, then the compiled data is set as the result and passed straight to the on success function if set
     if (apiPath) {
       try {
-        res = await defaultFetch(apiPath, compiled, setError);
+        res = await defaultFetch("/api/"+apiPath, compiled, setError);
         if (res === null) {
           return;
         }
