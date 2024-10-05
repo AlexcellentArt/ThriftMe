@@ -68,8 +68,8 @@ function Products({ data, search, headerText = "Products" }) {
         <div className="flex-v">
           <a
             className="merriweather-black dark-text"
-            // href={`/api/products/${obj.id}`}
-            onClick={()=>{nav(`/api/products/${obj.id}`)}}
+            href={`/products/${obj.id}`}
+            // onClick={()=>{nav(`/api/products/${obj.id}`)}}
           >
             {obj.name}
           </a>
