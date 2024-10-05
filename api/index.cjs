@@ -32,7 +32,7 @@ function doFilesExist(fileList) {
   return table;
 }
 function mapToPath(arr, path = "api", fileType = "js") {
-  return arr.map((file) => `${path}/${file}.${fileType}`);
+  return arr.map((file) => `/${path}/${file}.${fileType}`);
 }
 function mapToBaseNames(path) {
   return path.split("/").pop().split(".").shift();
