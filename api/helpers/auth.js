@@ -26,8 +26,7 @@ const isAdmin = async(req, res, next)=>{
     return next(error)
   }
 }
-// const convertTokenToUserID
-// const findUserWithToken = ({})
+
 const authenticate = async(req,res)=> {
 
   const {email,password} = await req.body
@@ -75,12 +74,10 @@ const decodeToken = async(token)=>{
   const payload = await jwt.verify(token.split(" ").pop(), JWT);
   return payload;
 }
-// const decodeGeneral = async(string)=>{return jwt.verify(string, JWT)}
 module.exports = {
   authenticate,
   findUserWithToken,
   isLoggedIn,
   isAdmin,
   decodeToken,
-  // decodeGeneral
 };

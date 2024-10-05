@@ -67,7 +67,7 @@ function Products({ data, search, headerText = "Products" }) {
         <div className="flex-v">
           <a
             className="merriweather-black dark-text"
-            href={`http://localhost:5173/products/${obj.id}`}
+            href={`/api/products/${obj.id}`}
           >
             {obj.name}
           </a>

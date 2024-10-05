@@ -12,7 +12,7 @@ const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all item
-router.get("/", async (req, res, next) => {
+router.get("/api/item", async (req, res, next) => {
     try {
       const item = await prisma.item.findMany();
       res.json(item);
@@ -21,7 +21,7 @@ router.get("/", async (req, res, next) => {
         }
   });
   // Returns item matching id
-  router.get("/:id", async (req, res, next) => {
+  router.get("/api/item/:id", async (req, res, next) => {
     try {
       const id = +req.params.id;
       const item = await prisma.item.findUnique({ where: { id } });
@@ -36,7 +36,7 @@ router.get("/", async (req, res, next) => {
 
 // ### POST ###
 
-router.post("/", async (req, res, next) => {
+router.post("/api/item", async (req, res, next) => {
     try {
       console.log("post")
       const inputs = {seller_id, name, price, description, default_photo, additional_photos, tags } = await req.body;
@@ -65,7 +65,7 @@ router.post("/", async (req, res, next) => {
 
 
   // post search,and get returned filtered or otherwise
-  router.post("/search", async (req, res, next) => {
+  router.post("/api/item/search", async (req, res, next) => {
     try {
       console.log("search request got")
       const query = await req.query
@@ -142,7 +142,7 @@ router.post("/", async (req, res, next) => {
 // ### PATCH ###
 // router.patch("/"), async (req, res, next) => {
 //   try {console.log("patch base reached")} catch(error){console.error(error)}}
-router.patch("/:id"), async (req, res, next) => {
+router.patch("/api/item/:id"), async (req, res, next) => {
   console.log("reached patch")
   try {
     const id = +req.params.id;
@@ -167,7 +167,7 @@ router.patch("/:id"), async (req, res, next) => {
 // ### PUT ###
 
   // Updates item
-  router.put("/:id", async (req, res, next) => {
+  router.put("/api/item/:id", async (req, res, next) => {
     try {
       const id = +req.params.id;
       const exists = await prisma.item.findUnique({ where: { id } });
@@ -198,7 +198,7 @@ router.patch("/:id"), async (req, res, next) => {
 
 // ### DELETE ###
   // deletes item matching id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/api/item/:id", async (req, res, next) => {
 
     try {
       const id = +req.params.id;

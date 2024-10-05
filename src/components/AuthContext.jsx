@@ -9,7 +9,7 @@ export function AuthContextProvider({ children }) {
 
   const [cartToken, setCartToken] = useState(null);
   const API_URL = "/api/";
-  const FRONT_END_URL = "http://localhost:5173/api/";
+  const FRONT_END_URL = "/api/";
   const local_cart = {};
   function AutoHeader() {
     return {

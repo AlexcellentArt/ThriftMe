@@ -10,13 +10,13 @@ const fs = require("fs");
 const auth = require("./helpers/auth");
 // massive check
 const api_list = [
-  // "user",
-  // "item",
-  // "shopping_cart",
-  // "past_transactions",
-  // "browsing_history",
-  // "addresses",
-  // "credit_cards",
+  "user",
+  "item",
+  "shopping_cart",
+  "past_transactions",
+  "browsing_history",
+  "addresses",
+  "credit_cards",
 ];
 
 function doFilesExist(fileList) {

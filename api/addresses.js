@@ -18,7 +18,7 @@ const gen_errors = require("./helpers/gen_errors.js");
 // ### GET ###
 
 // Gets all addresses
-router.get("/", async (req, res, next) => {
+router.get("/api/addresses", async (req, res, next) => {
   try {
     const addresses = await prisma.address.findMany();
     res.json(addresses);
@@ -27,7 +27,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 // Returns address matching id
-router.get("/:id", async (req, res, next) => {
+router.get("/api/addresses/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const address = await prisma.address.findUnique({ where: { id } });
@@ -41,7 +41,7 @@ router.get("/:id", async (req, res, next) => {
 });
 // ### POST ###
 
-router.post("/", async (req, res, next) => {
+router.post("/api/addresses", async (req, res, next) => {
 
     try {
       const inputs = { user_id, zip, street, apartment } = await req.body;
@@ -60,7 +60,7 @@ router.post("/", async (req, res, next) => {
 // ### PUT ###
 
 // Updates address
-router.put("/:id", async (req, res, next) => {
+router.put("/api/addresses/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.address.findUnique({ where: { id } });
@@ -102,7 +102,7 @@ router.put("/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes address matching id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/api/addresses/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.address.findUnique({ where: { id } });
