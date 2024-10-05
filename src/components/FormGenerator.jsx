@@ -7,11 +7,9 @@ function FormGenerator({
   fields,
   autofillOptions,
   autoFillOptionFormatter,
-  fetchFunctionOverride,
   postSuccessFunction = null,
   apiPath,
   labelAdditionalClasses = "",
-  fetch_method = "POST",
   additionalDataToSend,
   preprocessPost
 }) {

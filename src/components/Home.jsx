@@ -92,7 +92,7 @@ function Home() {
       const seller_id = tag_data.shift().data[0].seller_id;
       // first seller in data for first in trendData is made a trending shop and popped off...
       const response_shop = await fetch(
-        `er_id}`,
+        `/api/user/shop/${seller_id}`,
         {
           method: "POST",
           body: { id: seller_id },
