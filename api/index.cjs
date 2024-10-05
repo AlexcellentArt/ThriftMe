@@ -1,5 +1,4 @@
 const router = require("express").Router();
-module.exports = router;
 const {
   isLoggedIn,
   decodeToken,
@@ -7,7 +6,7 @@ const {
 } = require("./helpers/auth.js");
 
 const fs = require("fs");
-const auth = require("./helpers/auth.js");
+
 // massive check
 const api_list = [
   "user",
@@ -32,12 +31,12 @@ function doFilesExist(fileList) {
   return table;
 }
 function mapToPath(arr, path = "api", fileType = "js") {
-  return arr.map((file) => `/${path}/${file}.${fileType}`);
+  return arr.map((file) => `${path}/${file}.${fileType}`);
 }
 function mapToBaseNames(path) {
   return path.split("/").pop().split(".").shift();
 }
-async function requireExistingAPI(arr) {
+function requireExistingAPI() {
   const table = { found: [], broken: [], missing: [] };
   const errors = [];
   const doExist = doFilesExist(mapToPath(api_list));
@@ -45,7 +44,7 @@ async function requireExistingAPI(arr) {
   doExist.yes.map(mapToBaseNames).forEach((found) => {
     try {
       router.use(`/${found}`, require(`./${found}`));
-      // router.user(/user,require(`./user))
+      // router.use(/user,require(`./user))
       table.found.push(found);
     } catch (error) {
       errors.push(error);
@@ -83,3 +82,5 @@ async function requireExistingAPI(arr) {
 //     // will go back at some point in the future to make this generic
 // }
 requireExistingAPI(api_list);
+
+module.exports = router;
