@@ -10,7 +10,6 @@ const prisma = require("../prisma");
 const gen_errors = require("./helpers/gen_errors.js")
 
 // ### GET ###
-// api/item
 // Gets all item
 router.get("/", async (req, res, next) => {
     try {

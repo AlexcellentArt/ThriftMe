@@ -10,7 +10,7 @@ const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all items in shopping cart
-router.get("/api/shopping_cart", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     console.log("getting");
     const shopping_cart = await prisma.shopping_Cart.findMany();
@@ -20,7 +20,7 @@ router.get("/api/shopping_cart", async (req, res, next) => {
   }
 });
 // Returns shopping_cart matching id
-router.get("/api/shopping_cart/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const shopping_cart = await prisma.shopping_Cart.findUnique({where: { id } });
@@ -83,7 +83,7 @@ router.get("/api/shopping_cart/:id", async (req, res, next) => {
 
 // ### POST ###
 
-router.post("/api/shopping_cart", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     console.log("Made it to post");
     const body = { user_id, item_dict, total_cost } = await req.body;
@@ -99,7 +99,7 @@ router.post("/api/shopping_cart", async (req, res, next) => {
     next(error);
   }
 });
-router.post("/api/shopping_cart/guest", async (req, res, next) => {
+router.post("/guest", async (req, res, next) => {
   try {
     console.log("Made it to post for guest");
     const shopping_cart = await prisma.shopping_Cart.create({ data: {item_dict:{},total_cost:0} });
@@ -112,7 +112,7 @@ router.post("/api/shopping_cart/guest", async (req, res, next) => {
 // ### PUT ###
 
 // Updates shopping_cart
-router.put("/api/shopping_cart/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.shopping_Cart.findUnique({ where: { id } });
@@ -135,7 +135,7 @@ router.put("/api/shopping_cart/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes shopping_cart matching id
-router.delete("/api/shopping_cart/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.shopping_Cart.findUnique({ where: { id } });

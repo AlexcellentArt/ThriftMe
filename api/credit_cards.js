@@ -14,7 +14,7 @@ const bcrypt = require("bcrypt");
 // ### GET ###
 
 // Gets all credit_Card
-router.get("/api/credit_cards", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const credit_Card = await prisma.credit_Card.findMany();
     res.json(credit_Card);
@@ -23,7 +23,7 @@ router.get("/api/credit_cards", async (req, res, next) => {
   }
 });
 // Returns credit_Card matching id
-router.get("/api/credit_cards/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const credit_Card = await prisma.credit_Card.findUnique({
@@ -39,7 +39,7 @@ router.get("/api/credit_cards/:id", async (req, res, next) => {
 });
 // ### POST ###
 
-router.post("/api/credit_cards", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     // encryption
     const salt = await bcrypt.genSalt(13);
@@ -62,7 +62,7 @@ router.post("/api/credit_cards", async (req, res, next) => {
 // ### PUT ###
 
 // Updates credit_Card
-router.put("/api/credit_cards/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.credit_Card.findUnique({ where: { id },include:{user:true}});
@@ -119,7 +119,7 @@ router.put("/api/credit_cards/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes credit_Card matching id
-router.delete("/api/credit_cards/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.credit_Card.findUnique({ where: { id } });

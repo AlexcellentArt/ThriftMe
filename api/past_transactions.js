@@ -11,7 +11,7 @@ const gen_errors = require("./helpers/gen_errors.js")
 // ### GET ###
 
 // Gets all past_transactions
-router.get("/api/past_transactions", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     console.log("getting")
     const past_transaction = await prisma.past_Transactions.findMany();
@@ -21,7 +21,7 @@ router.get("/api/past_transactions", async (req, res, next) => {
   }
 });
 // Returns past_transaction matching id
-router.get("/api/past_transactions/:userId/:id", async (req, res, next) => {
+router.get("/:userId/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const userId = +req.params.userId
@@ -40,7 +40,7 @@ router.get("/api/past_transactions/:userId/:id", async (req, res, next) => {
   }
 });
 // Returns transaction user was involved in as seller or buyer
-router.get("/api/past_transactions/:userId", async (req, res, next) => {
+router.get("/:userId", async (req, res, next) => {
     try {
       const id = +req.params.userId;
       const past_transaction = await prisma.past_Transactions.findMany({ where: {buyer_id:id} });
@@ -69,7 +69,7 @@ router.get("/api/past_transactions/:userId", async (req, res, next) => {
 // });
 // ### POST ###
 
-router.post("/api/past_transactions", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     console.log(body)
@@ -85,7 +85,7 @@ router.post("/api/past_transactions", async (req, res, next) => {
   }
 });
 
-router.post("/api/past_transactions/checkout", async (req, res, next) => {
+router.post("/checkout", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
     console.log(body)
@@ -108,7 +108,7 @@ router.post("/api/past_transactions/checkout", async (req, res, next) => {
 // ### PUT ###
 
 // Updates past_transaction
-router.put("/api/past_transactions/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.past_Transactions.findUnique({ where: { id } });
@@ -128,7 +128,7 @@ router.put("/api/past_transactions/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes past_transaction matching id
-router.delete("/api/past_transactions/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.past_Transactions.findUnique({ where: { id } });

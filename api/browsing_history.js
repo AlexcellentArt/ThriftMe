@@ -17,7 +17,7 @@ const gen_errors = require("./helpers/gen_errors.js");
 // ### GET ###
 
 // Gets all browsing_History
-router.get("/api/browsing_history", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const browsing_History = await prisma.browsing_History.findMany();
     res.json(browsing_History);
@@ -26,7 +26,7 @@ router.get("/api/browsing_history", async (req, res, next) => {
   }
 });
 // Returns browsing_History matching id
-router.get("/api/browsing_history/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const browsing_History = await prisma.browsing_History.findUnique({
@@ -43,7 +43,7 @@ router.get("/api/browsing_history/:id", async (req, res, next) => {
   }
 });
 // Returns browsing_History matching user_id
-router.get("/api/browsing_history/:user_id/:id", async (req, res, next) => {
+router.get("/:user_id/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const user_id = +req.params.user_id;
@@ -72,7 +72,7 @@ router.get("/api/browsing_history/:user_id/:id", async (req, res, next) => {
 });
 // ### POST ###
 
-router.post("/api/browsing_history", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const { id, user_id, looked_at_tags } = await req.body;
     console.log(user_id, looked_at_tags);
@@ -108,7 +108,7 @@ router.post("/api/browsing_history", async (req, res, next) => {
 
 
   // Updates browsing_History
-  router.put("/api/browsing_history/:id", async (req, res, next) => {
+  router.put("/:id", async (req, res, next) => {
     try {
       const id = +req.params.id;
       const exists = await prisma.browsing_History.findUnique({ where: { id } });
@@ -135,7 +135,7 @@ router.post("/api/browsing_history", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes browsing_History matching id
-router.delete("/api/browsing_history/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.browsing_History.findUnique({ where: { id } });

@@ -17,7 +17,7 @@ const JWT = process.env.JWT || "shhh";
 // ### GET ###
 
 // Gets all user
-router.get("/api/user", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   console.log("AAAAAAAAAa")
   const users = await prisma.user.findMany({ where: {},include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
   console.log(users)
@@ -48,7 +48,7 @@ router.get("/api/user", async (req, res, next) => {
 //   return null
 // }
 
-router.post("/api/user/other", async (req, res, next) => {
+router.post("/other", async (req, res, next) => {
   const {id , getItems} = await req.body()
   if (!id){gen_errors.genericMissingDataError(["id"],"public_info request")}
   const user = await prisma.user.findMany({ where: {id},include:{items:true}});
@@ -57,7 +57,7 @@ router.post("/api/user/other", async (req, res, next) => {
   res.json({"name":user.name});
 })
 
-router.post("/api/user/login", async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = await req.body;
     const user = await prisma.user.findUnique({ where: { email },include:{shopping_cart:true} });
@@ -76,7 +76,7 @@ router.post("/api/user/login", async (req, res, next) => {
     next(error);
   }
 });
-router.post("/api/user/register", async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
     const inputs = await req.body;
     console.log("trying to register...");
@@ -119,7 +119,7 @@ router.post("/api/user/register", async (req, res, next) => {
 //   res.json(user)
 // });
 
-router.get("/api/user/me", async (req, res, next) => {
+router.get("/me", async (req, res, next) => {
   try {
       const decode = await decodeToken(req.headers.token)
       if(decode.message){return next(decode)}
@@ -165,7 +165,7 @@ router.get("/api/user/me", async (req, res, next) => {
 //   }
 // })
 // Returns user matching id
-router.get("/api/user/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const user = await prisma.user.findUnique({ where: { id } });
@@ -177,7 +177,7 @@ router.get("/api/user/:id", async (req, res, next) => {
     next(error);
   }
 });
-router.post("/api/user/shop/:id", async (req, res, next) => {
+router.post("/shop/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     console.log(id)
@@ -190,7 +190,7 @@ router.post("/api/user/shop/:id", async (req, res, next) => {
   }
 });
 // ### POST ###
-router.post("/api/user", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const inputs = ({ name, email, password } = await req.body);
     console.log(inputs);
@@ -296,7 +296,7 @@ router.post("/api/user", async (req, res, next) => {
 //   // }
 // });
 // Updates user
-router.put("/api/user/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const exists = await prisma.user.findUnique({ where: { id } });
@@ -343,7 +343,7 @@ router.put("/api/user/:id", async (req, res, next) => {
 
 // ### DELETE ###
 // deletes user matching id
-router.delete("/api/user/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
     const user = await prisma.user.findUnique({ where: { id } });
