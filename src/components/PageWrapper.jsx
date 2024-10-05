@@ -12,12 +12,17 @@ function PageWrapper({children}) {
   let location = useLocation()
   // effect cleans up additonal context from previous page
   useEffect(() => {
-    console.log("conent prior to reset: ", additonalContent)
+    console.log("content prior to reset: ", additonalContent)
     setAdditonalContent(null);
   }, [location]);
+  
   useEffect(() => {
-    console.log("additonal content changed!: ", additonalContent)
+    console.log("additional change made it page wrapper!: ", additonalContent)
   }, [additonalContent]);
+  let ourBool = false;
+  useEffect(() => {
+    ourBool = true;
+  }, [ourBool]);
 useEffect(() => {
   checkForLocalToken()
 }, [token,isAdmin]);

@@ -4,10 +4,9 @@ const HeaderContext = createContext("HeaderContext");
 
 export function HeaderContextProvider({ children }) {
   const [additonalContent, setAdditonalContent] = useState(null);
-  let ourBool = false;
   useEffect(() => {
-    ourBool = true;
-  }, [ourBool]);
+    console.log("additional content change made it to HeaderContext!: ", additonalContent)
+  }, [additonalContent]);
   return (
     <HeaderContext.Provider
       value={{
