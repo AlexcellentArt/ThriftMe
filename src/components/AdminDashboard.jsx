@@ -227,7 +227,7 @@ function AdminDashboard() {
   useEffect(() => {
     const makeMenu = async () =>{
       console.log("trying to make admin header...");
-      const menu = awaitmakeAdminHeader();
+      const menu = await makeAdminHeader();
       console.log("admin header generated: ",menu);
       console.log("admin header created!");
       setAdditonalContent(menu);
