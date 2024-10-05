@@ -226,7 +226,10 @@ function AdminDashboard() {
 
   // update the header whenever the context menu's state changes
   useEffect(() => {
-    setAdditonalContent(makeContextMenu());
+    console.log("trying to make context menu...")
+    const menu = makeContextMenu()
+    console.log("menu generated: ",menu)
+    setAdditonalContent(menu);
   }, [showContextMenu]);
   const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
