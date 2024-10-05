@@ -10,9 +10,9 @@ const prisma = require("../prisma");
 const gen_errors = require("./helpers/gen_errors.js")
 
 // ### GET ###
-
+// api/item
 // Gets all item
-router.get("/api/item", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
     try {
       const item = await prisma.item.findMany();
       console.log("returned item,",item)

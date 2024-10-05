@@ -7,7 +7,7 @@ const {
 } = require("./helpers/auth.js");
 
 const fs = require("fs");
-const auth = require("./helpers/auth");
+const auth = require("./helpers/auth.js");
 // massive check
 const api_list = [
   "user",
@@ -45,6 +45,7 @@ async function requireExistingAPI(arr) {
   doExist.yes.map(mapToBaseNames).forEach((found) => {
     try {
       router.use(`/${found}`, require(`./${found}`));
+      // router.user(/user,require(`./user))
       table.found.push(found);
     } catch (error) {
       errors.push(error);
