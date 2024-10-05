@@ -14,7 +14,7 @@ const gen_errors = require("./helpers/gen_errors.js")
 // Gets all item
 router.get("/", async (req, res, next) => {
     try {
-      const item = await prisma.item.findUnique({where:{id:1}});
+      const item = await prisma.item.findMany({take:10});
       console.log("returned item,",item)
       res.json(item);
     } catch(error) {
