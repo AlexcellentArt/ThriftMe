@@ -232,11 +232,7 @@ function AdminDashboard() {
     // console.log("admin header created!");
     setAdditonalContent(makeAdminHeader());
     console.log("additional context should have been set");
-  }, [showContextMenu]);
-  let ourBool = false;
-  useEffect(() => {
-    ourBool = true;
-  }, [ourBool]);
+  }, [showContextMenu]);  
   const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
     switch (action) {

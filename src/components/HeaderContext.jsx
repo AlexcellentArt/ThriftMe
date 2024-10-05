@@ -3,8 +3,11 @@ import React, { useState, createContext, useEffect } from "react";
 const HeaderContext = createContext("HeaderContext");
 
 export function HeaderContextProvider({ children }) {
-  const [additonalContent, setAdditonalContent] = useState(undefined);
-  const API_URL = "/api/"
+  const [additonalContent, setAdditonalContent] = useState(null);
+  let ourBool = false;
+  useEffect(() => {
+    ourBool = true;
+  }, [ourBool]);
   return (
     <HeaderContext.Provider
       value={{
