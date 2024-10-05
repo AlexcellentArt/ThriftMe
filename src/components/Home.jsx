@@ -30,8 +30,8 @@ function Home() {
         });
         const data = await response.json();
         // view will be all at first
-        console.log("arrrived data: ",data)
-        setProductData(data.item);
+        console.log("arrrived trending data: ",data)
+        setProductData(data);
 
         // get data for trending views, max 5
         const tagData = await makeTagData(
@@ -55,7 +55,7 @@ function Home() {
     async function getGenericProducts() {
       try {
         const response = await fetch("/api/item");
-        const genericData = await response.json();
+        const genericData  = await response.json();
         // create trend data, getting at max 5 tags and data from 5 items
         const tagData = await makeTagData(
           genericData.slice(5).map((obj) => {
@@ -65,8 +65,8 @@ function Home() {
         //... and add at the start all
         tagData.unshift({ tag: "All", data: genericData });
         setTrendData(tagData);
-        console.log("arrrived data: ",genericData)
-        setProductData(genericData.item);
+        console.log("arrrived generic data: ",genericData)
+        setProductData(genericData);
         await makeShopMeData(tagData);
         return genericData;
       } catch (error) {
