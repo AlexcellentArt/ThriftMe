@@ -15,6 +15,7 @@ const gen_errors = require("./helpers/gen_errors.js")
 router.get("/api/item", async (req, res, next) => {
     try {
       const item = await prisma.item.findMany();
+      console.log("returned item,",item)
       res.json(item);
     } catch(error) {
         next(error);
@@ -134,6 +135,7 @@ router.post("/api/item", async (req, res, next) => {
         console.log(`No Matches found for filter of name: ${text_search} tags:${tags} seller_id:${seller_id}`)
         return res.json([])
       }
+      console.log("found matching items,",getFiltered)
       return res.json(getFiltered);
     } catch(error) {
         next(error);

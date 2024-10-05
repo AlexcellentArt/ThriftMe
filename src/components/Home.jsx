@@ -45,6 +45,7 @@ function Home() {
         // create shop me data
         await makeShopMeData(tagData);
       } catch (error) {
+        console.error(error)
         const genData = await getGenericProducts();
         return genData;
       }
@@ -67,6 +68,7 @@ function Home() {
         await makeShopMeData(tagData);
         return genericData;
       } catch (error) {
+        console.error(error)
         setError("Website server unable to be accessed. We apologize for the inconvenience.")
         setLoading(false);
       }
