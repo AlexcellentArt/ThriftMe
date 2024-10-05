@@ -13,7 +13,8 @@ const gen_errors = require("./helpers/gen_errors.js")
 // Gets all item
 router.get("/", async (req, res, next) => {
     try {
-      const item = await prisma.item.findMany({take:10});
+      //{take:10})
+      const item = await prisma.item.findMany();
       console.log("returned item,",item)
       res.json(item);
     } catch(error) {
@@ -87,7 +88,7 @@ router.post("/", async (req, res, next) => {
           // return next(error)
         }
       }
-      console.log("EXTREACTED",tags,text_search)
+      console.log("EXTRACTED",tags,text_search)
       // try to get keys off body if they exist && text_search and tags are not already filled. For safety reasons, seller will always be in the body
       if (Object.keys(body).length !== 0)
       {
@@ -98,7 +99,7 @@ router.post("/", async (req, res, next) => {
       }
       console.log("Building Search settings....")
       const search = {}
-      console.log("EXTREACTED",tags,text_search)
+      console.log("EXTRACTED",tags,text_search)
       if(tags !== undefined){
         if (!Array.isArray(tags))
           {
