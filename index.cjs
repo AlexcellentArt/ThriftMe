@@ -9,6 +9,7 @@ client.connect();
 // App Routes
 const path = require('path');
 const app = express();
+const apiRoutes = require('./api/api.cjs');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
@@ -25,7 +26,7 @@ app.all('*',(req, res, next)=>{
     next();
   });
 // Api Routes
-app.use("/api",require("./api/index.cjs"));
+app.use("/api", apiRoutes);
 
 // Error Handling Middleware
 app.use((error,req,res,next)=>{
