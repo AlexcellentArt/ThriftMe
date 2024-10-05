@@ -12,7 +12,7 @@ function SearchBar({ setLocalSearch, forcedParams }) {
   const [searchText, setSearchText] = useState("");
 
   async function handleSearch() {
-    if (searchText || tags.length) {
+    if (searchText || tags.length || forcedParams) {
       const params = {
         text_search: searchText,
         tags: tags.map((obj) => {
