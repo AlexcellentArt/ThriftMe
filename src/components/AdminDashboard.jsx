@@ -229,7 +229,7 @@ function AdminDashboard() {
     console.log("trying to make context menu...")
     const menu = makeContextMenu()
     console.log("menu generated: ",menu)
-    setAdditonalContent(menu);
+    setAdditonalContent(menu?menu:"Uh oh");
   }, [showContextMenu]);
   const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
