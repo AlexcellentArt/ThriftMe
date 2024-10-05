@@ -30,7 +30,8 @@ function Home() {
         });
         const data = await response.json();
         // view will be all at first
-        setProductData(data);
+        console.log("arrrived data: ",data)
+        setProductData(data.item);
 
         // get data for trending views, max 5
         const tagData = await makeTagData(
@@ -64,7 +65,8 @@ function Home() {
         //... and add at the start all
         tagData.unshift({ tag: "All", data: genericData });
         setTrendData(tagData);
-        await setProductData(genericData);
+        console.log("arrrived data: ",genericData)
+        setProductData(genericData.item);
         await makeShopMeData(tagData);
         return genericData;
       } catch (error) {
