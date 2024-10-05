@@ -207,7 +207,7 @@ function FormGenerator({
     return newStr + ", and " + last;
   }
   async function defaultFetch(url, obj, setError = null) {
-    const API_URL = `/api/${url}`;
+    // const API_URL = `/api/${url}`;
     try {
       if (additionalDataToSend) {
         obj = { obj, ...additionalDataToSend };
@@ -215,7 +215,7 @@ function FormGenerator({
       if(preprocessPost){
         obj = preprocessPost(obj)
       }
-      const response = await fetch(API_URL, {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
