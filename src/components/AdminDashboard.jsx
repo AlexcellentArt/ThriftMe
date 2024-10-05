@@ -35,7 +35,7 @@ function AdminDashboard() {
     setAdditonalContent();
   }, [isAdmin, navigate]);
 
-  const makeContextMenu = () => {
+  const makeAdminHeader = () => {
     return (
       <>
         <div>
@@ -226,10 +226,12 @@ function AdminDashboard() {
 
   // update the header whenever the context menu's state changes
   useEffect(() => {
-    console.log("trying to make context menu...")
-    const menu = makeContextMenu()
-    console.log("menu generated: ",menu)
+    console.log("trying to make admin header...");
+    const menu = makeAdminHeader();
+    console.log("admin header generated: ",menu);
+    console.log("admin header created!");
     setAdditonalContent(menu?menu:"Uh oh");
+    console.log("additional context should have been set");
   }, [showContextMenu]);
   const handleEditMenuAction = async (action, item) => {
     // Handle the action based on the button clicked in the edit menu
