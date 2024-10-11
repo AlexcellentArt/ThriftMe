@@ -499,25 +499,11 @@ textarea {
 }
 
 .split-screen {
-  width: 100%;
-  height: 100%;
-}
-
-.scroll-x {
-  overflow-x: scroll;
-  overflow-y: hidden;
-  clip-path: fill-box;
-}
-
-.scroll-y {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  clip-path: fill-box;
-}
-
-.split-screen {
   display: flex;
   flex-direction: row;
+  width: 100%;
+  height: 100%;
+  max-width: 63%;
 
   /* :nth-child(0){width: 50vw;}
   :nth-child(1){width: 50vw;} */
@@ -1021,24 +1007,19 @@ textarea {
 .cart {
   display: flex;
   flex: 1;
-  max-width: 100%;
+  max-width: 50vh;
+  width: 100%;
   height: auto;
-  /* .align-self-center{
-  position: fixed;
-  right: 15.8%;
-  place-self: center center;
-} */
-  /* .display-many{
-    align-items: center;
-    flex-direction: column;
-    align-content: center;
-  } */
 }
 
 .cart-card {
   flex: 1;
   max-height: 20vh;
   height: auto;
+  max-width: 100%;
+  padding-right: 1%;
+  margin: 1%;
+  clip-path: fill-box;
   background-color: var(--fairy-tale);
   border-radius: 5%;
 }
