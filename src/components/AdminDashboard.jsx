@@ -37,9 +37,7 @@ function AdminDashboard() {
   const makeAdminHeader = async () => {
     return (
       <>
-        <div>
-          <h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
-        </div>
+<h1 className="merriweather-regular">ADMIN DASHBOARD</h1>
         <div className="force-tab-shape button-box dropdown">
           <button
             className="big-text merriweather-black"

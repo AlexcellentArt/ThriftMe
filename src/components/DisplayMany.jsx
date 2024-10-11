@@ -52,11 +52,11 @@ function DisplayMany({
     );
   }
   return (
-    <div className={`display-many ${additionalClasses}`}>
+    <div className={`display-many ${additionalClasses}`+ (data.length === 0 && "display-many-text-position-override")}>
       {
         //DOCUMENTATION: If length is 0, return no matches and display the emptyDataText
         !data.length ? (
-          <h3>{emptyDataText}</h3>
+          <h3 className="align-self-center">{emptyDataText}</h3>
         ) : (
           //DOCUMENTATION: Else, return the data array's objects run through mapping to a factory that outputs a react component displaying the keys/values of the object as inside the factory function.
           Object.values(data).map((value, i) => {

@@ -95,6 +95,7 @@ function Products({ data, search, headerText = "Products" }) {
         data={products}
         factory={generateCard}
         additionalClasses={"stretch wrap "}
+        emptyDataText="No Matching Items Found."
       />
     </div>
   );

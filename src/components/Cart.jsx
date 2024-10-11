@@ -100,7 +100,7 @@ function Cart({ shopping_cart, cart_id = 12, passUpCart }) {
         data={cart}
         factory={generateCard}
         emptyDataText="Your cart is empty."
-        additionalClasses={"cart scroll-y"}
+        additionalClasses={"cart scroll-y "}
       />
     </div>
   );
