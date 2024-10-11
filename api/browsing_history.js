@@ -75,14 +75,12 @@ router.get("/:user_id/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const { id, user_id, looked_at_tags } = await req.body;
-    console.log(user_id, looked_at_tags);
     const isType = gen_errors.isNotType(
       "browsing history",
       looked_at_tags,
       "object",
       "looked_at_tags"
     );
-    console.log(isType);
     if (isType) {
       return next(isType);
     }
@@ -92,7 +90,6 @@ router.post("/", async (req, res, next) => {
       "string",
       "looked_at_tags"
     );
-    console.log(doesNotContainOnlyStrings);
     if (doesNotContainOnlyStrings) {
       return next(doesNotContainOnlyStrings);
     }

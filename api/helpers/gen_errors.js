@@ -163,10 +163,7 @@ function hasMissingInputs(object, mandatoryKeys, forWhat = "input") {
       missing.push(key);
     }
   });
-  console.log("missing")
-  console.log(missing)
   if (missing.length) {
-    console.log("about to return missing")
     return genericMissingDataError(missing, forWhat);
   }
 }
@@ -240,7 +237,6 @@ async function isNotUnique(table, key, value) {
  * @example isNotType("browsing history","hat","string","looked_at_tags")
  */
 function isNotType(label, value, type = "string", whatFor = "input") {
-  console.log(value,type)
   if (typeof value !== type.toLowerCase()) {
     return genericViolationDataError(label, `not a ${type}`, whatFor);
   }

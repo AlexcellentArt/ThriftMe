@@ -18,9 +18,7 @@ const JWT = process.env.JWT || "shhh";
 
 // Gets all user
 router.get("/", async (req, res, next) => {
-  console.log("AAAAAAAAAa")
   const users = await prisma.user.findMany({ where: {},include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,credit_cards:true,addresses:true,browsing_history:true,shopping_cart:true} });
-  console.log(users)
   res.json(users);
   // const decode = await decodeToken(req.headers.authorization)
   // if(decode.message){return next(decode)}
@@ -70,7 +68,6 @@ router.post("/login", async (req, res, next) => {
       );
     }
     const token = jwt.sign({ userId: user.id }, JWT);
-    console.log(token);
     res.json({ user, token, shopping_cart:user.shopping_cart,is_admin:user.is_admin });
   } catch (error) {
     next(error);
@@ -79,12 +76,10 @@ router.post("/login", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   try {
     const inputs = await req.body;
-    console.log("trying to register...");
     const exists = await prisma.user.findUnique({
       where: { email: inputs.email },
     });
     if (exists) {
-      console.log("EXISTS");
       return next(
         gen_errors.genericViolationDataError(
           "user",
@@ -102,7 +97,6 @@ router.post("/register", async (req, res, next) => {
     await prisma.browsing_History.create({data: { user_id:user.id,looked_at_tags:[] }});
     await prisma.shopping_Cart.create({ data: { user_id:user.id, item_dict:{}, total_cost:0 }  });
     const token = jwt.sign({ userId: user.id }, JWT);
-    console.log(token);
     res.json({ user: user, token:token });
   } catch (error) {
     next(error);
@@ -127,7 +121,6 @@ router.get("/me", async (req, res, next) => {
     const id = decode.userId
     const user = await prisma.user.findUnique({ where: { id:id },include:{items:true,past_transactions_seller:true,past_transactions_buyer:true,addresses:true,credit_cards:true,browsing_history:true,shopping_cart:true} });
     //redit_cards:true --- need to replace BigInt with something else
-    console.log("user:",user)
     // const user = await prisma.user.findUnique({ where: { id: id } });
     if (!user) {
       return next(gen_errors.genericNotFoundError("user", "id", id));
@@ -180,10 +173,8 @@ router.get("/:id", async (req, res, next) => {
 router.post("/shop/:id", async (req, res, next) => {
   try {
     const id = +req.params.id;
-    console.log(id)
     if (!id){return next(gen_errors.genericMissingDataError(["id"],"shop request"))}
     const user = await prisma.user.findUnique({ where: { id:id },include:{items:true} });
-    console.log(user)
     res.json({items:user.items,shop_name:`${user.name}'s Shop`,username:user.name,shop_tagline:"Trending Now",id:id});
   } catch (error) {
     next(error);
@@ -193,7 +184,6 @@ router.post("/shop/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const inputs = ({ name, email, password } = await req.body);
-    console.log(inputs);
     const missing = gen_errors.hasMissingInputs(
       inputs,
       ["name", "email", "password"],
@@ -303,7 +293,6 @@ router.put("/:id", async (req, res, next) => {
     if (!exists) {
       return next(gen_errors.genericNotFoundError("user", "id", id));
     }
-    console.log("not unique reached");
     const body = ({ name, email, password, is_admin } = await req.body);
     // checking if not already set to that.
     if (exists.name != body.name) {
@@ -322,15 +311,12 @@ router.put("/:id", async (req, res, next) => {
         }
       }
     }
-    console.log("past uniqe checks")
     if (exists.password != body.password) {
       body["password"] =  body.password;
     }
     if (exists.is_admin != body.is_admin) {
       body["is_admin"] =  body.is_admin;
     }
-    console.log("past checks")
-    console.log("update",body);
     const update = await prisma.user.update({
       where: { id },
       data: body,
@@ -358,7 +344,6 @@ router.delete("/:id", async (req, res, next) => {
           },
         },
       )
-      console.log("Admins in system:"+adminAmount.is_admin)
       // if deleting , reject delete request
       if (adminAmount.is_admin - 1 <= 1)
       {

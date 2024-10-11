@@ -97,7 +97,6 @@ router.put("/:id", async (req, res, next) => {
       const current = await prisma.credit_Card.findFirst({
         where: { user_id:exists.user_id, is_default:true },
       });
-      console.log(current)
       if (current)
       {
         current["is_default"] = false;

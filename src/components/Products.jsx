@@ -46,7 +46,6 @@ function Products({ data, search, headerText = "Products" }) {
         <h1 className="merriweather-regular">{headerText}</h1>
       );
     } else {
-      console.log("Setting data in products:",data)
       setProduct(data);
     }
   }, [search ? search : searchParams, data && data, headerText]);

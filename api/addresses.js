@@ -73,7 +73,6 @@ router.put("/:id", async (req, res, next) => {
     if(isMissingInputs){return next(isMissingInputs)}
     // const isZip5 = gen_errors.hasLengthViolations(inputs,["zip"],{min:5,max:5})
     // if (isZip5){return next(isZip5)}
-    console.log(inputs.zip)
     // safe to put
       const address = await prisma.address.update({
         where: { id },
@@ -84,7 +83,6 @@ router.put("/:id", async (req, res, next) => {
         const current = await prisma.address.findFirst({
           where: { user_id:exists.user_id, is_default:true },
         });
-        console.log(current)
         if (current)
         {
           current["is_default"] = false;

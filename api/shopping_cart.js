@@ -12,7 +12,6 @@ const gen_errors = require("./helpers/gen_errors.js")
 // Gets all items in shopping cart
 router.get("/", async (req, res, next) => {
   try {
-    console.log("getting");
     const shopping_cart = await prisma.shopping_Cart.findMany();
     res.json(shopping_cart);
   } catch (error) {
@@ -52,7 +51,6 @@ router.get("/:id", async (req, res, next) => {
 //   });
 // }
     }
-    console.log(shopping_cart)
     res.json(shopping_cart);
   } catch (error) {
     next(error);
@@ -85,7 +83,6 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    console.log("Made it to post");
     const body = { user_id, item_dict, total_cost } = await req.body;
     console.log(body);
     // const missing = gen_errors.hasMissingInputs(body, ["item_dict", "total_cost"]);
@@ -101,9 +98,7 @@ router.post("/", async (req, res, next) => {
 });
 router.post("/guest", async (req, res, next) => {
   try {
-    console.log("Made it to post for guest");
     const shopping_cart = await prisma.shopping_Cart.create({ data: {item_dict:{},total_cost:0} });
-    console.log("made cart "+shopping_cart.id)
     res.json(shopping_cart);
   } catch (error) {
     next(error);

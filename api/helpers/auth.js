@@ -7,7 +7,6 @@ const {genericMissingDataError} = require('./gen_errors')
 const JWT = process.env.JWT || 'shhh'
 const isLoggedIn = async(req, res, next)=>{
   try {
-    console.log(req.headers.authorization)
     req.user = await findUserWithToken(req.headers.Authorization)
     if (!req.user){throw new Error("NOT LOGGED IN")}
     next()
@@ -17,7 +16,6 @@ const isLoggedIn = async(req, res, next)=>{
 }
 const isAdmin = async(req, res, next)=>{
   try {
-    console.log(req.headers)
     // req.user = await findUserWithToken(req.headers.isAdmin)
     const token = await decodeToken(req.headers.Authorization)
     if(!token.isAdmin){throw new Error("NOT ADMIN")}
@@ -42,20 +40,18 @@ const authenticate = async(req,res)=> {
   }
   // res.json(authenticate(payload));
   const token = jwt.sign({userId: user.id,isAdmin:user.is_admin},JWT)
-  console.log(token)
   res.json({user,token})
 };
 
 const findUserWithToken = async (token) => {
   let userId;
   if (!token){return}
-  console.log(`made it to finding user with ${JWT}`)
-  console.log("What token findUserWithToken got "+token)
+  // console.log(`made it to finding user with ${JWT}`)
+  // console.log("What token findUserWithToken got "+token)
 
   try {
       const payload = await jwt.verify(token, JWT);
       userId = payload.userId;
-      console.log(payload)
     const user = await prisma.user.findUnique({ where: { id:userId } });
     if (!user) {
       return next(gen_errors.genericNotFoundError("user", "email", email));
@@ -64,7 +60,6 @@ const findUserWithToken = async (token) => {
   }
   catch (error) {
     // both possible errors are 401, so setting it here before throwing upward
-    console.log("SETTING ERROR")
     error.status = 401
     throw error
   }

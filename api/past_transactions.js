@@ -13,7 +13,6 @@ const gen_errors = require("./helpers/gen_errors.js")
 // Gets all past_transactions
 router.get("/", async (req, res, next) => {
   try {
-    console.log("getting")
     const past_transaction = await prisma.past_Transactions.findMany();
     res.json(past_transaction);
   } catch (error) {
@@ -72,10 +71,8 @@ router.get("/:userId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
-    console.log(body)
     const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","shipping_address","paying_card","tags"],"transaction")
     if (missing){
-        console.log(missing)
         return next(missing)
     }
     const past_transaction = await prisma.past_Transactions.create({ data: body });
@@ -88,17 +85,14 @@ router.post("/", async (req, res, next) => {
 router.post("/checkout", async (req, res, next) => {
   try {
     const body = {seller_id,buyer_id,item_dict,total_cost,tags} = await req.body;
-    console.log(body)
     const missing = gen_errors.hasMissingInputs(body,["seller_id","buyer_id","item_dict","total_cost","shipping_address","paying_card","tags"],"transaction")
     if (missing){
-        console.log(missing)
         return next(missing)
     }
     const past_transaction = await prisma.past_Transactions.create({ data: body });
     // get seller name
     const seller = await prisma.user.findUnique({where:{id:body.seller_id}})
     // remove sensitive info and replace with names. tags not relevant to return.
-    console.log(seller)
     const censored = {seller_name:seller.name,item_dict:past_transaction.item_dict,total_cost:past_transaction.total_cost}
     res.json(censored);
   } catch (error) {
