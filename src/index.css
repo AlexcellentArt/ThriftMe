@@ -1007,7 +1007,6 @@ textarea {
 .cart {
   display: flex;
   flex: 1;
-  max-width: 50vh;
   width: 100%;
   height: auto;
 }
