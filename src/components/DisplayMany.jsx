@@ -52,7 +52,7 @@ function DisplayMany({
     );
   }
   return (
-    <div className={`display-many ${additionalClasses}`+ (data.length === 0 && "display-many-text-position-override")}>
+    <div className={`display-many ${additionalClasses} `+ (data.length === 0 ? "display-many-text-position-override":"")}>
       {
         //DOCUMENTATION: If length is 0, return no matches and display the emptyDataText
         !data.length ? (

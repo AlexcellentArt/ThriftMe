@@ -1009,6 +1009,9 @@ textarea {
   flex: 1;
   width: 100%;
   height: auto;
+  .display-many{
+    place-content: start space-between;
+  }
 }
 
 .cart-card {
@@ -1016,8 +1019,7 @@ textarea {
   max-height: 20vh;
   height: auto;
   max-width: 100%;
-  padding-right: 1%;
-  margin: 1%;
+  margin: 0.25%;
   clip-path: fill-box;
   background-color: var(--fairy-tale);
   border-radius: 5%;
