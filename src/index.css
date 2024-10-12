@@ -87,7 +87,7 @@ header {
   flex: 2;
   height: auto;
   position: fixed !important;
-  max-height: 30vh;
+  max-height: 35vh;
   display: flex;
   flex-direction: row;
 
@@ -101,6 +101,11 @@ header {
     flex: 1 1 1;
     max-height: 15vh;
     height: auto;
+  }
+}
+@media screen and (max-width: 527px){
+  header{
+    max-height: 45vh;
   }
 }
 
